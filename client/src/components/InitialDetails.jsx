@@ -6,7 +6,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { getMainActions } from "../app/actions/mainActions";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +21,10 @@ const InitialDetails = ({ addInitialDetails }) => {
   const handleCountryChange = (event) => {
     setCountry(event.target.value);
   };
+
+  useEffect(() => {
+    console.log("Rahul aala");
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();

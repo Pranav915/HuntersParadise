@@ -1,4 +1,7 @@
+import Cookies from "js-cookie";
+
 export const Logout = () => {
   localStorage.clear();
-  window.location.pathname = "/";
+  Cookies.remove("clientId");
+  window.location.pathname = "/login";
 };

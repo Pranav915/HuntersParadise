@@ -7,6 +7,9 @@ const postLogin = async (req, res) => {
     const { username, password } = req.body;
 
     const user = await User.findOne({ username: username });
+    if (!user) {
+      return res.status(400).send("User not found. Please Register.");
+    }
     if (
       user &&
       user.password &&

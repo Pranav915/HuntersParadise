@@ -5,29 +5,49 @@ import jwt_decode from "jwt-decode";
 import { getMainActions } from "../../app/actions/mainActions";
 import { getAuthActions } from "../../app/actions/authActions";
 import { useLocation, useNavigate } from "react-router-dom";
+import AuctionsCard from "./AuctionsCard";
+import Wallet from "./Wallet";
+import DealsCard from "./DealsCard";
+import Cookies from "js-cookie";
+import { initializeAblyClient } from "../../ably";
 
-const Dashboard = ({ setUserDetails }) => {
+const Dashboard = ({ userDetails, setUserDetails, setClientId, clientId }) => {
   const search = useLocation().search;
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userDetails = new URLSearchParams(search).get("user");
-    if (userDetails) {
-      const data = jwt_decode(userDetails).userDetails;
+    const user = new URLSearchParams(search).get("user");
+    if (user) {
+      const data = jwt_decode(user).userDetails;
       setUserDetails(data);
-      if (data.age) {
-        navigate("/");
-      } else {
+      if (!data?.age) {
         navigate("/initialDetails");
       }
+      Cookies.set("clientId", data?.username);
+      initializeAblyClient(Cookies.get("clientId"));
+    } else if (userDetails) {
+      if (!userDetails.age) {
+        navigate("/initialDetails");
+      }
+    } else {
+      navigate("/login");
     }
   }, []);
 
   return (
     <>
       <Navbar />
+      <AuctionsCard />
+      <Wallet />
+      <DealsCard />
     </>
   );
+};
+
+const mapStoreStateToProps = ({ auth }) => {
+  return {
+    ...auth,
+  };
 };
 
 const mapActionsToProps = (dispatch) => {
@@ -36,4 +56,4 @@ const mapActionsToProps = (dispatch) => {
     ...getMainActions(dispatch),
   };
 };
-export default connect(null, mapActionsToProps)(Dashboard);
+export default connect(mapStoreStateToProps, mapActionsToProps)(Dashboard);

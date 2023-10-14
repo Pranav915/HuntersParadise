@@ -17,6 +17,10 @@ import ForgotPassword from "./components/auth/ForgotPassword";
 import ResetPassword from "./components/auth/ResetPassword";
 import InitialDetails from "./components/InitialDetails";
 import Dashboard from "./components/dashboard/Dashboard";
+import * as Ably from "ably";
+import { AblyProvider, useChannel, usePresence } from "ably/react";
+import Cookies from "js-cookie";
+import { initializeAblyClient, realtime } from "./ably";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -33,6 +37,8 @@ export const store = configureStore(
   composeWithDevTools(applyMiddleware(thunk))
 );
 const persistor = persistStore(store);
+
+initializeAblyClient(Cookies.get("clientId"));
 
 const router = createBrowserRouter([
   {
@@ -62,10 +68,12 @@ const router = createBrowserRouter([
 ]);
 
 root.render(
-  <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <RouterProvider router={router}></RouterProvider>
-      <AlertNotification />
-    </PersistGate>
-  </Provider>
+  <AblyProvider client={realtime}>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <RouterProvider router={router}></RouterProvider>
+        <AlertNotification />
+      </PersistGate>
+    </Provider>
+  </AblyProvider>
 );

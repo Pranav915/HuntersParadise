@@ -9,7 +9,6 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     const { userDetails } = store.getState().auth;
-    console.log("userDetails", userDetails);
 
     if (userDetails) {
       const token = userDetails.token;

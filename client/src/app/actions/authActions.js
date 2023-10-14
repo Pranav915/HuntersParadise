@@ -1,6 +1,8 @@
 import { apiCall } from "../../api";
 import { ENDPOINTS } from "../../constants/AppConstants";
 import { openAlertMessage } from "./alertActions";
+import Cookies from "js-cookie";
+import { initializeAblyClient } from "../../ably";
 
 export const authActions = {
   SET_USER_DETAILS: "AUTH.SET_USER_DETAILS",
@@ -40,6 +42,8 @@ export const login = (userDetails, navigate) => {
       }
       localStorage.setItem("user", JSON.stringify(userDetails));
       dispatch(setUserDetails(userDetails));
+      Cookies.set("clientId", userDetails?.username);
+      initializeAblyClient(Cookies.get("clientId"));
     }
   };
 };
@@ -58,6 +62,8 @@ export const register = (userDetails, navigate) => {
       }
       localStorage.setItem("user", JSON.stringify(userDetails));
       dispatch(setUserDetails(userDetails));
+      Cookies.set("clientId", userDetails?.username);
+      initializeAblyClient(Cookies.get("clientId"));
     }
   };
 };
