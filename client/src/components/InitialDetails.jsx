@@ -22,15 +22,10 @@ const InitialDetails = ({ addInitialDetails }) => {
     setCountry(event.target.value);
   };
 
-  useEffect(() => {
-    console.log("Rahul aala");
-  }, []);
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const userDetails = {
       age,
-      country,
     };
     addInitialDetails(userDetails, navigate);
   };
