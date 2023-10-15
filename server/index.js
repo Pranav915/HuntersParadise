@@ -9,6 +9,7 @@ const cookieSession = require("cookie-session");
 const authRoutes = require("./routes/authRoutes");
 const mainRoutes = require("./routes/mainRoutes");
 const ablyRoutes = require("./routes/ablyRoutes");
+const auctionRoutes = require("./routes/auctionRoutes");
 
 require("./controllers/auth/passport");
 
@@ -30,6 +31,7 @@ app.use(passport.session());
 app.use("", authRoutes);
 app.use("/main", mainRoutes);
 app.use("/ably", ablyRoutes);
+app.use("/auction", auctionRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)
