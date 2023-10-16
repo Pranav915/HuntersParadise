@@ -1,4 +1,4 @@
-import { dashboardActions } from "../actions/dashboardActions";
+import { dashboardActions } from "app/actions/dashboardActions";
 
 const initState = {
   userDetails: null,

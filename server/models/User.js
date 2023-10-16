@@ -25,15 +25,36 @@ const userSchema = new Schema({
   password: {
     type: String,
   },
-  role: {
-    type: String,
+  age:{
+    type:String,
   },
-  age: {
-    type: String,
+  subscribedCategories:{
+    type:String,
   },
-  country: {
-    type: String,
-  },
+  wallet:{
+    totalBalance:{
+      type:String,
+    },
+    availableBalance: {
+      type:String,
+    },
+    outStandingBalance: {
+      type: String,
+    },
+    freezedBalance: {
+      type: String,
+    },
+    transactions:[
+      {
+        transaction: {
+          type: Schema.Types.ObjectId,
+          ref: "Transaction"
+        }
+      }
+    ]
+  }
+
+  
 });
 
 module.exports = model("User", userSchema);

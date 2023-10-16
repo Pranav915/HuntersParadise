@@ -15,7 +15,6 @@ const createAuthToken = async (req, res) => {
     /* Issue a token request with sub privileges restricted to one channel
         and configure the token without a client ID (anonymous) */
     tokenParams = {
-      capability: { notifications: ["subscribe"] },
     };
   }
   const ably = new Ably.Rest({
