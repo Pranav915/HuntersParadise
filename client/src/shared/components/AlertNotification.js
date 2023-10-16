@@ -1,14 +1,12 @@
+/* eslint-disable react/prop-types */
+
 import React from "react";
 import { Alert } from "@mui/material";
 import { Snackbar } from "@mui/material";
 import { connect } from "react-redux";
-import { getActions } from "../../app/actions/alertActions";
+import { getActions } from "app/actions/alertActions";
 
-const AlertNotification = ({
-  showAlertMessage,
-  closeAlertMessage,
-  alertMessageContent,
-}) => {
+const AlertNotification = ({ showAlertMessage, closeAlertMessage, alertMessageContent }) => {
   return (
     <Snackbar
       anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
@@ -33,7 +31,4 @@ const mapActionsToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  mapStoreStateToProps,
-  mapActionsToProps
-)(AlertNotification);
+export default connect(mapStoreStateToProps, mapActionsToProps)(AlertNotification);

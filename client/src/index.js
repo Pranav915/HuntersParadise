@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import RegisterPage from "./components/auth/RegisterPage";
-import LoginPage from "./components/auth/LoginPage";
-import "./index.css";
+import { BrowserRouter } from "react-router-dom";
+import App from "App";
+import { AblyProvider } from "ably/react";
+import Cookies from "js-cookie";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { configureStore, applyMiddleware } from "@reduxjs/toolkit";
 import thunk from "redux-thunk";
@@ -12,14 +12,10 @@ import { persistStore, persistReducer } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import storage from "redux-persist/lib/storage";
 import rootReducer from "./app/reducers/index.js";
-import AlertNotification from "./shared/components/AlertNotification";
-import ForgotPassword from "./components/auth/ForgotPassword";
-import ResetPassword from "./components/auth/ResetPassword";
-import InitialDetails from "./components/InitialDetails";
-import Dashboard from "./components/dashboard/Dashboard";
-import * as Ably from "ably";
-import { AblyProvider, useChannel, usePresence } from "ably/react";
-import Cookies from "js-cookie";
+import AlertNotification from "shared/components/AlertNotification";
+
+// Code Pulse React Context Provider
+import { MaterialUIControllerProvider } from "context";
 import { initializeAblyClient, realtime } from "./ably";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -40,39 +36,16 @@ const persistor = persistStore(store);
 
 initializeAblyClient(Cookies.get("clientId"));
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Dashboard />,
-  },
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/register",
-    element: <RegisterPage />,
-  },
-  {
-    path: "/forgotPassword",
-    element: <ForgotPassword />,
-  },
-  {
-    path: "/passwordReset",
-    element: <ResetPassword />,
-  },
-  {
-    path: "/initialDetails",
-    element: <InitialDetails />,
-  },
-]);
-
 root.render(
   <AblyProvider client={realtime}>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <RouterProvider router={router}></RouterProvider>
-        <AlertNotification />
+        <BrowserRouter>
+          <MaterialUIControllerProvider>
+            <App />
+            <AlertNotification />
+          </MaterialUIControllerProvider>
+        </BrowserRouter>
       </PersistGate>
     </Provider>
   </AblyProvider>

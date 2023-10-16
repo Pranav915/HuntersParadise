@@ -1,5 +1,5 @@
-import { apiCall } from "../../api";
-import { ENDPOINTS } from "../../constants/AppConstants";
+import { apiCall } from "api";
+import { ENDPOINTS } from "constants/AppConstants";
 import { openAlertMessage } from "./alertActions";
 import { setUserDetails } from "./authActions";
 
@@ -16,11 +16,7 @@ export const getMainActions = (dispatch) => {
 
 const addInitialDetails = (userDetails, navigate) => {
   return async (dispatch) => {
-    const response = await apiCall(
-      userDetails,
-      ENDPOINTS.ADD_INITIAL_DETAILS,
-      "POST"
-    );
+    const response = await apiCall(userDetails, ENDPOINTS.ADD_INITIAL_DETAILS, "POST");
     if (response.error) {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
