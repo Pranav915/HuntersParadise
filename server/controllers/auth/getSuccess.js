@@ -30,7 +30,7 @@ const getSuccess = (req, res) => {
       expiresIn: "72h",
     }
   );
-  return res.redirect("http://localhost:3000/?user=" + userDetailedEncrypted);
+  return res.redirect("http://localhost:3000/dashboard?user=" + userDetailedEncrypted);
 };
 
 module.exports = getSuccess;
