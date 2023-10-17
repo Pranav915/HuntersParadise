@@ -1,5 +1,5 @@
 const createAuction = (req, res) => {
-    console.log("Hello, webhook triggered!!!");
+    console.log(req.headers);
     console.log(req.body);
     res.send("Done");
 }
