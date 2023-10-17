@@ -1,15 +1,26 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const liveAuctionSchema = new Schema({
+  auctionId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   auctionTitle: {
     type: String,
     required: true,
   },
   productList:[{
     product: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: "product"
+        name: {
+          type: String,
+        },
+        description: {
+          type: String,
+        },
+        image: {
+          type: String
+        }
     },
     startBid: {
         type: String,
@@ -39,8 +50,7 @@ const liveAuctionSchema = new Schema({
     required: true
   },
   currentProduct: {
-    type: Schema.Types.ObjectId,
-    ref: "product"
+    type: String,
   },
   bids: [{
     bidder: {
