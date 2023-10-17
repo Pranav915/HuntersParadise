@@ -4,7 +4,9 @@ const createDeal = (req, res) => {
         res.status(401).send("Not authorized");
         return;
     }
+    console.log(req.body);
     const data = (req.body.messages[0]).data;
+    console.log(data);
     const newDeal = new LiveDeals({
         productName: data.productName,
         productImage: data.productImage,
