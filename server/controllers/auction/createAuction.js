@@ -1,5 +1,6 @@
 const UpcomingAuction = require('../../models/UpcomingAuction');
 const createAuction = (req, res) => {
+
     UpcomingAuction.findOne({})
     .sort({ createdAt: -1 }) // Sort in descending order (latest first)
     .exec((err, latestAuction) => {
@@ -32,3 +33,4 @@ const createAuction = (req, res) => {
 
 }
 module.exports = createAuction;
+
