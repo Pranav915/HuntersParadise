@@ -18,4 +18,4 @@ const dealOffers = new Schema({
 }, {
   timestamps: true
 });
-module.exports = mongoose.model("LiveAuction", dealOffers);
+module.exports = mongoose.model("DealOffers", dealOffers);

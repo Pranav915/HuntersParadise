@@ -26,10 +26,10 @@ const liveDeals = new Schema({
   offers: [{
     offer: {
         type: Schema.Types.ObjectId,
-        ref: "dealOffers"
+        ref: "DealOffers"
     }
   }]
 }, {
   timestamps: true
 });
-module.exports = mongoose.model("LiveAuction", liveDeals);
+module.exports = mongoose.model("LiveDeals", liveDeals);
