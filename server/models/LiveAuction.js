@@ -40,7 +40,6 @@ const liveAuctionSchema = new Schema({
   },
   currentProduct: {
     type: Schema.Types.ObjectId,
-    required: true,
     ref: "product"
   },
   bids: [{
