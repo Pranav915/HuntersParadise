@@ -31,6 +31,18 @@ const userSchema = new Schema({
   subscribedCategories:{
     type:String,
   },
+  offers: [{
+    offerid: {
+      type: Schema.Types.ObjectId,
+      ref: "dealOffers",
+    }
+  }],
+  listedDeals: [{
+    dealid: {
+      type: Schema.Types.ObjectId,
+      ref: "LiveDeals"
+    }
+  }],
   wallet:{
     totalBalance:{
       type:String,
