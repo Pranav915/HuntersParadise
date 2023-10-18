@@ -4,9 +4,7 @@ const createDeal = (req, res) => {
         res.status(401).send("Not authorized");
         return;
     }
-    console.log(req.body);
     const data = JSON.parse((req.body.messages[0]).data);
-    console.log(data);
     const newDeal = new LiveDeals({
         productName: data.productName,
         productImage: data.productImage,
@@ -16,8 +14,6 @@ const createDeal = (req, res) => {
         seller: data.seller,
         sellerName: data.sellerName,
     });
-    console.log(data.productName);
-    console.log(newDeal);
     newDeal.save()
     .then((deal) => {
         console.log('New deal entry saved:', deal);
