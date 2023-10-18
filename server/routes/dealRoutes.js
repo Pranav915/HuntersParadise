@@ -5,5 +5,6 @@ const dealsControllers = require("../controllers/deals/mainControllers");
 
 router.post("/createDeal", dealsControllers.controllers.createDeal);
 router.get("/getmydeals", auth, dealsControllers.controllers.getDeals);
+router.get("/getdeals/", auth, dealsControllers.controllers.getCategoryDeals);
 
 module.exports = router;
