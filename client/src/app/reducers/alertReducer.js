@@ -3,6 +3,7 @@ import alertActions from "app/actions/alertActions";
 const initState = {
   showAlertMessage: false,
   alertMessageContent: null,
+  notificationContent: null,
 };
 
 const alertReducer = (state = initState, action) => {
@@ -18,6 +19,12 @@ const alertReducer = (state = initState, action) => {
         ...state,
         showAlertMessage: false,
         alertMessageContent: null,
+      };
+
+    case alertActions.OPEN_NOTIFICATION:
+      return {
+        ...state,
+        notificationContent: action.content,
       };
 
     default:

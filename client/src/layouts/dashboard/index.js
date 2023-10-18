@@ -30,18 +30,27 @@ import { initializeAblyClient } from "../../ably";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getAuthActions } from "app/actions/authActions";
 import { getMainActions } from "app/actions/mainActions";
+import { getActions } from "app/actions/alertActions";
 import Cookies from "js-cookie";
 import PieChart from "examples/Charts/PieChart";
+import { useChannel } from "ably/react";
 
-const Dashboard = ({ userDetails, setUserDetails }) => {
+const Dashboard = ({ userDetails, setUserDetails, openAlertMessage }) => {
   const { sales, tasks } = reportsLineChartData;
   const search = useLocation().search;
   const navigate = useNavigate();
+  const { channel } = useChannel("dealChannel:chappal", (message) => {
+    console.log("message", message);
+    const content = JSON.parse(message?.data);
+    console.log("content", content);
+    openAlertMessage("Added");
+  });
 
   useEffect(() => {
     const user = new URLSearchParams(search).get("user");
     if (user) {
       const data = jwt_decode(user).userDetails;
+      console.log("data", data);
       setUserDetails(data);
       if (!data?.age) {
         navigate("/initialDetails");
@@ -189,6 +198,7 @@ const mapActionsToProps = (dispatch) => {
   return {
     ...getAuthActions(dispatch),
     ...getMainActions(dispatch),
+    ...getActions(dispatch),
   };
 };
 export default connect(mapStoreStateToProps, mapActionsToProps)(Dashboard);

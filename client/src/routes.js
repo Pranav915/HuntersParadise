@@ -13,6 +13,7 @@ import ResetPassword from "layouts/authentication/reset-password";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
+import CreateDeal from "layouts/deals/createDeal";
 
 const routes = [
   {
@@ -112,6 +113,14 @@ const routes = [
     icon: <Icon fontSize="small">reset</Icon>,
     route: "/resetPassword",
     component: <ResetPassword />,
+  },
+  {
+    type: "route",
+    name: "Create Deal",
+    key: "create-deal",
+    icon: <Icon fontSize="small">create</Icon>,
+    route: "/createDeal",
+    component: <CreateDeal />,
   },
 ];
 

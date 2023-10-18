@@ -1,4 +1,5 @@
-import { useState } from "react";
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -15,8 +16,10 @@ import MDSnackbar from "components/MDSnackbar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+import { getActions } from "app/actions/alertActions";
+import { connect } from "react-redux";
 
-function Notifications() {
+const Notifications = ({ showAlertMessage, closeAlertMessage, alertMessageContent }) => {
   const [successSB, setSuccessSB] = useState(false);
   const [infoSB, setInfoSB] = useState(false);
   const [warningSB, setWarningSB] = useState(false);
@@ -177,6 +180,17 @@ function Notifications() {
       <Footer />
     </DashboardLayout>
   );
-}
+};
 
-export default Notifications;
+const mapStoreStateToProps = ({ alert }) => {
+  return {
+    ...alert,
+  };
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {
+    ...getActions(dispatch),
+  };
+};
+export default connect(mapStoreStateToProps, mapActionsToProps)(Notifications);
