@@ -4,5 +4,6 @@ const auth = require("../middleware/auth");
 const dealsControllers = require("../controllers/deals/mainControllers");
 
 router.post("/createDeal", dealsControllers.controllers.createDeal);
+router.get("/getmydeals", auth, dealsControllers.controllers.getDeals);
 
 module.exports = router;
