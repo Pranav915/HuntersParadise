@@ -15,7 +15,7 @@ const giveOffer = (req, res) => {
     newOffer.save()
     .then((offerCreated) => {
         LiveDeals.findOneAndUpdate(
-            { _id: deal }, // Query for the specific deal by its _id
+            { _id: deal },
             { $push: { offers: { offer: offerCreated._id } } }
         ).then((dealUpdated) => {
             
@@ -26,7 +26,7 @@ const giveOffer = (req, res) => {
             return;
         });
         User.findOneAndUpdate(
-            { _id: req.user.userId }, // Query for the specific deal by its _id
+            { _id: req.user.userId },
             { $push: { offers: { offerid: offerCreated._id } } }
         ).then((userUpdated) => {
             res.status(200).send("Offer added successfully");
@@ -35,8 +35,8 @@ const giveOffer = (req, res) => {
             console.log(err);
             DealOffers.findOneAndDelete({ _id: offerCreated._id});
             LiveDeals.findOneAndUpdate(
-                { _id: dealId }, // Query for the specific deal by its _id
-                { $pull: { offers: { offer: offerCreated._id } } }, // Remove the specific offer from the offers array
+                { _id: dealId },
+                { $pull: { offers: { offer: offerCreated._id } } },
             );
             res.status(500).send("Internal Server Error Retry");
             return;
