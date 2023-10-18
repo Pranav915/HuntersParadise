@@ -133,8 +133,8 @@ const Dashboard = ({ userDetails, setUserDetails, openAlertMessage }) => {
         </Grid>
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
+            <Grid item xs={12} md={6} lg={8}>
+              <MDBox mb={2}>
                 <ReportsBarChart
                   color="info"
                   title="website views"
@@ -144,7 +144,7 @@ const Dashboard = ({ userDetails, setUserDetails, openAlertMessage }) => {
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            {/* <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
@@ -158,7 +158,7 @@ const Dashboard = ({ userDetails, setUserDetails, openAlertMessage }) => {
                   chart={sales}
                 />
               </MDBox>
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <PieChart
