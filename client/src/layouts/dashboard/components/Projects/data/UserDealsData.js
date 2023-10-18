@@ -20,7 +20,7 @@ import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 import { Icon } from "@mui/material";
 import { useMaterialUIController } from "context";
 
-export default function data() {
+export default function UserDealsData() {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
   const avatars = (members) =>
@@ -77,17 +77,14 @@ export default function data() {
       <IconButton sx={navbarIconButton} size="small" disableRipple>
         <Icon sx={iconsStyle}>edit</Icon>
       </IconButton>
-      <IconButton sx={navbarIconButton} size="small" disableRipple>
-        <Icon sx={iconsStyle}>cancel</Icon>
-      </IconButton>
     </MDBox>
   );
 
   return {
     columns: [
       { Header: "Name", accessor: "name", width: "45%", align: "left" },
-      { Header: "Seller's Price", accessor: "sPrice", align: "center" },
-      { Header: "Counter Offer", accessor: "cOffer", align: "center" },
+      { Header: "Asked Price", accessor: "sPrice", align: "center" },
+      { Header: "Top Offer", accessor: "cOffer", align: "center" },
       { Header: "", accessor: "btns", align: "center" },
     ],
 

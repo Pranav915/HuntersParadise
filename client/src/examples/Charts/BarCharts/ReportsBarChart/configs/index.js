@@ -41,7 +41,7 @@ function configs(labels, datasets) {
       ],
     },
     options: {
-      categoryPercentage: 0.6,
+      categoryPercentage: 0.4,
       responsive: true,
       maintainAspectRatio: false,
       plugins: {

@@ -21,7 +21,6 @@ import pieChartData from "./data/pieChartData";
 
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
-import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
 import { useEffect } from "react";
 import { connect } from "react-redux";
@@ -144,21 +143,6 @@ const Dashboard = ({ userDetails, setUserDetails, openAlertMessage }) => {
                 />
               </MDBox>
             </Grid>
-            {/* <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
-                />
-              </MDBox>
-            </Grid> */}
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <PieChart
@@ -174,11 +158,11 @@ const Dashboard = ({ userDetails, setUserDetails, openAlertMessage }) => {
         </MDBox>
         <MDBox>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
+            <Grid item xs={12} md={6} lg={6}>
+              <Projects name="Auctions" />
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <OrdersOverview />
+            <Grid item xs={12} md={6} lg={6}>
+              <Projects name="Deals" />
             </Grid>
           </Grid>
         </MDBox>
