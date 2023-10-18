@@ -9,5 +9,7 @@ router.get("/getdeals/", auth, dealsControllers.controllers.getCategoryDeals);
 router.post("/giveOffer", auth, dealsControllers.controllers.giveOffer);
 router.post("/getMyOffers", auth, dealsControllers.controllers.getMyOffers);
 router.post("/revokeOffer", auth, dealsControllers.controllers.revokeOffer);
+router.post("/editOffer", auth, dealsControllers.controllers.editOffer);
+router.post("/negotiate", auth, dealsControllers.controllers.negotiateDeal);
 
 module.exports = router;

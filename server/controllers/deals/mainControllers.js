@@ -4,6 +4,9 @@ const getCategoryDeals = require("./getCategoryDeals");
 const giveOffer = require("./giveOffer");
 const getMyOffers = require("./getMyOffers");
 const revokeOffer = require("./revokeOffer");
+const editOffer = require("./editOffer");
+const negotiateDeal = require("./negotiateDeal");
+
 exports.controllers = {
     createDeal,
     getDeals,
@@ -11,4 +14,6 @@ exports.controllers = {
     giveOffer,
     getMyOffers,
     revokeOffer,
+    editOffer,
+    negotiateDeal
 };
