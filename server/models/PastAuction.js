@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const liveAuctionSchema = new Schema({
+const PastAuctionSchema = new Schema({
   auctionTitle: {
     type: String,
     required: true,
@@ -41,4 +41,4 @@ const liveAuctionSchema = new Schema({
 }, {
   timestamps: true
 });
-module.exports = mongoose.model("LiveAuction", liveAuctionSchema);
+module.exports = mongoose.model("PastAuction", PastAuctionSchema);

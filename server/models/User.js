@@ -22,6 +22,18 @@ const userSchema = new Schema({
     unique: true,
     sparse: true,
   },
+  name: {
+    type: String,
+  },
+  profilePhoto: {
+    type: String,
+  },
+  phoneNumber: {
+    type: String,
+  },
+  country: {
+    type: String,
+  },
   password: {
     type: String,
   },
@@ -31,6 +43,18 @@ const userSchema = new Schema({
   subscribedCategories:{
     type:String,
   },
+  offers: [{
+    offerid: {
+      type: Schema.Types.ObjectId,
+      ref: "dealOffers",
+    }
+  }],
+  listedDeals: [{
+    dealid: {
+      type: Schema.Types.ObjectId,
+      ref: "LiveDeals"
+    }
+  }],
   wallet:{
     totalBalance:{
       type:String,
