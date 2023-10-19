@@ -9,12 +9,15 @@ const transactionSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "user"
   },
+  sender_name: {
+    type: String,
+  },
+  reciever_name: {
+    type: String,
+  },
   amount: {
     type: String
   },
-  status: {
-    type: String
-  }
 }, {
     timestamps: true
 });

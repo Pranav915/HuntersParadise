@@ -22,6 +22,18 @@ const userSchema = new Schema({
     unique: true,
     sparse: true,
   },
+  name: {
+    type: String,
+  },
+  profilePhoto: {
+    type: String,
+  },
+  phoneNumber: {
+    type: String,
+  },
+  country: {
+    type: String,
+  },
   password: {
     type: String,
   },

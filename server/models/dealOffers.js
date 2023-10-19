@@ -5,9 +5,15 @@ const dealOffers = new Schema({
     type: Schema.Types.ObjectId,
     ref: "LiveDeals"
   },
+  sellerName: {
+    type: String,
+  },
   offered_by: {
     type: Schema.Types.ObjectId,
     ref: "User"
+  },
+  offered_by_name: {
+    type: String,
   },
   offeredPrice: {
     type: String
