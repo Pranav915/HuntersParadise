@@ -26,10 +26,18 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Tables",
-    key: "tables",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
+    name: "Auctions",
+    key: "auctions",
+    icon: <Icon fontSize="small">gavel</Icon>,
+    route: "/auctions",
+    component: <Tables />,
+  },
+  {
+    type: "collapse",
+    name: "Deals",
+    key: "deals",
+    icon: <Icon fontSize="small">handshake</Icon>,
+    route: "/deals",
     component: <Tables />,
   },
   {

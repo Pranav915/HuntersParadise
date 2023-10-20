@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -22,11 +22,51 @@ import UserAuctionsData from "layouts/dashboard/components/Projects/data/UserAuc
 import UserDealsData from "layouts/dashboard/components/Projects/data/UserDealsData";
 
 function Projects({ name }) {
-  const { columns, rows } = UserDealsData();
   const [menu, setMenu] = useState(null);
+  const [columns, setColumns] = useState([]);
+  const [rows, setRows] = useState([]);
+  const dealsData = AllDealsData();
+  const auctionsData = AllAuctionsData();
+  const userDealsData = UserDealsData();
+  const userAuctionsData = UserAuctionsData();
+
+  useEffect(() => {
+    if (name == "Deals") {
+      const { columns, rows } = dealsData;
+      setColumns(columns);
+      setRows(rows);
+    } else {
+      const { columns, rows } = auctionsData;
+      setColumns(columns);
+      setRows(rows);
+    }
+  }, []);
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
+
+  const handleBuyerSelect = () => {
+    if (name == "Deals") {
+      const { columns, rows } = dealsData;
+      setColumns(columns);
+      setRows(rows);
+    } else {
+      const { columns, rows } = auctionsData;
+      setColumns(columns);
+      setRows(rows);
+    }
+  };
+  const handleSellerSelect = () => {
+    if (name == "Deals") {
+      const { columns, rows } = userDealsData;
+      setColumns(columns);
+      setRows(rows);
+    } else {
+      const { columns, rows } = userAuctionsData;
+      setColumns(columns);
+      setRows(rows);
+    }
+  };
 
   const renderMenu = (
     <Menu
@@ -43,8 +83,12 @@ function Projects({ name }) {
       open={Boolean(menu)}
       onClose={closeMenu}
     >
-      <MenuItem onClick={closeMenu}>All Auctions</MenuItem>
-      <MenuItem onClick={closeMenu}>Your Created Auctions</MenuItem>
+      <MenuItem onClick={handleBuyerSelect}>
+        {name == "Deals" ? "All Deals" : "All Auctions"}
+      </MenuItem>
+      <MenuItem onClick={handleSellerSelect}>
+        {name == "Deals" ? "Your Created Deals" : "Your Created Auctions"}
+      </MenuItem>
     </Menu>
   );
 

@@ -147,7 +147,7 @@ const Dashboard = ({ userDetails, setUserDetails, openAlertMessage }) => {
               <MDBox mb={3}>
                 <PieChart
                   icon={{ color: "info", component: "wallet" }} // Optional: Icon and its color
-                  title="Chart Title" // Optional: Chart title
+                  title="Category Distribution" // Optional: Chart title
                   description="" // Optional: Chart description
                   height={250} // Optional: Chart height (you can specify a number or string)
                   chart={pieChartData} // Pass the chart data defined in step 2
