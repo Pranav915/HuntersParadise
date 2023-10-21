@@ -10,10 +10,12 @@ import SignUp from "layouts/authentication/sign-up";
 import InitialDetails from "layouts/initialDetails";
 import ForgotPassword from "layouts/authentication/forgot-password";
 import ResetPassword from "layouts/authentication/reset-password";
+import Auctions from "layouts/auctions";
+import Deals from "layouts/deals";
+import AuctionDetails from "layouts/auctions/AuctionDetails";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
-import CreateDeal from "layouts/deals/createDeal";
 
 const routes = [
   {
@@ -30,7 +32,7 @@ const routes = [
     key: "auctions",
     icon: <Icon fontSize="small">gavel</Icon>,
     route: "/auctions",
-    component: <Tables />,
+    component: <Auctions />,
   },
   {
     type: "collapse",
@@ -38,7 +40,7 @@ const routes = [
     key: "deals",
     icon: <Icon fontSize="small">handshake</Icon>,
     route: "/deals",
-    component: <Tables />,
+    component: <Deals />,
   },
   {
     type: "collapse",
@@ -124,11 +126,11 @@ const routes = [
   },
   {
     type: "route",
-    name: "Create Deal",
-    key: "create-deal",
+    name: "Auction Details",
+    key: "auction-details",
     icon: <Icon fontSize="small">create</Icon>,
-    route: "/createDeal",
-    component: <CreateDeal />,
+    route: "/auctionDetail",
+    component: <AuctionDetails />,
   },
 ];
 
