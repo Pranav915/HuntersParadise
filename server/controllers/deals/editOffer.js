@@ -1,4 +1,4 @@
-const DealOffers = require('../../models/DealOffers');
+const DealOffers = require('../../models/dealOffers');
 const editOffer = (req, res) => {
     DealOffers.findOneAndUpdate(
         { _id: req.body.offerId, offered_by: req.user.userId},

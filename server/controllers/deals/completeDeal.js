@@ -1,6 +1,6 @@
 const CategoryInfo = require('../../models/CategoryInfo');
 const CompletedDeal = require('../../models/CompletedDeal');
-const DealOffers = require('../../models/DealOffers');
+const DealOffers = require('../../models/dealOffers');
 const completedDeal = (req, res) => {
     DealOffers.findOne(
         { _id: req.body.offerId}

@@ -24,4 +24,4 @@ const dealOffers = new Schema({
 }, {
   timestamps: true
 });
-module.exports = mongoose.model("DealOffers", dealOffers);
+module.exports = mongoose.model("dealOffers", dealOffers);
