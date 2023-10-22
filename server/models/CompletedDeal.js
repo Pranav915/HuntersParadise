@@ -30,12 +30,9 @@ const completedDeal = new Schema({
   buyerName: {
     type: String
   },
-  offers: [{
-    offer: {
-        type: Schema.Types.ObjectId,
-        ref: "DealOffers"
-    }
-  }]
+  status: {
+    type: String
+  }
 }, {
   timestamps: true
 });

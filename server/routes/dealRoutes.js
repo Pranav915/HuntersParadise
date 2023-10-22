@@ -11,5 +11,6 @@ router.post("/getMyOffers", auth, dealsControllers.controllers.getMyOffers);
 router.post("/revokeOffer", auth, dealsControllers.controllers.revokeOffer);
 router.post("/editOffer", auth, dealsControllers.controllers.editOffer);
 router.post("/negotiate", auth, dealsControllers.controllers.negotiateDeal);
+router.post("/completeDeal", auth, dealsControllers.controllers.completeDeal);
 
 module.exports = router;
