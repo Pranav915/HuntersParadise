@@ -18,6 +18,13 @@ const transactionSchema = new Schema({
   amount: {
     type: String
   },
+  status: {
+    type: String,
+  },
+  dealID: {
+    type: Schema.Types.ObjectId,
+    ref: "CompletedDeal"
+  }
 }, {
     timestamps: true
 });
