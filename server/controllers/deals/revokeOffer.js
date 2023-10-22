@@ -1,4 +1,4 @@
-const DealOffers = require('../../models/DealOffers');
+const DealOffers = require('../../models/dealOffers');
 const getMyOffers = (req, res) => {
     DealOffers.findOneAndDelete({ _id: req.body.offerid})
     .then((deletedOffer, err) => {

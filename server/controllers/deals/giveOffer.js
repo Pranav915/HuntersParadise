@@ -1,5 +1,5 @@
 const LiveDeals = require('../../models/LiveDeals');
-const DealOffers = require('../../models/DealOffers');
+const DealOffers = require('../../models/dealOffers');
 const User = require('../../models/User');
 const giveOffer = (req, res) => {
     const userId = req.user.userId;
