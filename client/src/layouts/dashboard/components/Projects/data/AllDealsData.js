@@ -19,10 +19,14 @@ import logoJira from "assets/images/small-logos/logo-jira.svg";
 import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 import { Icon } from "@mui/material";
 import { useMaterialUIController } from "context";
+import { useEffect, useState } from "react";
 
-export default function data() {
+export default function AllDealsData(myOffers) {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
+  console.log("myOffers", myOffers);
+  const [dealsList, setDealsList] = useState([]);
+
   const avatars = (members) =>
     members.map(([image, name]) => (
       <Tooltip key={name} title={name} placeholder="bottom">
@@ -82,6 +86,31 @@ export default function data() {
       </IconButton>
     </MDBox>
   );
+  useEffect(() => {
+    let rowEntries = [];
+    myOffers.map((offer) => {
+      // const rowEntry = {
+      //   name: offer?.deal?.productName,
+      // };
+      const rowEntry = {
+        name: offer?.deal?.productName,
+        sPrice: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            {offer?.askedPrice}
+          </MDTypography>
+        ),
+        cOffer: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            {offer?.offeredPrice}
+          </MDTypography>
+        ),
+        btns: <ButtonsBox />,
+      };
+      rowEntries.push(rowEntry);
+    });
+    setDealsList(rowEntries);
+    console.log("dealsList", dealsList);
+  }, [myOffers]);
 
   return {
     columns: [
@@ -106,118 +135,118 @@ export default function data() {
         ),
         btns: <ButtonsBox />,
       },
-      {
-        name: <Company image={logoAtlassian} name="Add Progress Track" />,
-        sPrice: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $3,000
-          </MDTypography>
-        ),
-        cOffer: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $3,000
-          </MDTypography>
-        ),
-        btns: <ButtonsBox />,
-      },
-      {
-        name: <Company image={logoSlack} name="Fix Platform Errors" />,
-        sPrice: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            Not set
-          </MDTypography>
-        ),
-        cOffer: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            Not set
-          </MDTypography>
-        ),
-        btns: <ButtonsBox />,
-      },
-      {
-        name: <Company image={logoSpotify} name="Launch our Mobile App" />,
-        sPrice: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $20,500
-          </MDTypography>
-        ),
-        cOffer: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $20,500
-          </MDTypography>
-        ),
-        btns: <ButtonsBox />,
-      },
-      {
-        name: <Company image={logoJira} name="Add the New Pricing Page" />,
-        sPrice: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $500
-          </MDTypography>
-        ),
-        cOffer: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $500
-          </MDTypography>
-        ),
-        btns: <ButtonsBox />,
-      },
-      {
-        name: <Company image={logoJira} name="Add the New Pricing Page" />,
-        sPrice: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $500
-          </MDTypography>
-        ),
-        cOffer: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $500
-          </MDTypography>
-        ),
-        btns: <ButtonsBox />,
-      },
-      {
-        name: <Company image={logoJira} name="Add the New Pricing Page" />,
-        sPrice: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $500
-          </MDTypography>
-        ),
-        cOffer: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $500
-          </MDTypography>
-        ),
-        btns: <ButtonsBox />,
-      },
-      {
-        name: <Company image={logoJira} name="Add the New Pricing Page" />,
-        sPrice: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $500
-          </MDTypography>
-        ),
-        cOffer: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $500
-          </MDTypography>
-        ),
-        btns: <ButtonsBox />,
-      },
-      {
-        name: <Company image={logoInvesion} name="Redesign New Online Shop" />,
-        sPrice: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $2,000
-          </MDTypography>
-        ),
-        cOffer: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $2,000
-          </MDTypography>
-        ),
-        btns: <ButtonsBox />,
-      },
     ],
+    // {
+    //   name: <Company image={logoAtlassian} name="Add Progress Track" />,
+    //   sPrice: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       $3,000
+    //     </MDTypography>
+    //   ),
+    //   cOffer: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       $3,000
+    //     </MDTypography>
+    //   ),
+    //   btns: <ButtonsBox />,
+    // },
+    // {
+    //   name: <Company image={logoSlack} name="Fix Platform Errors" />,
+    //   sPrice: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       Not set
+    //     </MDTypography>
+    //   ),
+    //   cOffer: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       Not set
+    //     </MDTypography>
+    //   ),
+    //   btns: <ButtonsBox />,
+    // },
+    // {
+    //   name: <Company image={logoSpotify} name="Launch our Mobile App" />,
+    //   sPrice: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       $20,500
+    //     </MDTypography>
+    //   ),
+    //   cOffer: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       $20,500
+    //     </MDTypography>
+    //   ),
+    //   btns: <ButtonsBox />,
+    // },
+    // {
+    //   name: <Company image={logoJira} name="Add the New Pricing Page" />,
+    //   sPrice: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       $500
+    //     </MDTypography>
+    //   ),
+    //   cOffer: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       $500
+    //     </MDTypography>
+    //   ),
+    //   btns: <ButtonsBox />,
+    // },
+    // {
+    //   name: <Company image={logoJira} name="Add the New Pricing Page" />,
+    //   sPrice: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       $500
+    //     </MDTypography>
+    //   ),
+    //   cOffer: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       $500
+    //     </MDTypography>
+    //   ),
+    //   btns: <ButtonsBox />,
+    // },
+    // {
+    //   name: <Company image={logoJira} name="Add the New Pricing Page" />,
+    //   sPrice: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       $500
+    //     </MDTypography>
+    //   ),
+    //   cOffer: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       $500
+    //     </MDTypography>
+    //   ),
+    //   btns: <ButtonsBox />,
+    // },
+    // {
+    //   name: <Company image={logoJira} name="Add the New Pricing Page" />,
+    //   sPrice: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       $500
+    //     </MDTypography>
+    //   ),
+    //   cOffer: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       $500
+    //     </MDTypography>
+    //   ),
+    //   btns: <ButtonsBox />,
+    // },
+    // {
+    //   name: <Company image={logoInvesion} name="Redesign New Online Shop" />,
+    //   sPrice: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       $2,000
+    //     </MDTypography>
+    //   ),
+    //   cOffer: (
+    //     <MDTypography variant="caption" color="text" fontWeight="medium">
+    //       $2,000
+    //     </MDTypography>
+    //   ),
+    //   btns: <ButtonsBox />,
+    // },
   };
 }

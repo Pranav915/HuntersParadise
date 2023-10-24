@@ -10,4 +10,6 @@ export const ENDPOINTS = {
   CREATE_AUCTION: "/auction/createAuction",
   CREATE_DEAL: "/deal/createDeal",
   GET_DASHBOARD_DETAILS: "",
+  GET_ALL_DEALS: "/deal/getdeals?cat=all",
+  GET_MY_OFFERS: "/deal/getMyOffers",
 };

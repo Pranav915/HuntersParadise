@@ -31,11 +31,20 @@ import { getAuthActions } from "app/actions/authActions";
 import { getMainActions } from "app/actions/mainActions";
 import { getActions } from "app/actions/alertActions";
 import { getDashboardActions } from "app/actions/dashboardActions";
+import { getDealActions } from "app/actions/dealActions";
 import Cookies from "js-cookie";
 import PieChart from "examples/Charts/PieChart";
 import { useAbly, useChannel, usePresence } from "ably/react";
 
-const Dashboard = ({ userDetails, setUserDetails, openAlertMessage, getDashboardDetails }) => {
+const Dashboard = ({
+  userDetails,
+  setUserDetails,
+  openAlertMessage,
+  getDashboardDetails,
+  getAllDeals,
+  getMyOffers,
+  allDeals,
+}) => {
   const { sales, tasks } = reportsLineChartData;
   const [liveUsers, setLiveUsers] = useState(0);
   const [liveDeals, setLiveDeals] = useState("");
@@ -70,6 +79,8 @@ const Dashboard = ({ userDetails, setUserDetails, openAlertMessage, getDashboard
       navigate("/authentication/sign-in");
     }
     initializeAblyClient(userDetails?.username);
+    getAllDeals();
+    getMyOffers();
   }, []);
 
   return (
@@ -169,7 +180,7 @@ const Dashboard = ({ userDetails, setUserDetails, openAlertMessage, getDashboard
               <Projects name="Auctions" />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
-              <Projects name="Deals" />
+              <Projects name="Deals" data={allDeals} />
             </Grid>
           </Grid>
         </MDBox>
@@ -191,6 +202,7 @@ const mapActionsToProps = (dispatch) => {
     ...getMainActions(dispatch),
     ...getActions(dispatch),
     ...getDashboardActions(dispatch),
+    ...getDealActions(dispatch),
   };
 };
 export default connect(mapStoreStateToProps, mapActionsToProps)(Dashboard);

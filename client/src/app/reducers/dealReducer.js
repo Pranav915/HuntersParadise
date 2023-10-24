@@ -4,6 +4,7 @@ const initState = {
   createdDeals: [],
   participatedDeals: [],
   allDeals: [],
+  myOffers: [],
 };
 
 const dealReducer = (state = initState, action) => {
@@ -23,7 +24,11 @@ const dealReducer = (state = initState, action) => {
         ...state,
         allDeals: action.data,
       };
-
+    case dealActions.SET_MY_OFFERS:
+      return {
+        ...state,
+        myOffers: action.data,
+      };
     default:
       return state;
   }

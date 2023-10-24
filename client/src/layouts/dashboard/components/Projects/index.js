@@ -17,16 +17,18 @@ import DataTable from "examples/Tables/DataTable";
 
 // Data
 import AllAuctionsData from "layouts/dashboard/components/Projects/data/AllAuctionsData";
-import AllDealsData from "layouts/dashboard/components/Projects/data/AllDealsData";
 import UserAuctionsData from "layouts/dashboard/components/Projects/data/UserAuctionsData";
 import UserDealsData from "layouts/dashboard/components/Projects/data/UserDealsData";
+import AllDealsData from "./data/AllDealsData";
+import { connect } from "react-redux";
+import { getDealActions } from "app/actions/dealActions";
 
-function Projects({ name }) {
+const Projects = ({ name, myOffers }) => {
   const [menu, setMenu] = useState(null);
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
-  const dealsData = AllDealsData();
   const auctionsData = AllAuctionsData();
+  const dealsData = AllDealsData(myOffers);
   const userDealsData = UserDealsData();
   const userAuctionsData = UserAuctionsData();
 
@@ -119,6 +121,17 @@ function Projects({ name }) {
       </MDBox>
     </Card>
   );
-}
+};
 
-export default Projects;
+const mapStoreStateToProps = ({ deal }) => {
+  return {
+    ...deal,
+  };
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {
+    ...getDealActions(dispatch),
+  };
+};
+export default connect(mapStoreStateToProps, mapActionsToProps)(Projects);
