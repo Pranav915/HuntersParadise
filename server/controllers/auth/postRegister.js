@@ -38,12 +38,15 @@ const postRegister = async (req, res) => {
     );
     res.status(201).json({
       userDetails: {
-        username: user.username,
-        email: user.email,
         token: token,
         userId: user._id,
+        email: user.email,
+        username: user.username,
         age: user.age,
-        role: user.role,
+        country: user.country,
+        name: user.name,
+        phoneNumber: user.phoneNumber,
+        categories: user.subscribedCategories,
       },
     });
   } catch (error) {

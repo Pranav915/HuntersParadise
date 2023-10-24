@@ -49,6 +49,7 @@ const topFilms = [
 
 const InitialDetails = ({ addInitialDetails }) => {
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
 
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -57,9 +58,13 @@ const InitialDetails = ({ addInitialDetails }) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const userDetails = {
+      name: data.get("fullName"),
+      phoneNumber: data.get("phoneNumber"),
       age: data.get("age"),
       country: data.get("country"),
+      subscribedCategories: categories,
     };
+    console.log("userDetails", userDetails);
     addInitialDetails(userDetails, navigate);
   };
 
@@ -140,6 +145,10 @@ const InitialDetails = ({ addInitialDetails }) => {
                       placeholder="Favorites"
                     />
                   )}
+                  value={categories}
+                  onChange={(event, newValue) => {
+                    setCategories(newValue);
+                  }}
                   fullWidth
                 />
               </Grid>

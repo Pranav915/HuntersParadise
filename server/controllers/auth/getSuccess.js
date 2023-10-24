@@ -16,12 +16,15 @@ const getSuccess = (req, res) => {
   );
 
   const userDetails = {
-    username: user.username,
-    email: user.email,
     token: token,
-    _id: user._id,
+    userId: user._id,
+    email: user.email,
+    username: user.username,
     age: user.age,
-    role: user.role,
+    country: user.country,
+    name: user.name,
+    phoneNumber: user.phoneNumber,
+    categories: user.categories,
   };
   const userDetailedEncrypted = jwt.sign(
     { userDetails },
@@ -30,7 +33,9 @@ const getSuccess = (req, res) => {
       expiresIn: "72h",
     }
   );
-  return res.redirect("http://localhost:3000/dashboard?user=" + userDetailedEncrypted);
+  return res.redirect(
+    "http://localhost:3000/dashboard?user=" + userDetailedEncrypted
+  );
 };
 
 module.exports = getSuccess;

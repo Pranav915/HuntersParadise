@@ -9,7 +9,6 @@ export const authActions = {
 };
 
 export const setUserDetails = (userDetails) => {
-  console.log("hello");
   return {
     type: authActions.SET_USER_DETAILS,
     userDetails,
@@ -54,7 +53,8 @@ export const register = (userDetails, navigate) => {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
       const { userDetails } = response?.data;
-      if (userDetails.age) {
+      console.log("userDetails", userDetails);
+      if (userDetails?.age) {
         navigate("/dashboard");
       } else {
         navigate("/initialDetails");

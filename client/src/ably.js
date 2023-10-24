@@ -1,8 +1,9 @@
 import * as Ably from "ably";
+import { setLiveUserCount } from "app/actions/dashboardActions";
 
 export let realtime = null; // Initialize realtime as null
 
-export function initializeAblyClient(clientId) {
+export async function initializeAblyClient(clientId) {
   // Initialize the Ably client with the new clientId
   realtime = new Ably.Realtime({
     authUrl: "http://localhost:5000/ably/auth",

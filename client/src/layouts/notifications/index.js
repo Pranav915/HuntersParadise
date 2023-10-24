@@ -16,10 +16,15 @@ import MDSnackbar from "components/MDSnackbar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import { getActions } from "app/actions/alertActions";
+import { getNotificationActions } from "app/actions/notificationActions";
 import { connect } from "react-redux";
 
-const Notifications = ({ showAlertMessage, closeAlertMessage, alertMessageContent }) => {
+const Notifications = ({
+  showNotification,
+  closeNotification,
+  notificationContent,
+  notificationType,
+}) => {
   const [successSB, setSuccessSB] = useState(false);
   const [infoSB, setInfoSB] = useState(false);
   const [warningSB, setWarningSB] = useState(false);
@@ -98,6 +103,11 @@ const Notifications = ({ showAlertMessage, closeAlertMessage, alertMessageConten
     />
   );
 
+  useEffect(() => {
+    console.log("first");
+    renderInfoSB;
+  }, [showNotification, notificationContent]);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -112,31 +122,9 @@ const Notifications = ({ showAlertMessage, closeAlertMessage, alertMessageConten
                 <MDAlert color="primary" dismissible>
                   {alertContent("primary")}
                 </MDAlert>
-                <MDAlert color="secondary" dismissible>
-                  {alertContent("secondary")}
-                </MDAlert>
-                <MDAlert color="success" dismissible>
-                  {alertContent("success")}
-                </MDAlert>
-                <MDAlert color="error" dismissible>
-                  {alertContent("error")}
-                </MDAlert>
-                <MDAlert color="warning" dismissible>
-                  {alertContent("warning")}
-                </MDAlert>
-                <MDAlert color="info" dismissible>
-                  {alertContent("info")}
-                </MDAlert>
-                <MDAlert color="light" dismissible>
-                  {alertContent("light")}
-                </MDAlert>
-                <MDAlert color="dark" dismissible>
-                  {alertContent("dark")}
-                </MDAlert>
               </MDBox>
             </Card>
           </Grid>
-
           <Grid item xs={12} lg={8}>
             <Card>
               <MDBox p={2} lineHeight={0}>
@@ -182,15 +170,15 @@ const Notifications = ({ showAlertMessage, closeAlertMessage, alertMessageConten
   );
 };
 
-const mapStoreStateToProps = ({ alert }) => {
+const mapStoreStateToProps = ({ notification }) => {
   return {
-    ...alert,
+    ...notification,
   };
 };
 
 const mapActionsToProps = (dispatch) => {
   return {
-    ...getActions(dispatch),
+    ...getNotificationActions(dispatch),
   };
 };
 export default connect(mapStoreStateToProps, mapActionsToProps)(Notifications);

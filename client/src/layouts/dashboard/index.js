@@ -22,7 +22,7 @@ import pieChartData from "./data/pieChartData";
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import jwt_decode from "jwt-decode";
 import { initializeAblyClient } from "../../ably";
@@ -30,20 +30,25 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { getAuthActions } from "app/actions/authActions";
 import { getMainActions } from "app/actions/mainActions";
 import { getActions } from "app/actions/alertActions";
+import { getDashboardActions } from "app/actions/dashboardActions";
 import Cookies from "js-cookie";
 import PieChart from "examples/Charts/PieChart";
-import { useChannel } from "ably/react";
+import { useAbly, useChannel, usePresence } from "ably/react";
 
-const Dashboard = ({ userDetails, setUserDetails, openAlertMessage }) => {
+const Dashboard = ({ userDetails, setUserDetails, openAlertMessage, getDashboardDetails }) => {
   const { sales, tasks } = reportsLineChartData;
+  const [liveUsers, setLiveUsers] = useState(0);
+  const [liveDeals, setLiveDeals] = useState("");
+  const [liveAuctions, setLiveAuctions] = useState("");
+  const [totalBalance, setTotalBalance] = useState("");
   const search = useLocation().search;
   const navigate = useNavigate();
-  const { channel } = useChannel("dealChannel:chappal", (message) => {
-    console.log("message", message);
+  const dealChannel = useChannel("dealChannel", (message) => {
+    console.log("message", message.presence);
     const content = JSON.parse(message?.data);
     console.log("content", content);
-    openAlertMessage("Added");
-  });
+    openAlertMessage("New Deal Added");
+  }).channel;
 
   useEffect(() => {
     const user = new URLSearchParams(search).get("user");
@@ -57,12 +62,14 @@ const Dashboard = ({ userDetails, setUserDetails, openAlertMessage }) => {
         navigate("/dashboard");
       }
       Cookies.set("clientId", data?.username);
-      initializeAblyClient(Cookies.get("clientId"));
     } else if (userDetails) {
       if (!userDetails.age) {
         navigate("/initialDetails");
       }
+    } else {
+      navigate("/authentication/sign-in");
     }
+    initializeAblyClient(userDetails?.username);
   }, []);
 
   return (
@@ -74,9 +81,9 @@ const Dashboard = ({ userDetails, setUserDetails, openAlertMessage }) => {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="dark"
-                icon="weekend"
+                icon="account_balance"
                 title="Total Balance"
-                count={"$10000"}
+                count={totalBalance}
                 percentage={{
                   color: "success",
                   amount: "+2%",
@@ -90,7 +97,7 @@ const Dashboard = ({ userDetails, setUserDetails, openAlertMessage }) => {
               <ComplexStatisticsCard
                 icon="leaderboard"
                 title="Live Users"
-                count="2,300"
+                count={liveUsers}
                 percentage={{
                   color: "success",
                   amount: "+3%",
@@ -105,7 +112,7 @@ const Dashboard = ({ userDetails, setUserDetails, openAlertMessage }) => {
                 color="success"
                 icon="handshake"
                 title="Live Deals"
-                count="34k"
+                count={liveDeals}
                 percentage={{
                   color: "success",
                   amount: "*",
@@ -120,7 +127,7 @@ const Dashboard = ({ userDetails, setUserDetails, openAlertMessage }) => {
                 color="primary"
                 icon="gavel"
                 title="Live Auctions"
-                count="0"
+                count={liveAuctions}
                 percentage={{
                   color: "success",
                   amount: "34k",
@@ -183,6 +190,7 @@ const mapActionsToProps = (dispatch) => {
     ...getAuthActions(dispatch),
     ...getMainActions(dispatch),
     ...getActions(dispatch),
+    ...getDashboardActions(dispatch),
   };
 };
 export default connect(mapStoreStateToProps, mapActionsToProps)(Dashboard);

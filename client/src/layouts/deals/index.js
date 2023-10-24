@@ -107,12 +107,7 @@ function Tables() {
                             </MDBox>
                           </MDBox>
                         </MDBox>
-                        <CreateDeals />
-                        <MDBox sx={{ display: "flex", justifyContent: "right" }} mx={5} mb={2}>
-                          <MDButton color="dark" variant="gradient" onClick={handleClose}>
-                            Submit
-                          </MDButton>
-                        </MDBox>
+                        <CreateDeals handleClose={handleClose} />
                       </Card>
                     </MDBox>
                   </Modal>

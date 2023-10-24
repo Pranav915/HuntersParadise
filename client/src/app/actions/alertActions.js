@@ -23,11 +23,4 @@ export const closeAlertMessage = () => {
   };
 };
 
-export const openNotification = (content) => {
-  return {
-    type: alertActions.OPEN_NOTIFICATION,
-    content,
-  };
-};
-
 export default alertActions;

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Grid, IconButton, Paper, TextField } from "@mui/material";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -7,17 +8,19 @@ import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 
 import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
 import MDInput from "components/MDInput";
-import dayjs from "dayjs";
 import { useMaterialUIController } from "context";
 import MDTypography from "components/MDTypography";
 import CancelIcon from "@mui/icons-material/Cancel";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
+import { getAuctionActions } from "app/actions/auctionActions";
+import { connect } from "react-redux";
+import MDButton from "components/MDButton";
 
 const { default: MDBox } = require("components/MDBox");
 
-const CreateAuction = () => {
+const CreateAuction = ({ createAuction, handleClose }) => {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
   const [productList, setProductList] = useState([
@@ -30,6 +33,7 @@ const CreateAuction = () => {
       imageUrl: "",
     },
   ]);
+  const [startTime, setStartTime] = useState("");
 
   const handleProductChange = (index, field, value) => {
     const updatedProducts = [...productList];
@@ -83,9 +87,23 @@ const CreateAuction = () => {
     },
   });
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    handleClose();
+    const data = new FormData(event.currentTarget);
+
+    const auctionDetails = {
+      auctionTitle: data.get("auctionTitle"),
+      productList: productList,
+      startTime: startTime,
+    };
+    console.log("auctionDetails", auctionDetails);
+    createAuction(auctionDetails);
+  };
+
   return (
     <MDBox sx={{ maxHeight: "550px", overflowY: "auto" }} mb={3}>
-      <MDBox component="form" role="form" noValidate mx={5}>
+      <MDBox component="form" role="form" noValidate mx={5} onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <MDInput
@@ -241,20 +259,32 @@ const CreateAuction = () => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
                 <DateTimePicker
-                  label="Auction Start Details"
+                  label="Auction Start Date & Time"
                   viewRenderers={{
                     hours: renderTimeViewClock,
                     minutes: renderTimeViewClock,
                     seconds: renderTimeViewClock,
                   }}
+                  value={startTime}
+                  onChange={(value) => setStartTime(value)}
                 />
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
         </Grid>
+        <MDBox sx={{ display: "flex", justifyContent: "right" }} mx={5} my={2}>
+          <MDButton color="dark" variant="gradient" type="submit">
+            Submit
+          </MDButton>
+        </MDBox>
       </MDBox>
     </MDBox>
   );
 };
 
-export default CreateAuction;
+const mapActionsToProps = (dispatch) => {
+  return {
+    ...getAuctionActions(dispatch),
+  };
+};
+export default connect(null, mapActionsToProps)(CreateAuction);

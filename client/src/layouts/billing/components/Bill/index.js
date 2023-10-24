@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
@@ -11,8 +12,9 @@ import MDButton from "components/MDButton";
 
 // Code Pulse React context
 import { useMaterialUIController } from "context";
+import { Divider } from "@mui/material";
 
-function Bill({ name, company, email, vat, noGutter }) {
+function Bill({ name, productName, email, status, amount }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -24,9 +26,7 @@ function Bill({ name, company, email, vat, noGutter }) {
       alignItems="flex-start"
       bgColor={darkMode ? "transparent" : "grey-100"}
       borderRadius="lg"
-      p={3}
-      mb={noGutter ? 0 : 1}
-      mt={2}
+      px={3}
     >
       <MDBox width="100%" display="flex" flexDirection="column">
         <MDBox
@@ -34,7 +34,6 @@ function Bill({ name, company, email, vat, noGutter }) {
           justifyContent="space-between"
           alignItems={{ xs: "flex-start", sm: "center" }}
           flexDirection={{ xs: "column", sm: "row" }}
-          mb={2}
         >
           <MDTypography variant="button" fontWeight="medium" textTransform="capitalize">
             {name}
@@ -42,37 +41,79 @@ function Bill({ name, company, email, vat, noGutter }) {
 
           <MDBox display="flex" alignItems="center" mt={{ xs: 2, sm: 0 }} ml={{ xs: -1.5, sm: 0 }}>
             <MDBox mr={1}>
-              <MDButton variant="text" color="error">
-                <Icon>delete</Icon>&nbsp;delete
+              <MDButton variant="text" color="info">
+                <Icon>chat</Icon>&nbsp;Chat
               </MDButton>
             </MDBox>
-            <MDButton variant="text" color={darkMode ? "white" : "dark"}>
-              <Icon>edit</Icon>&nbsp;edit
+
+            <MDButton
+              variant="outlined"
+              color={status === "Outstanding" ? "success" : "error"}
+              iconOnly
+              circular
+            >
+              <Icon sx={{ fontWeight: "bold" }}>
+                {status === "Outstanding" ? "expand_less" : "expand_more"}
+              </Icon>
             </MDButton>
           </MDBox>
         </MDBox>
-        <MDBox mb={1} lineHeight={0}>
-          <MDTypography variant="caption" color="text">
-            Company Name:&nbsp;&nbsp;&nbsp;
-            <MDTypography variant="caption" fontWeight="medium" textTransform="capitalize">
-              {company}
-            </MDTypography>
-          </MDTypography>
+        <MDBox
+          display="flex"
+          justifyContent="space-between"
+          alignItems={{ xs: "flex-start", sm: "center" }}
+          flexDirection={{ xs: "column", sm: "row" }}
+        >
+          <MDBox>
+            <MDBox mb={1} lineHeight={0}>
+              <MDTypography variant="caption" color="text">
+                Product/Auction Name:&nbsp;&nbsp;&nbsp;
+                <MDTypography variant="caption" fontWeight="medium" textTransform="capitalize">
+                  {productName}
+                </MDTypography>
+              </MDTypography>
+            </MDBox>
+            <MDBox mb={1} lineHeight={0}>
+              <MDTypography variant="caption" color="text">
+                Email Address:&nbsp;&nbsp;&nbsp;
+                <MDTypography variant="caption" fontWeight="medium">
+                  {email}
+                </MDTypography>
+              </MDTypography>
+            </MDBox>
+            <MDBox mb={1} lineHeight={0}>
+              <MDTypography variant="caption" color="text">
+                Status:&nbsp;&nbsp;&nbsp;
+                <MDTypography variant="caption" fontWeight="medium">
+                  {status}
+                </MDTypography>
+              </MDTypography>
+            </MDBox>
+          </MDBox>
+          <MDBox>
+            <MDBox lineHeight={0}>
+              <MDTypography variant="caption" color="text">
+                Amount:&nbsp;&nbsp;&nbsp;
+                <MDTypography
+                  variant="button"
+                  color={status === "Outstanding" ? "success" : "error"}
+                  fontWeight="medium"
+                  textGradient
+                >
+                  {status === "Outstanding" ? "+" : "-"} {amount}
+                </MDTypography>
+              </MDTypography>
+            </MDBox>
+          </MDBox>
         </MDBox>
-        <MDBox mb={1} lineHeight={0}>
-          <MDTypography variant="caption" color="text">
-            Email Address:&nbsp;&nbsp;&nbsp;
-            <MDTypography variant="caption" fontWeight="medium">
-              {email}
-            </MDTypography>
-          </MDTypography>
-        </MDBox>
-        <MDTypography variant="caption" color="text">
-          VAT Number:&nbsp;&nbsp;&nbsp;
-          <MDTypography variant="caption" fontWeight="medium">
-            {vat}
-          </MDTypography>
-        </MDTypography>
+        {status === "Outstanding" ? (
+          <></>
+        ) : (
+          <MDButton variant="text" color={darkMode ? "white" : "dark"}>
+            <Icon>done</Icon>&nbsp;Mark as Product Received
+          </MDButton>
+        )}
+        <Divider />
       </MDBox>
     </MDBox>
   );
