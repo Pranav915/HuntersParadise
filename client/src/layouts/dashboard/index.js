@@ -21,27 +21,49 @@ import pieChartData from "./data/pieChartData";
 
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
-import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import jwt_decode from "jwt-decode";
 import { initializeAblyClient } from "../../ably";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getAuthActions } from "app/actions/authActions";
 import { getMainActions } from "app/actions/mainActions";
+import { getActions } from "app/actions/alertActions";
+import { getDashboardActions } from "app/actions/dashboardActions";
+import { getDealActions } from "app/actions/dealActions";
 import Cookies from "js-cookie";
 import PieChart from "examples/Charts/PieChart";
+import { useAbly, useChannel, usePresence } from "ably/react";
 
-const Dashboard = ({ userDetails, setUserDetails }) => {
+const Dashboard = ({
+  userDetails,
+  setUserDetails,
+  openAlertMessage,
+  getDashboardDetails,
+  getAllDeals,
+  getMyOffers,
+  allDeals,
+}) => {
   const { sales, tasks } = reportsLineChartData;
+  const [liveUsers, setLiveUsers] = useState(0);
+  const [liveDeals, setLiveDeals] = useState("");
+  const [liveAuctions, setLiveAuctions] = useState("");
+  const [totalBalance, setTotalBalance] = useState("");
   const search = useLocation().search;
   const navigate = useNavigate();
+  const dealChannel = useChannel("dealChannel", (message) => {
+    console.log("message", message.presence);
+    const content = JSON.parse(message?.data);
+    console.log("content", content);
+    openAlertMessage("New Deal Added");
+  }).channel;
 
   useEffect(() => {
     const user = new URLSearchParams(search).get("user");
     if (user) {
       const data = jwt_decode(user).userDetails;
+      console.log("data", data);
       setUserDetails(data);
       if (!data?.age) {
         navigate("/initialDetails");
@@ -49,12 +71,16 @@ const Dashboard = ({ userDetails, setUserDetails }) => {
         navigate("/dashboard");
       }
       Cookies.set("clientId", data?.username);
-      initializeAblyClient(Cookies.get("clientId"));
     } else if (userDetails) {
       if (!userDetails.age) {
         navigate("/initialDetails");
       }
+    } else {
+      navigate("/authentication/sign-in");
     }
+    initializeAblyClient(userDetails?.username);
+    getAllDeals();
+    getMyOffers();
   }, []);
 
   return (
@@ -66,9 +92,9 @@ const Dashboard = ({ userDetails, setUserDetails }) => {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="dark"
-                icon="weekend"
+                icon="account_balance"
                 title="Total Balance"
-                count={"$10000"}
+                count={totalBalance}
                 percentage={{
                   color: "success",
                   amount: "+2%",
@@ -82,7 +108,7 @@ const Dashboard = ({ userDetails, setUserDetails }) => {
               <ComplexStatisticsCard
                 icon="leaderboard"
                 title="Live Users"
-                count="2,300"
+                count={liveUsers}
                 percentage={{
                   color: "success",
                   amount: "+3%",
@@ -97,7 +123,7 @@ const Dashboard = ({ userDetails, setUserDetails }) => {
                 color="success"
                 icon="handshake"
                 title="Live Deals"
-                count="34k"
+                count={liveDeals}
                 percentage={{
                   color: "success",
                   amount: "*",
@@ -112,7 +138,7 @@ const Dashboard = ({ userDetails, setUserDetails }) => {
                 color="primary"
                 icon="gavel"
                 title="Live Auctions"
-                count="0"
+                count={liveAuctions}
                 percentage={{
                   color: "success",
                   amount: "34k",
@@ -124,8 +150,8 @@ const Dashboard = ({ userDetails, setUserDetails }) => {
         </Grid>
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
+            <Grid item xs={12} md={6} lg={8}>
+              <MDBox mb={2}>
                 <ReportsBarChart
                   color="info"
                   title="website views"
@@ -137,24 +163,9 @@ const Dashboard = ({ userDetails, setUserDetails }) => {
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
                 <PieChart
                   icon={{ color: "info", component: "wallet" }} // Optional: Icon and its color
-                  title="Chart Title" // Optional: Chart title
+                  title="Category Distribution" // Optional: Chart title
                   description="" // Optional: Chart description
                   height={250} // Optional: Chart height (you can specify a number or string)
                   chart={pieChartData} // Pass the chart data defined in step 2
@@ -165,11 +176,11 @@ const Dashboard = ({ userDetails, setUserDetails }) => {
         </MDBox>
         <MDBox>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
+            <Grid item xs={12} md={6} lg={6}>
+              <Projects name="Auctions" />
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <OrdersOverview />
+            <Grid item xs={12} md={6} lg={6}>
+              <Projects name="Deals" data={allDeals} />
             </Grid>
           </Grid>
         </MDBox>
@@ -189,6 +200,9 @@ const mapActionsToProps = (dispatch) => {
   return {
     ...getAuthActions(dispatch),
     ...getMainActions(dispatch),
+    ...getActions(dispatch),
+    ...getDashboardActions(dispatch),
+    ...getDealActions(dispatch),
   };
 };
 export default connect(mapStoreStateToProps, mapActionsToProps)(Dashboard);

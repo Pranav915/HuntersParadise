@@ -30,12 +30,15 @@ const postLogin = async (req, res) => {
       );
       return res.status(200).json({
         userDetails: {
-          email: user.email,
           token: token,
+          userId: user._id,
+          email: user.email,
           username: user.username,
-          _id: user._id,
           age: user.age,
-          role: user.role,
+          country: user.country,
+          name: user.name,
+          phoneNumber: user.phoneNumber,
+          categories: user.categories,
         },
       });
     }

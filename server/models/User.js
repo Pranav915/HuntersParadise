@@ -32,53 +32,61 @@ const userSchema = new Schema({
     type: String,
   },
   country: {
-    type: String,
-  },
+    type: String,
+  },
   password: {
     type: String,
   },
-  age:{
-    type:String,
+  age: {
+    type: String,
   },
-  subscribedCategories:{
-    type:String,
-  },
-  offers: [{
-    offerid: {
-      type: Schema.Types.ObjectId,
-      ref: "dealOffers",
-    }
-  }],
-  listedDeals: [{
-    dealid: {
-      type: Schema.Types.ObjectId,
-      ref: "LiveDeals"
-    }
-  }],
-  wallet:{
-    totalBalance:{
-      type:String,
+  subscribedCategories: [
+    {
+      type: String,
+    },
+  ],
+  offers: [
+    {
+      offerid: {
+        type: Schema.Types.ObjectId,
+        ref: "dealOffers",
+      },
+    },
+  ],
+  listedDeals: [
+    {
+      dealid: {
+        type: Schema.Types.ObjectId,
+        ref: "LiveDeals",
+      },
+    },
+  ],
+  wallet: {
+    totalBalance: {
+      type: String,
+      default: "0",
     },
     availableBalance: {
-      type:String,
+      type: String,
+      default: "0",
     },
     outStandingBalance: {
       type: String,
+      default: "0",
     },
     freezedBalance: {
       type: String,
+      default: "0",
     },
-    transactions:[
+    transactions: [
       {
         transaction: {
           type: Schema.Types.ObjectId,
-          ref: "Transaction"
-        }
-      }
-    ]
-  }
-
-  
+          ref: "Transaction",
+        },
+      },
+    ],
+  },
 });
 
 module.exports = model("User", userSchema);

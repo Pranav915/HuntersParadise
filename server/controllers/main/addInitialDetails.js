@@ -4,18 +4,19 @@ const jwt = require("jsonwebtoken");
 
 const addInitialDetails = async (req, res) => {
   try {
-    const { age, country, languages, genres } = req.body;
+    const { age, country, name, phoneNumber, subscribedCategories } = req.body;
+    console.log("req.body", req.body);
     const userId = req.user.userId;
     console.log("userId", userId);
-    console.log("languages", languages, genres);
     await User.updateOne(
       { _id: userId },
       {
         age: age,
         country: country,
+        name: name,
+        phoneNumber: phoneNumber,
         $push: {
-          languages: languages,
-          favGenres: genres,
+          subscribedCategories: subscribedCategories,
         },
       }
     );
@@ -34,11 +35,15 @@ const addInitialDetails = async (req, res) => {
     console.log("user", user);
     res.status(201).json({
       userDetails: {
-        email: user.email,
         token: token,
+        userId: user._id,
+        email: user.email,
         username: user.username,
-        _id: user._id,
         age: user.age,
+        country: user.country,
+        name: user.name,
+        phoneNumber: user.phoneNumber,
+        categories: user.subscribedCategories,
       },
     });
   } catch (error) {

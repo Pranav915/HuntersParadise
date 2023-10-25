@@ -60,22 +60,22 @@ function ReportsBarChart({ color, title, description, date, chart }) {
               py={2}
               pr={0.5}
               mt={-5}
-              height="12.5rem"
+              height="17.38rem"
             >
               <Bar data={data} options={options} redraw />
             </MDBox>
           ),
           [color, chart]
         )}
-        <MDBox pt={3} pb={1} px={1}>
-          <MDTypography variant="h6" textTransform="capitalize">
+        <MDBox pt={1} pb={0} px={1}>
+          {/* <MDTypography variant="h6" textTransform="capitalize">
             {title}
-          </MDTypography>
-          <MDTypography component="div" variant="button" color="text" fontWeight="light">
+          </MDTypography> */}
+          {/* <MDTypography component="div" variant="button" color="text" fontWeight="light">
             {description}
-          </MDTypography>
+          </MDTypography> */}
           <Divider />
-          <MDBox display="flex" alignItems="center">
+          <MDBox display="flex" mt={-1} alignItems="center">
             <MDTypography variant="button" color="text" lineHeight={1} sx={{ mt: 0.15, mr: 0.5 }}>
               <Icon>schedule</Icon>
             </MDTypography>

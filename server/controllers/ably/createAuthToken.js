@@ -8,14 +8,13 @@ const createAuthToken = async (req, res) => {
     /* Issue a token with pub & sub privileges for all channels and
         configure the token with an client ID */
     tokenParams = {
-      capability: { "*": ["publish", "subscribe"] },
+      capability: { "*": ["publish", "subscribe", "presence"] },
       clientId: req.query?.clientId,
     };
   } else {
     /* Issue a token request with sub privileges restricted to one channel
         and configure the token without a client ID (anonymous) */
-    tokenParams = {
-    };
+    tokenParams = {};
   }
   const ably = new Ably.Rest({
     key: process.env.ABLY_API_KEY,

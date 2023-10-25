@@ -13,29 +13,31 @@ function BillingInformation() {
     <Card id="delete-account">
       <MDBox pt={3} px={2}>
         <MDTypography variant="h6" fontWeight="medium">
-          Billing Information
+          Incoming / Freezed Transactions
         </MDTypography>
       </MDBox>
-      <MDBox pt={1} pb={2} px={2}>
+      <MDBox pt={3} pb={2} px={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
           <Bill
             name="oliver liam"
-            company="viking burrito"
+            productName="viking burrito"
             email="oliver@burrito.com"
-            vat="FRB1235476"
+            status="Freezed"
+            amount="2500"
           />
           <Bill
             name="lucas harper"
-            company="stone tech zone"
+            productName="stone tech zone"
             email="lucas@stone-tech.com"
-            vat="FRB1235476"
+            status="Outstanding"
+            amount="1200"
           />
           <Bill
             name="ethan james"
-            company="fiber notion"
+            productName="fiber notion"
             email="ethan@fiber.com"
-            vat="FRB1235476"
-            noGutter
+            status="Freezed"
+            amount="650"
           />
         </MDBox>
       </MDBox>
