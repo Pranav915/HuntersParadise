@@ -1,4 +1,5 @@
 const LiveAuction = require('../../models/LiveAuction');
+const ablyClient = require("../../index");
 const startAuction = (req, res) => {
     const products = req.body.auction.productList;
     const productsWithStatus = products.map(product => ({
@@ -14,6 +15,8 @@ const startAuction = (req, res) => {
     });
     newLiveAuction.save()
     .then((auction) => {
+        var notificationChannel = ablyClient.channels.get("notificationChannel");
+        notificationChannel.publish("Started Auction", auction);
         console.log('Live auction entry saved:', auction);
         res.status(200).send("Auction Started Successfully");
     })

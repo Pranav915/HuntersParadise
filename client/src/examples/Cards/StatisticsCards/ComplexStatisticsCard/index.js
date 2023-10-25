@@ -9,6 +9,7 @@ import Icon from "@mui/material/Icon";
 // Code Pulse React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import LiveStatusDot from "shared/components/LiveStatusDot";
 
 function ComplexStatisticsCard({ color, title, count, percentage, icon }) {
   return (
@@ -32,6 +33,7 @@ function ComplexStatisticsCard({ color, title, count, percentage, icon }) {
           </Icon>
         </MDBox>
         <MDBox textAlign="right" lineHeight={1.25}>
+          <LiveStatusDot />
           <MDTypography variant="button" fontWeight="light" color="text">
             {title}
           </MDTypography>

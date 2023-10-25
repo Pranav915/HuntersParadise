@@ -1,6 +1,15 @@
 /* eslint-disable react/prop-types */
 
-import { Button, Card, Container, Grid } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  Card,
+  Checkbox,
+  CircularProgress,
+  Container,
+  Grid,
+  TextField,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -13,17 +22,49 @@ import MDBox from "components/MDBox";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+
+const topFilms = [
+  "Art",
+  "Jewelry",
+  "Automobiles",
+  "RealEstate",
+  "Books",
+  "Coins",
+  "Wine",
+  "Stamps",
+  "Sports",
+  "Furniture",
+  "Electronics",
+  "Fashion",
+  "Toys",
+  "Firearms",
+  "Machinery",
+  "Instruments",
+  "Culture",
+  "Aerospace",
+  "Technology",
+];
 
 const InitialDetails = ({ addInitialDetails }) => {
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const userDetails = {
+      name: data.get("fullName"),
+      phoneNumber: data.get("phoneNumber"),
       age: data.get("age"),
       country: data.get("country"),
+      subscribedCategories: categories,
     };
+    console.log("userDetails", userDetails);
     addInitialDetails(userDetails, navigate);
   };
 
@@ -39,12 +80,34 @@ const InitialDetails = ({ addInitialDetails }) => {
               <Grid item xs={12}>
                 <MDInput
                   required
-                  type="number"
-                  label="Age"
-                  name="age"
-                  autoComplete="age"
+                  type="text"
+                  label="Full Name"
+                  name="fullName"
+                  autoComplete="fullName"
                   fullWidth
                 />
+              </Grid>
+              <Grid item display="flex">
+                <Grid item xs={12} mr="10px">
+                  <MDInput
+                    required
+                    type="number"
+                    label="Phone Number"
+                    name="phoneNumber"
+                    autoComplete="phoneNumber"
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12} ml="10px">
+                  <MDInput
+                    required
+                    type="number"
+                    label="Age"
+                    name="age"
+                    autoComplete="age"
+                    fullWidth
+                  />
+                </Grid>
               </Grid>
               <Grid item xs={12}>
                 <MDInput
@@ -53,6 +116,39 @@ const InitialDetails = ({ addInitialDetails }) => {
                   type="text"
                   name="country"
                   autoComplete="country"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Autocomplete
+                  id="categories"
+                  multiple
+                  disableCloseOnSelect
+                  limitTags={2}
+                  options={topFilms}
+                  getOptionLabel={(option) => option}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={selected}
+                      />
+                      {option}
+                    </li>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Subscribe your favourite categories"
+                      placeholder="Favorites"
+                    />
+                  )}
+                  value={categories}
+                  onChange={(event, newValue) => {
+                    setCategories(newValue);
+                  }}
                   fullWidth
                 />
               </Grid>

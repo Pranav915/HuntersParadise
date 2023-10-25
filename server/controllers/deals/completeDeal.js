@@ -21,7 +21,7 @@ const completedDeal = (req, res) => {
           newCompletedDeal.save()
           .then((newdeal) => {
             CategoryInfo.findOneAndUpdate({category: offer.deal.category},
-                {$inc: { numberDeals: 1, valuation: int(offer.offeredPrice) }});
+                {$inc: { numberDeals: 1, valuation: int(offer.offeredPrice), numberLiveDeals: -1}});
             DealOffers.deleteMany({ deal: offer.deal })
             .catch((err) => {
                 if (err) {

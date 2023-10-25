@@ -10,6 +10,10 @@ import SignUp from "layouts/authentication/sign-up";
 import InitialDetails from "layouts/initialDetails";
 import ForgotPassword from "layouts/authentication/forgot-password";
 import ResetPassword from "layouts/authentication/reset-password";
+import Auctions from "layouts/auctions";
+import Deals from "layouts/deals";
+import AuctionDetails from "layouts/auctions/AuctionDetails";
+import LiveAuction from "layouts/liveAuction";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -25,11 +29,19 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Tables",
-    key: "tables",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
-    component: <Tables />,
+    name: "Auctions",
+    key: "auctions",
+    icon: <Icon fontSize="small">gavel</Icon>,
+    route: "/auctions",
+    component: <Auctions />,
+  },
+  {
+    type: "collapse",
+    name: "Deals",
+    key: "deals",
+    icon: <Icon fontSize="small">handshake</Icon>,
+    route: "/deals",
+    component: <Deals />,
   },
   {
     type: "collapse",
@@ -112,6 +124,22 @@ const routes = [
     icon: <Icon fontSize="small">reset</Icon>,
     route: "/resetPassword",
     component: <ResetPassword />,
+  },
+  {
+    type: "route",
+    name: "Auction Details",
+    key: "auction-details",
+    icon: <Icon fontSize="small">create</Icon>,
+    route: "/auctionDetail",
+    component: <AuctionDetails />,
+  },
+  {
+    type: "route",
+    name: "Live Auction",
+    key: "live-auction",
+    icon: <Icon fontSize="small">live</Icon>,
+    route: "/liveAuction",
+    component: <LiveAuction />,
   },
 ];
 
