@@ -7,6 +7,9 @@ const categoryInfo = new Schema({
   numberDeals: {
     type: Number,
   },
+  numberLiveDeals: {
+    type: Number,
+  },
   valuation: {
     type: Number,
   },

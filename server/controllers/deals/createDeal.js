@@ -1,4 +1,5 @@
 const LiveDeals = require('../../models/LiveDeals');
+const CategoryInfo = require("../../models/CategoryInfo");
 const createDeal = (req, res) => {
     if(req.headers.from != "Pranav"){
         res.status(401).send("Not authorized");
@@ -17,6 +18,7 @@ const createDeal = (req, res) => {
     newDeal.save()
     .then((deal) => {
         console.log('New deal entry saved:', deal);
+        CategoryInfo.updateOne({category: data.category}, {$inc: {numberLiveDeals: 1}});
         res.status(200).send("Deal Created Successfully");
     })
     .catch((error) => {

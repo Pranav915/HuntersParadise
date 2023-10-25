@@ -1,4 +1,5 @@
 const User = require("../../models/User");
+const CategoryInfo = require("../../models/CategoryInfo");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -33,6 +34,7 @@ const addInitialDetails = async (req, res) => {
       }
     );
     console.log("user", user);
+    await CategoryInfo.updateMany({category: { $in: subscribedCategories }}, { $inc: { numberSubscribers: 1} });
     res.status(201).json({
       userDetails: {
         token: token,
