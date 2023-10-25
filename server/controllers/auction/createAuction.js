@@ -1,6 +1,11 @@
 const UpcomingAuction = require('../../models/UpcomingAuction');
 const createAuction = (req, res) => {
-
+    if(req.headers.from != "Ably"){
+        res.status(401).send("Not authorized");
+        return;
+    }
+    const data = JSON.parse((req.body.messages[0]).data);
+    var nowauctionId = 1;
     UpcomingAuction.findOne({})
     .sort({ createdAt: -1 }) // Sort in descending order (latest first)
     .exec((err, latestAuction) => {
@@ -10,16 +15,17 @@ const createAuction = (req, res) => {
         }
 
         if (latestAuction) {
-        console.log('Latest auction:', latestAuction);
+            nowauctionId = latestAuction.auctionId + 1;
         } else {
-        console.log('No upcoming auctions found.');
+            console.log('No upcoming auctions found.');
         }
     });
     const newAuction = new UpcomingAuction({
-        auctionTitle: req.body.title,
-        productList: req.body.products,
-        auctionHost: req.user.userId,
-        startTime: req.body.startTime,
+        auctionId: nowauctionId,
+        auctionTitle: data.auctionTitle,
+        productList: data.productList,
+        auctionHost: data.userId,
+        startTime: data.startTime,
     });
     newAuction.save()
     .then((auction) => {
@@ -33,4 +39,3 @@ const createAuction = (req, res) => {
 
 }
 module.exports = createAuction;
-

@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const upcomingAuctionSchema = new Schema({
+  auctionId: {
+    type: Number,
+    required:true,
+    unique:true
+  },
   auctionTitle: {
     type: String,
     required: true,

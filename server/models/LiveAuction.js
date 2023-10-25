@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const liveAuctionSchema = new Schema({
   auctionId: {
-    type: String,
+    type: Number,
     required: true,
     unique: true,
   },

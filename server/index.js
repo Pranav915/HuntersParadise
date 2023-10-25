@@ -43,11 +43,14 @@ mongoose
     app.listen(PORT, () => {
       console.log(`Server is listening on port ${PORT}`);
     });
-    const ably = new Ably.Realtime.Promise(process.env.ABLY_API_KEY);
-    await ably.connection.once("connected");
-    console.log("Connected to Ably!");
   })
   .catch((err) => {
     console.log("Database connection failed. Server not started");
     console.log(err);
   });
+
+  const ablyClient = new Ably.Realtime(process.env.ABLY_API_KEY);
+  ablyClient.connection.once("connected");
+  console.log("Connected to Ably!");
+
+module.exports = { ablyClient };
