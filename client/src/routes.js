@@ -13,6 +13,7 @@ import ResetPassword from "layouts/authentication/reset-password";
 import Auctions from "layouts/auctions";
 import Deals from "layouts/deals";
 import AuctionDetails from "layouts/auctions/AuctionDetails";
+import DealDetails from "layouts/deals/DealDetails";
 import LiveAuction from "layouts/liveAuction";
 
 // @mui icons
@@ -132,6 +133,14 @@ const routes = [
     icon: <Icon fontSize="small">create</Icon>,
     route: "/auctionDetail",
     component: <AuctionDetails />,
+  },
+  {
+    type: "route",
+    name: "Deal Details",
+    key: "deal-details",
+    icon: <Icon fontSize="small">create</Icon>,
+    route: "/dealDetail",
+    component: <DealDetails />,
   },
   {
     type: "route",

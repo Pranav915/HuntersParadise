@@ -27,6 +27,7 @@ const LiveAuction = () => {
                     <LinearProgress variant="determinate" value={progress} />
                   </MDBox>
                 </MDBox>
+                <MDBox></MDBox>
               </Card>
             </Grid>
           </Grid>
