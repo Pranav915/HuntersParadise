@@ -19,10 +19,12 @@ import logoJira from "assets/images/small-logos/logo-jira.svg";
 import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 import { Icon } from "@mui/material";
 import { useMaterialUIController } from "context";
+import { useEffect, useState } from "react";
 
-export default function UserDealsData(createdDeals) {
+export default function ParticipatedDealsData(participatedDeals) {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
+
   const avatars = (members) =>
     members.map(([image, name]) => (
       <Tooltip key={name} title={name} placeholder="bottom">
@@ -77,6 +79,9 @@ export default function UserDealsData(createdDeals) {
       <IconButton sx={navbarIconButton} size="small" disableRipple>
         <Icon sx={iconsStyle}>edit</Icon>
       </IconButton>
+      <IconButton sx={navbarIconButton} size="small" disableRipple>
+        <Icon sx={iconsStyle}>cancel</Icon>
+      </IconButton>
     </MDBox>
   );
 
@@ -84,21 +89,21 @@ export default function UserDealsData(createdDeals) {
     columns: [
       { Header: "Name", accessor: "name", width: "45%", align: "left" },
       { Header: "Asked Price", accessor: "sPrice", align: "center" },
-      { Header: "Top Offer", accessor: "cOffer", align: "center" },
+      { Header: "Offered Price", accessor: "cOffer", align: "center" },
       { Header: "", accessor: "btns", align: "center" },
     ],
 
-    rows: createdDeals.map((deal) => {
+    rows: participatedDeals.map((offer) => {
       const newdata = {
-        name: <Company image={logoXD} name={deal?.productName} />,
+        name: <Company image={logoXD} name={offer?.deal?.productName} />,
         sPrice: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {deal?.askPrice}
+            {offer?.askedPrice}
           </MDTypography>
         ),
         cOffer: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {}
+            {offer?.offeredPrice}
           </MDTypography>
         ),
         btns: <ButtonsBox />,

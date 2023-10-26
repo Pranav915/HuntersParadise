@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Grid, IconButton, Paper, TextField } from "@mui/material";
+import { Autocomplete, Checkbox, Grid, IconButton, Paper, TextField } from "@mui/material";
 
 import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
 import MDInput from "components/MDInput";
@@ -10,7 +10,6 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
-import createDeal from "layouts/deal/createDeal";
 import { getDealActions } from "app/actions/dealActions";
 import { connect } from "react-redux";
 import MDButton from "components/MDButton";
@@ -18,7 +17,21 @@ import { useChannel } from "ably/react";
 
 const { default: MDBox } = require("components/MDBox");
 
-const CreateDeal = ({ createDeal, handleClose }) => {
+const categories = [
+  "Art",
+  "Jewelry",
+  "Automobiles",
+  "Books",
+  "Coins",
+  "Stamps",
+  "Sports",
+  "Firearms",
+  "Instruments",
+  "Culture",
+  "Technology",
+];
+
+const CreateDeal = ({ userDetails, handleClose }) => {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
   const [productImage, setProductImage] = useState(null);
@@ -56,6 +69,8 @@ const CreateDeal = ({ createDeal, handleClose }) => {
       category: productCategory,
       productImage: data.get("productImage"),
       description: data.get("description"),
+      seller: userDetails.userId,
+      sellerName: userDetails.username,
     };
     console.log("dealDetails", dealData);
     console.log("channel", channel);
@@ -94,16 +109,24 @@ const CreateDeal = ({ createDeal, handleClose }) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <MDInput
-                  required
-                  type="text"
-                  label="Product Category"
+                <Autocomplete
+                  id="categories"
+                  disableCloseOnSelect
+                  limitTags={2}
+                  options={categories}
+                  getOptionLabel={(option) => option}
+                  renderOption={(props, option, { selected }) => <li {...props}>{option}</li>}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Subscribe your favourite categories"
+                      placeholder="Favorites"
+                    />
+                  )}
                   value={productCategory}
-                  onChange={(e) => {
-                    setProductCategory(e.target.value);
+                  onChange={(event, newValue) => {
+                    setProductCategory(newValue);
                   }}
-                  name="productCategory"
-                  autoComplete="productCategory"
                   fullWidth
                 />
               </Grid>
@@ -182,9 +205,16 @@ const CreateDeal = ({ createDeal, handleClose }) => {
   );
 };
 
+const mapStoreStateToProps = ({ deal, auth }) => {
+  return {
+    ...deal,
+    ...auth,
+  };
+};
+
 const mapActionsToProps = (dispatch) => {
   return {
     ...getDealActions(dispatch),
   };
 };
-export default connect(null, mapActionsToProps)(CreateDeal);
+export default connect(mapStoreStateToProps, mapActionsToProps)(CreateDeal);

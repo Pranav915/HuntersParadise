@@ -42,14 +42,27 @@ const Dashboard = ({
   openAlertMessage,
   getDashboardDetails,
   getAllDeals,
+  getMyDeals,
   getMyOffers,
+  getPieChartData,
   allDeals,
+  totalBalance,
+  setTotalBalance,
+  pieChartData,
+  setPieChartData,
 }) => {
   const { sales, tasks } = reportsLineChartData;
   const [liveUsers, setLiveUsers] = useState(0);
   const [liveDeals, setLiveDeals] = useState("");
   const [liveAuctions, setLiveAuctions] = useState("");
-  const [totalBalance, setTotalBalance] = useState("");
+  const [finalPieChartData, setfinalPieChartData] = useState({
+    labels: [],
+    datasets: [],
+  });
+  const [finalBarChartData, setFinalBarChartData] = useState({
+    labels: [],
+    datasets: [],
+  });
   const search = useLocation().search;
   const navigate = useNavigate();
   const dealChannel = useChannel("dealChannel", (message) => {
@@ -79,9 +92,96 @@ const Dashboard = ({
       navigate("/authentication/sign-in");
     }
     initializeAblyClient(userDetails?.username);
+    setTotalBalance(userDetails?.totalBalance);
     getAllDeals();
+    getMyDeals();
     getMyOffers();
+    getPieChartData();
   }, []);
+
+  useEffect(() => {
+    let barChartData = {
+      labels: pieChartData?.map((element) => {
+        let labelsList = [];
+        labelsList.push(element?.category);
+        return labelsList;
+      }),
+      datasets: [
+        {
+          label: "Category Deals",
+          data: pieChartData?.map((element) => {
+            let dataList = [];
+            dataList.push(element?.numberDeals);
+            return dataList;
+          }),
+        },
+        {
+          label: "Category Valuation",
+          data: pieChartData?.map((element) => {
+            let dataList = [];
+            dataList.push(element?.valuation);
+            return dataList;
+          }),
+        },
+      ],
+    };
+    setFinalBarChartData(barChartData);
+    let chartData = {
+      labels: pieChartData?.map((element) => {
+        let labelsList = [];
+        labelsList.push(element?.category);
+        return labelsList;
+      }),
+      datasets: [
+        {
+          label: "Live Deals",
+          data: pieChartData?.map((element) => {
+            let dataList = [];
+            dataList.push(element?.numberLiveDeals);
+            return dataList;
+          }),
+
+          backgroundColor: [
+            "#FF6384",
+            "#36A2EB",
+            "#FFCE56",
+            "#4BC0C0",
+            "#9966CC",
+            "#F7464A",
+            "#46BFBD",
+            "#FDB45C",
+            "#FF5733",
+            "#0D98BA",
+            "#FF9900",
+          ],
+          hoverOffset: 4,
+        },
+        // {
+        //   label: "Users",
+        //   data: pieChartData?.map((element) => {
+        //     let dataList = [];
+        //     dataList.push(element?.numberSubscribers);
+        //     return dataList;
+        //   }),
+        //   backgroundColor: [
+        //     "#FF6384",
+        //     "#36A2EB",
+        //     "#FFCE56",
+        //     "#4BC0C0",
+        //     "#9966CC",
+        //     "#F7464A",
+        //     "#46BFBD",
+        //     "#FDB45C",
+        //     "#FF5733",
+        //     "#0D98BA",
+        //     "#FF9900",
+        //   ],
+        //   hoverOffset: 4,
+        // },
+      ],
+    };
+    setfinalPieChartData(chartData);
+  }, [setPieChartData, pieChartData]);
 
   return (
     <DashboardLayout>
@@ -157,19 +257,23 @@ const Dashboard = ({
                   title="website views"
                   description="Last Campaign Performance"
                   date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
+                  chart={finalBarChartData}
                 />
               </MDBox>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
-                <PieChart
-                  icon={{ color: "info", component: "wallet" }} // Optional: Icon and its color
-                  title="Category Distribution" // Optional: Chart title
-                  description="" // Optional: Chart description
-                  height={250} // Optional: Chart height (you can specify a number or string)
-                  chart={pieChartData} // Pass the chart data defined in step 2
-                />
+                {pieChartData ? (
+                  <PieChart
+                    icon={{ color: "info", component: "wallet" }}
+                    title="Category Distribution"
+                    description=""
+                    height={250}
+                    chart={finalPieChartData}
+                  />
+                ) : (
+                  <></>
+                )}
               </MDBox>
             </Grid>
           </Grid>
@@ -190,9 +294,10 @@ const Dashboard = ({
   );
 };
 
-const mapStoreStateToProps = ({ auth }) => {
+const mapStoreStateToProps = ({ auth, dashboard }) => {
   return {
     ...auth,
+    ...dashboard,
   };
 };
 

@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -20,14 +22,17 @@ import authorsTableData from "layouts/tables/data/authorsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 import MDButton from "components/MDButton";
 import { IconButton, Modal } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMaterialUIController } from "context";
+import { connect } from "react-redux";
+import { getDealActions } from "app/actions/dealActions";
+import AllDealsTableData from "./data/AllDealsTableData";
 
-function Tables() {
+const Tables = ({ getAllDeals, allDeals }) => {
   const [open, setOpen] = useState(false);
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
-  const { columns, rows } = authorsTableData();
+  const { columns, rows } = AllDealsTableData(allDeals);
   const { columns: pColumns, rows: pRows } = projectsTableData();
 
   const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
@@ -46,6 +51,10 @@ function Tables() {
     if (reason && reason === "backdropClick") return;
     setOpen(false);
   };
+
+  useEffect(() => {
+    getAllDeals();
+  }, []);
 
   return (
     <DashboardLayout>
@@ -156,6 +165,17 @@ function Tables() {
       <Footer />
     </DashboardLayout>
   );
-}
+};
 
-export default Tables;
+const mapStoreStateToProps = ({ deal }) => {
+  return {
+    ...deal,
+  };
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {
+    ...getDealActions(dispatch),
+  };
+};
+export default connect(mapStoreStateToProps, mapActionsToProps)(Tables);
