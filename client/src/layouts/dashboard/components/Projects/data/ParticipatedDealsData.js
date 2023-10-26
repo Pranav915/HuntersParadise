@@ -73,14 +73,11 @@ export default function ParticipatedDealsData(participatedDeals) {
 
   const ButtonsBox = () => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <IconButton sx={navbarIconButton} size="small" disableRipple>
+      <IconButton sx={navbarIconButton} size="small">
         <Icon sx={iconsStyle}>chat</Icon>
       </IconButton>
-      <IconButton sx={navbarIconButton} size="small" disableRipple>
-        <Icon sx={iconsStyle}>edit</Icon>
-      </IconButton>
-      <IconButton sx={navbarIconButton} size="small" disableRipple>
-        <Icon sx={iconsStyle}>cancel</Icon>
+      <IconButton sx={navbarIconButton} size="small">
+        <Icon sx={iconsStyle}>info</Icon>
       </IconButton>
     </MDBox>
   );

@@ -12,15 +12,19 @@ import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 import MDButton from "components/MDButton";
+import { Icon, IconButton } from "@mui/material";
+import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
+import { useMaterialUIController } from "context";
+import { useNavigate } from "react-router-dom";
 
 export default function AllDealsTableData(allDeals) {
-  const handleSeeDetails = () => {
-    console.log("see details");
-  };
+  const [controller, dispatch] = useMaterialUIController();
+  const { transparentNavbar, darkMode } = controller;
+  const navigate = useNavigate();
 
-  const Product = ({ image, name }) => (
+  const Product = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDAvatar src={image} name={name} size="sm" />
+      {/* <MDAvatar src={image} name={name} size="sm" /> */}
       <MDBox ml={2} lineHeight={1}>
         <MDTypography display="block" variant="button" fontWeight="medium">
           {name}
@@ -31,15 +35,39 @@ export default function AllDealsTableData(allDeals) {
 
   const AskedPrice = ({ price }) => (
     <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+      <MDTypography display="block" variant="button" color="text" fontWeight="medium">
         {price}
       </MDTypography>
     </MDBox>
   );
 
+  const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
+    color: () => {
+      let colorValue = darkMode ? white.main : dark.main;
+
+      if (transparentNavbar) {
+        colorValue = darkMode ? rgba(text.main, 0.6) : text.main;
+      }
+
+      return colorValue;
+    },
+  });
+
+  const ButtonsBox = (deal) => (
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
+      <MDButton
+        onClick={(deal) => {
+          navigate(`/dealDetail/${deal?.productName}`, { state: { data: item } });
+        }}
+      >
+        See Details
+      </MDButton>
+    </MDBox>
+  );
+
   return {
     columns: [
-      { Header: "Product Name", accessor: "productName", width: "45%", align: "left" },
+      { Header: "Product Name", accessor: "productName", align: "left" },
       { Header: "Asked Price", accessor: "askedPrice", align: "left" },
       { Header: "Category", accessor: "category", align: "center" },
       { Header: "Seller Name", accessor: "sellerName", align: "center" },
@@ -48,11 +76,19 @@ export default function AllDealsTableData(allDeals) {
 
     rows: allDeals.map((deal) => {
       const rowData = {
-        productName: <Product image={deal?.productImage} name={deal?.productName} />,
+        productName: <Product name={deal?.productName} />,
         askedPrice: <AskedPrice price={deal?.askPrice} />,
         category: <AskedPrice price={deal?.category} />,
         sellerName: <AskedPrice price={deal?.sellerName} />,
-        action: <MDButton onClick={handleSeeDetails}>See Details</MDButton>,
+        action: (
+          <MDButton
+            onClick={() => {
+              navigate(`/dealDetail/${deal?.productName}`, { state: { data: deal } });
+            }}
+          >
+            See Details
+          </MDButton>
+        ),
       };
       return rowData;
     }),

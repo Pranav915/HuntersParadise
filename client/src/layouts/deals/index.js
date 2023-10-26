@@ -18,8 +18,6 @@ import DataTable from "examples/Tables/DataTable";
 import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
 
 // Data
-import authorsTableData from "layouts/tables/data/authorsTableData";
-import projectsTableData from "layouts/tables/data/projectsTableData";
 import MDButton from "components/MDButton";
 import { IconButton, Modal } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -27,13 +25,14 @@ import { useMaterialUIController } from "context";
 import { connect } from "react-redux";
 import { getDealActions } from "app/actions/dealActions";
 import AllDealsTableData from "./data/AllDealsTableData";
+import UserCreatedDealsData from "./data/UserCreatedDealsData";
 
-const Tables = ({ getAllDeals, allDeals }) => {
+const Tables = ({ getAllDeals, allDeals, getMyDeals, createdDeals }) => {
   const [open, setOpen] = useState(false);
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
   const { columns, rows } = AllDealsTableData(allDeals);
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+  const { columns: pColumns, rows: pRows } = UserCreatedDealsData(createdDeals);
 
   const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
     color: () => {
@@ -54,6 +53,7 @@ const Tables = ({ getAllDeals, allDeals }) => {
 
   useEffect(() => {
     getAllDeals();
+    getMyDeals();
   }, []);
 
   return (

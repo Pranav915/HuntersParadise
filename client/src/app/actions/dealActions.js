@@ -18,6 +18,7 @@ export const getDealActions = (dispatch) => {
     getAllDeals: () => dispatch(getAllDeals()),
     getMyDeals: () => dispatch(getMyDeals()),
     getMyOffers: () => dispatch(getMyOffers()),
+    submitOffer: (offerDetails, setShowEdit) => dispatch(submitOffer(offerDetails, setShowEdit)),
   };
 };
 
@@ -86,6 +87,19 @@ export const getMyOffers = () => {
     } else {
       console.log("response", response);
       dispatch(setParticipatedDeals(response?.data));
+    }
+  };
+};
+
+export const submitOffer = (offerDetails, setShowEdit) => {
+  return async (dispatch) => {
+    const response = await apiCall(offerDetails, ENDPOINTS.GIVE_OFFER, "POST");
+    if (response.error) {
+      dispatch(openAlertMessage(response?.exception?.response?.data));
+    } else {
+      console.log("response", response);
+      dispatch(openAlertMessage(response?.exception?.response?.data));
+      setShowEdit(false);
     }
   };
 };

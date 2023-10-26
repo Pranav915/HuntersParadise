@@ -56,7 +56,7 @@ export default function AllAuctionsData() {
 
   const BtnBox = () => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <IconButton sx={navbarIconButton} size="small" disableRipple>
+      <IconButton sx={navbarIconButton} size="small">
         <Icon sx={iconsStyle}>login</Icon>
       </IconButton>
     </MDBox>

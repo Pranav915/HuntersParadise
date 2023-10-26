@@ -71,11 +71,11 @@ export default function UserDealsData(createdDeals) {
 
   const ButtonsBox = () => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <IconButton sx={navbarIconButton} size="small" disableRipple>
-        <Icon sx={iconsStyle}>chat</Icon>
+      <IconButton sx={navbarIconButton} size="small">
+        <Icon sx={iconsStyle}>info</Icon>
       </IconButton>
-      <IconButton sx={navbarIconButton} size="small" disableRipple>
-        <Icon sx={iconsStyle}>edit</Icon>
+      <IconButton sx={navbarIconButton} size="small">
+        <Icon sx={iconsStyle}>delete</Icon>
       </IconButton>
     </MDBox>
   );
@@ -84,7 +84,7 @@ export default function UserDealsData(createdDeals) {
     columns: [
       { Header: "Name", accessor: "name", width: "45%", align: "left" },
       { Header: "Asked Price", accessor: "sPrice", align: "center" },
-      { Header: "Top Offer", accessor: "cOffer", align: "center" },
+      { Header: "Top Offer", accessor: "topOffer", align: "center" },
       { Header: "", accessor: "btns", align: "center" },
     ],
 
@@ -96,7 +96,7 @@ export default function UserDealsData(createdDeals) {
             {deal?.askPrice}
           </MDTypography>
         ),
-        cOffer: (
+        topOffer: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
             {}
           </MDTypography>

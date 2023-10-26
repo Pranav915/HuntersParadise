@@ -139,7 +139,7 @@ const routes = [
     name: "Deal Details",
     key: "deal-details",
     icon: <Icon fontSize="small">create</Icon>,
-    route: "/dealDetail",
+    route: "/dealDetail/:productName",
     component: <DealDetails />,
   },
   {

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Card, CardContent, CardMedia, Grid, Icon } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -7,18 +8,41 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import DetailsCard from "./components/DetailsCard";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { connect } from "react-redux";
+import { getDealActions } from "app/actions/dealActions";
 
-const DealDetails = () => {
-  const [price, setPrice] = useState("$5000");
-  const [showEdit, setShowEdit] = useState(false);
+const DealDetails = ({ submitOffer, userDetails }) => {
+  const [price, setPrice] = useState("");
+  const [showEdit, setShowEdit] = useState(true);
+  const [dealDetails, setDealDetails] = useState(null);
+  const location = useLocation();
+
+  const handleSubmitOffer = () => {
+    const offerDetails = {
+      deal: dealDetails?._id,
+      sellerName: dealDetails?.sellerName,
+      offered_by: userDetails?.userId,
+      offered_by_name: userDetails?.username,
+      offeredPrice: price,
+      askedPrice: dealDetails?.askPrice,
+    };
+    // console.log("offer", offer);
+    submitOffer(offerDetails, setShowEdit);
+  };
+
+  useEffect(() => {
+    console.log("location.state.data", location.state.data);
+    setDealDetails(location.state.data);
+  }, []);
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
         <Grid container spacing={4}>
           <Grid item xs={12}>
-            <DetailsCard />
+            <DetailsCard dealDetails={dealDetails} />
           </Grid>
           <Grid item xs={12}>
             <Grid container>
@@ -34,7 +58,7 @@ const DealDetails = () => {
                     />
                     <CardContent>
                       <MDTypography variant="h4" align="center" pt={1}>
-                        Seller Name
+                        {dealDetails?.sellerName}
                       </MDTypography>
                     </CardContent>
                   </MDBox>
@@ -56,7 +80,7 @@ const DealDetails = () => {
                     <MDInput
                       required
                       type="text"
-                      label="Offer"
+                      label="Add Your Offer"
                       name="offeredPrice"
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
@@ -65,11 +89,7 @@ const DealDetails = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <MDButton
-                      color="dark"
-                      variant="gradient"
-                      onClick={() => setShowEdit(!showEdit)}
-                    >
+                    <MDButton color="dark" variant="gradient" onClick={handleSubmitOffer}>
                       <Icon sx={{ display: showEdit ? "none" : "auto" }}>edit</Icon>
                       <Icon sx={{ display: showEdit ? "auto" : "none" }}>login</Icon>
                       <MDTypography
@@ -102,4 +122,16 @@ const DealDetails = () => {
   );
 };
 
-export default DealDetails;
+const mapStoreStateToProps = ({ deal, auth }) => {
+  return {
+    ...deal,
+    ...auth,
+  };
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {
+    ...getDealActions(dispatch),
+  };
+};
+export default connect(mapStoreStateToProps, mapActionsToProps)(DealDetails);

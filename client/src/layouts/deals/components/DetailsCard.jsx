@@ -1,8 +1,11 @@
+/* eslint-disable react/prop-types */
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import { connect } from "react-redux";
+import { getDealActions } from "app/actions/dealActions";
 
-const DetailsCard = () => {
+const DetailsCard = ({ dealDetails }) => {
   return (
     <MDBox>
       <Card>
@@ -18,17 +21,17 @@ const DetailsCard = () => {
             <Grid container pt={3}>
               <Grid item xs={12}>
                 <MDTypography variant="h4" color="text">
-                  Product Name
+                  {dealDetails?.productName}
                 </MDTypography>
               </Grid>
               <Grid item xs={12}>
                 <MDTypography component="p" variant="button" color="text">
-                  Product category
+                  {dealDetails?.category}
                 </MDTypography>
               </Grid>
               <Grid item xs={12} mt={2.5}>
                 <MDTypography variant="h5" color="text">
-                  Overview
+                  Description
                 </MDTypography>
               </Grid>
               <Grid item xs={12}>
@@ -38,13 +41,7 @@ const DetailsCard = () => {
                   color="text"
                   sx={{ textAlign: "justify" }}
                 >
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                  Ipsum has been the industrys standard dummy text ever since the 1500s, when an
-                  unknown printer took a galley of type and scrambled it to make a type specimen
-                  book. It has survived not only five centuries, but also the leap into electronic
-                  typesetting, remaining essentially unchanged. It was popularised in the 1960s with
-                  the release of Letraset sheets containing Lorem Ipsum passages, and more recently
-                  with desktop publishing software like Aldus.
+                  {dealDetails?.dealDescription}
                 </MDTypography>
               </Grid>
               <Grid item xs={12} mt={2.5}>
@@ -54,7 +51,7 @@ const DetailsCard = () => {
               </Grid>
               <Grid item xs={12}>
                 <MDTypography component="p" variant="button" color="text">
-                  $5000
+                  {dealDetails?.askPrice}
                 </MDTypography>
               </Grid>
             </Grid>
@@ -65,4 +62,15 @@ const DetailsCard = () => {
   );
 };
 
-export default DetailsCard;
+const mapStoreStateToProps = ({ deal }) => {
+  return {
+    ...deal,
+  };
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {
+    ...getDealActions(dispatch),
+  };
+};
+export default connect(mapStoreStateToProps, mapActionsToProps)(DetailsCard);
