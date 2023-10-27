@@ -19,6 +19,7 @@ const getDeals = (req, res) => {
           askPrice: item.askPrice,
           seller: item.seller,
           sellerName: item.sellerName,
+          topOffer: item.topOffer
         };
         return newItem;
       });
@@ -42,6 +43,7 @@ const getDeals = (req, res) => {
           askPrice: item.askPrice,
           seller: item.seller,
           sellerName: item.sellerName,
+          topOffer: item.topOffer
         };
         return newItem;
       });
