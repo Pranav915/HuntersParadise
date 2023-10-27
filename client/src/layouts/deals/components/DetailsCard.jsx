@@ -12,7 +12,7 @@ const DetailsCard = ({ dealDetails }) => {
         <Grid container p={2}>
           <Grid item xs={12} md={3}>
             <img
-              src="https://source.unsplash.com/random/200x200?sig=1"
+              src={dealDetails?.productImage}
               alt="test"
               style={{ width: "250px", height: "300px" }}
             />

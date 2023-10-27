@@ -14,10 +14,9 @@ import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
 import { useMaterialUIController } from "context";
 import { useNavigate } from "react-router-dom";
 
-export default function DealUsers() {
+export default function DealUsers(dealDetails) {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
-  const createdDeals = ["hello"];
   const navigate = useNavigate();
   const Project = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -54,10 +53,10 @@ export default function DealUsers() {
       { Header: "action", accessor: "action", align: "center" },
     ],
 
-    rows: createdDeals.map((deal) => {
+    rows: dealDetails?.offers?.map((offer) => {
       let userData = {
-        buyersName: <Project name="harshit" />,
-        askedPrice: <TextComponent data="$6000" />,
+        buyersName: <Project name={offer?.offer?.offered_by_name} />,
+        askedPrice: <TextComponent data={"$" + offer?.offer?.offeredPrice} />,
         action: (
           <MDBox display="flex" alignItems="center" lineHeight={1}>
             <IconButton sx={navbarIconButton} size="small">

@@ -97,6 +97,7 @@ export const getLiveData = () => {
       console.log("dashboardDetails", response.data);
       dispatch(setLiveAuctionsCount(response?.data?.liveAuctions));
       dispatch(setTotalLiveDealsCount(response?.data?.liveDeals));
+      dispatch(setCategoryLiveDealsCount(response?.data?.liveDeals));
     }
   };
 };

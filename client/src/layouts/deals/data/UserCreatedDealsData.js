@@ -67,17 +67,6 @@ export default function UserCreatedDealsData(createdDeals) {
     },
   });
 
-  const ButtonsBox = () => (
-    <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <IconButton sx={navbarIconButton} size="small">
-        <Icon sx={iconsStyle}>info</Icon>
-      </IconButton>
-      <IconButton sx={navbarIconButton} size="small">
-        <Icon sx={iconsStyle}>delete</Icon>
-      </IconButton>
-    </MDBox>
-  );
-
   return {
     columns: [
       { Header: "Product Name", accessor: "productName", width: "30%", align: "left" },

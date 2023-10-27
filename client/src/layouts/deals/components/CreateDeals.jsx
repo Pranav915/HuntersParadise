@@ -25,7 +25,7 @@ const categories = [
   "Coins",
   "Stamps",
   "Sports",
-  "Firearms",
+  "Fashion",
   "Instruments",
   "Culture",
   "Technology",
@@ -105,9 +105,9 @@ const CreateDeal = ({ userDetails, handleClose }) => {
         askPrice: productData.askPrice,
         category: productCategory,
         productImage: productImageUrl,
-        description: productData.description,
+        dealDescription: productData.description,
         seller: userDetails.userId,
-        sellerName: userDetails.username,
+        sellerName: userDetails.name,
       };
       console.log("dealDetails", dealData);
       channel.publish("createDeal", JSON.stringify(dealData));

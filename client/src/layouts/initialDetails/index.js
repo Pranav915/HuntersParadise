@@ -24,7 +24,7 @@ const topFilms = [
   "Coins",
   "Stamps",
   "Sports",
-  "Firearms",
+  "Fashion",
   "Instruments",
   "Culture",
   "Technology",

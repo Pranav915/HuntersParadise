@@ -106,7 +106,6 @@ const Dashboard = ({
     setTotalBalance(userDetails?.wallet?.totalBalance);
     setFreezedBalance(userDetails?.wallet?.freezedBalance);
     setLiveUserCount(0);
-    setCategoryLiveDealsCount(0);
     setTotalAuctionParticipantsCount(0);
 
     getAllDeals();

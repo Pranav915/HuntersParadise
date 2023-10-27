@@ -15,10 +15,12 @@ export const getDealActions = (dispatch) => {
     setCreatedDeals: (data) => dispatch(setCreatedDeals(data)),
     setParticipatedDeals: (data) => dispatch(setParticipatedDeals(data)),
     createDeal: (dealDetails) => dispatch(createDeal(dealDetails)),
+    getDealDetails: (dealId, setDealDetails) => dispatch(getDealDetails(dealId, setDealDetails)),
     getAllDeals: () => dispatch(getAllDeals()),
     getMyDeals: () => dispatch(getMyDeals()),
     getMyOffers: () => dispatch(getMyOffers()),
-    submitOffer: (offerDetails, setShowEdit) => dispatch(submitOffer(offerDetails, setShowEdit)),
+    submitOffer: (offerDetails, setShowEdit, setOfferedPrice) =>
+      dispatch(submitOffer(offerDetails, setShowEdit, setOfferedPrice)),
   };
 };
 
@@ -50,7 +52,20 @@ export const createDeal = (dealDetails) => {
     if (response.error) {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
+      dispatch(openAlertMessage(response?.data));
+    }
+  };
+};
+
+export const getDealDetails = (dealId, setDealDetails) => {
+  return async (dispatch) => {
+    console.log("dealDetails", dealId);
+    const response = await apiCall({}, ENDPOINTS.GET_DEAL_DETAILS + "?dealId=" + dealId, "GET");
+    if (response.error) {
+      dispatch(openAlertMessage(response?.exception?.response?.data));
+    } else {
       console.log("response", response);
+      setDealDetails(response?.data);
     }
   };
 };
@@ -91,14 +106,15 @@ export const getMyOffers = () => {
   };
 };
 
-export const submitOffer = (offerDetails, setShowEdit) => {
+export const submitOffer = (offerDetails, setShowEdit, setOfferedPrice) => {
   return async (dispatch) => {
     const response = await apiCall(offerDetails, ENDPOINTS.GIVE_OFFER, "POST");
     if (response.error) {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
       console.log("response", response);
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch("Offer added successfully.");
+      setOfferedPrice(response?.data?.offeredPrice);
       setShowEdit(false);
     }
   };

@@ -15,13 +15,13 @@ import { connect } from "react-redux";
 import { getDealActions } from "app/actions/dealActions";
 import DealUsers from "./data/DealUsers";
 
-const DealDetails = ({ submitOffer, userDetails }) => {
-  const [price, setPrice] = useState("");
+const DealDetails = ({ submitOffer, userDetails, getDealDetails }) => {
+  const [offeredPrice, setOfferedPrice] = useState("");
   const [showEdit, setShowEdit] = useState(true);
   const [dealDetails, setDealDetails] = useState(null);
   const [userType, setUserType] = useState("");
 
-  const { columns, rows } = DealUsers();
+  const { columns, rows } = DealUsers(dealDetails);
 
   const location = useLocation();
 
@@ -31,25 +31,31 @@ const DealDetails = ({ submitOffer, userDetails }) => {
       sellerName: dealDetails?.sellerName,
       offered_by: userDetails?.userId,
       offered_by_name: userDetails?.username,
-      offeredPrice: price,
+      offeredPrice: offeredPrice,
       askedPrice: dealDetails?.askPrice,
     };
-    // console.log("offer", offer);
-    submitOffer(offerDetails, setShowEdit);
+    submitOffer(offerDetails, setShowEdit, setOfferedPrice);
   };
 
   useEffect(() => {
-    console.log("location.state.data", location.state.data);
-    setDealDetails(location.state.data.deal);
+    // console.log("location.state.data", location.state.data);
+    // setDealDetails(location.state.data.deal);
     setUserType(location.state.data.sender);
+    getDealDetails(location.state.data.deal._id, setDealDetails);
   }, []);
+
+  useEffect(() => {
+    if (dealDetails?.dealDetails?.offers.length != 0) {
+      setShowEdit(true);
+    }
+  }, [dealDetails, setDealDetails]);
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
         <Grid container spacing={4}>
           <Grid item xs={12}>
-            <DetailsCard dealDetails={dealDetails} />
+            <DetailsCard dealDetails={dealDetails?.dealDetails} />
           </Grid>
           <Grid item xs={12}>
             <Grid container>
@@ -60,19 +66,19 @@ const DealDetails = ({ submitOffer, userDetails }) => {
                       component="img"
                       alt="green iguana"
                       height="200"
-                      image="https://source.unsplash.com/random"
+                      image={dealDetails?.dealDetails?.seller.profilePhoto}
                       sx={{ width: "250px" }}
                     />
                     <CardContent>
                       <MDTypography variant="h4" align="center" pt={1}>
-                        {dealDetails?.sellerName}
+                        {dealDetails?.dealDetails?.sellerName}
                       </MDTypography>
                     </CardContent>
                   </MDBox>
                 </Card>
               </Grid>
               <Grid item xs={12} md={8}>
-                {userType === "all" ? (
+                {!dealDetails?.isSeller ? (
                   <Grid container spacing={2} p={5} pl={10}>
                     <Grid item xs={12} mt={2.5}>
                       <MDTypography variant="h4" color="text">
@@ -81,7 +87,7 @@ const DealDetails = ({ submitOffer, userDetails }) => {
                     </Grid>
                     <Grid item xs={12} sx={{ display: showEdit ? "none" : "auto" }}>
                       <MDTypography component="h5" variant="h5" color="text">
-                        {price}
+                        {offeredPrice}
                       </MDTypography>
                     </Grid>
                     <Grid item xs={12} sx={{ display: showEdit ? "auto" : "none" }}>
@@ -90,8 +96,8 @@ const DealDetails = ({ submitOffer, userDetails }) => {
                         type="text"
                         label="Add Your Offer"
                         name="offeredPrice"
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
+                        value={offeredPrice}
+                        onChange={(e) => setOfferedPrice(e.target.value)}
                         autoComplete="offeredPrice"
                         fullWidth
                       />
