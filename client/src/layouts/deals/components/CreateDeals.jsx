@@ -42,7 +42,7 @@ const CreateDeal = ({ userDetails, handleClose }) => {
     askPrice: null,
     description: "",
   });
-  const { channel } = useChannel(`dealChannel:${productCategory}`, (message) => {
+  const { channel } = useChannel("dealChannel", (message) => {
     console.log(message);
   });
 
@@ -108,6 +108,7 @@ const CreateDeal = ({ userDetails, handleClose }) => {
         dealDescription: productData.description,
         seller: userDetails.userId,
         sellerName: userDetails.name,
+        action: "create",
       };
       console.log("dealDetails", dealData);
       channel.publish("createDeal", JSON.stringify(dealData));
