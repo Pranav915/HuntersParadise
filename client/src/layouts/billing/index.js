@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 // @mui material components
 import Grid from "@mui/material/Grid";
 
@@ -20,8 +21,9 @@ import { Card, Icon } from "@mui/material";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import { connect } from "react-redux";
 
-function Billing() {
+const Billing = ({ userDetails }) => {
   return (
     <DashboardLayout>
       <DashboardNavbar absolute isMini />
@@ -35,7 +37,7 @@ function Billing() {
                     icon="account_balance"
                     title="Total Balance"
                     description="(AB + TB + FB)"
-                    value="$770"
+                    value={"$" + userDetails?.wallet?.totalBalance}
                   />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
@@ -43,7 +45,7 @@ function Billing() {
                     icon="wallet"
                     title="Available Balance"
                     description="Available for transactions"
-                    value="$455.00"
+                    value={"$" + userDetails?.wallet?.availableBalance}
                   />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
@@ -51,7 +53,7 @@ function Billing() {
                     icon="hourglass_top"
                     title="Transit Balance"
                     description="Incoming Payment"
-                    value="$125.00"
+                    value={"$" + userDetails?.wallet?.outStandingBalance}
                   />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
@@ -59,7 +61,7 @@ function Billing() {
                     icon="ac_unit"
                     title="Freezed Balance"
                     description="Outgoing Payment"
-                    value="$200.00"
+                    value={"$" + userDetails?.wallet?.freezedBalance}
                   />
                 </Grid>
                 {/* <Grid item xs={12}>
@@ -94,7 +96,7 @@ function Billing() {
                     <AccountBalanceWalletIcon />
                   </MDBox>
                   <MDTypography variant="h3" fontWeight="medium" p={1} mt={1}>
-                    $455.00
+                    {"$" + userDetails?.wallet?.totalBalance}
                   </MDTypography>
                   <MDBox display="flex" justifyContent="center" mt={1}>
                     <Grid item xs={12} sm={6} lg={5} pr={1.5}>
@@ -136,6 +138,15 @@ function Billing() {
       <Footer />
     </DashboardLayout>
   );
-}
+};
 
-export default Billing;
+const mapStoreStateToProps = ({ auth }) => {
+  return {
+    ...auth,
+  };
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {};
+};
+export default connect(mapStoreStateToProps, mapActionsToProps)(Billing);

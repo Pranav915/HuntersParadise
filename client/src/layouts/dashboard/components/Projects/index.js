@@ -19,17 +19,17 @@ import DataTable from "examples/Tables/DataTable";
 import AllAuctionsData from "layouts/dashboard/components/Projects/data/AllAuctionsData";
 import UserAuctionsData from "layouts/dashboard/components/Projects/data/UserAuctionsData";
 import UserDealsData from "layouts/dashboard/components/Projects/data/UserDealsData";
-import AllDealsData from "./data/AllDealsData";
 import { connect } from "react-redux";
 import { getDealActions } from "app/actions/dealActions";
+import ParticipatedDealsData from "./data/ParticipatedDealsData";
 
-const Projects = ({ name, myOffers }) => {
+const Projects = ({ name, participatedDeals, createdDeals }) => {
   const [menu, setMenu] = useState(null);
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const auctionsData = AllAuctionsData();
-  const dealsData = AllDealsData(myOffers);
-  const userDealsData = UserDealsData();
+  const dealsData = ParticipatedDealsData(participatedDeals);
+  const userDealsData = UserDealsData(createdDeals);
   const userAuctionsData = UserAuctionsData();
 
   useEffect(() => {

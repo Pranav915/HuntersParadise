@@ -1,4 +1,4 @@
-const LiveDeals = require('../../models/LiveDeals');
+const LiveDeals = require("../../models/LiveDeals");
 const CategoryInfo = require("../../models/CategoryInfo");
 const createDeal = (req, res) => {
     if(req.headers.from != "Pranav"){
@@ -26,9 +26,8 @@ const createDeal = (req, res) => {
         res.status(200).send("Deal Created Successfully");
     })
     .catch((error) => {
-        console.error('Error saving deal entry:', error);
-        res.status(501).send("Internal Server Error Kindly Try again");
+      console.error("Error saving deal entry:", error);
+      res.status(501).send("Internal Server Error Kindly Try again");
     });
-
-}
+};
 module.exports = createDeal;

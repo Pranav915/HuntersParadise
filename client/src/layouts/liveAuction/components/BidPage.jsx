@@ -2,13 +2,16 @@ import { Card, Grid, Icon, IconButton } from "@mui/material";
 import MDAvatar from "components/MDAvatar";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
+import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 import { useMaterialUIController } from "context";
 import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
+import { useState } from "react";
 
 const BidPage = () => {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
+  const [bid, setBid] = useState(null);
 
   const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
     color: () => {
@@ -85,6 +88,23 @@ const BidPage = () => {
                   </MDBox>
                 </Grid>
               </Grid>
+            </Grid>
+            <Grid item xs={12} mt={4}>
+              <MDTypography variant="h5" fontWeight="medium">
+                ADD YOUR BID
+              </MDTypography>
+            </Grid>
+            <Grid item xs={12} mt={1}>
+              <MDInput
+                required
+                type="text"
+                label="Bid"
+                name="bidPrice"
+                autoComplete="bidPrice"
+                value={bid}
+                onChange={(e) => setBid(e.target.value)}
+                fullWidth
+              />
             </Grid>
             <Grid item xs={12} mt={2}>
               <MDButton color="dark" fullWidth>

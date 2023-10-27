@@ -14,10 +14,18 @@ export const getDealActions = (dispatch) => {
   return {
     setCreatedDeals: (data) => dispatch(setCreatedDeals(data)),
     setParticipatedDeals: (data) => dispatch(setParticipatedDeals(data)),
-    setAllDeals: (data) => dispatch(setAllDeals(data)),
     createDeal: (dealDetails) => dispatch(createDeal(dealDetails)),
     getAllDeals: () => dispatch(getAllDeals()),
+    getMyDeals: () => dispatch(getMyDeals()),
     getMyOffers: () => dispatch(getMyOffers()),
+    submitOffer: (offerDetails, setShowEdit) => dispatch(submitOffer(offerDetails, setShowEdit)),
+  };
+};
+
+export const setAllDeals = (data) => {
+  return {
+    type: dealActions.SET_ALL_DEALS,
+    data,
   };
 };
 
@@ -31,20 +39,6 @@ export const setCreatedDeals = (data) => {
 export const setParticipatedDeals = (data) => {
   return {
     type: dealActions.SET_PARTICIPATED_DEALS,
-    data,
-  };
-};
-
-export const setAllDeals = (data) => {
-  return {
-    type: dealActions.SET_ALL_DEALS,
-    data,
-  };
-};
-
-export const setMyOffers = (data) => {
-  return {
-    type: dealActions.SET_MY_OFFERS,
     data,
   };
 };
@@ -73,6 +67,18 @@ export const getAllDeals = () => {
   };
 };
 
+export const getMyDeals = () => {
+  return async (dispatch) => {
+    const response = await apiCall({}, ENDPOINTS.GET_MY_DEALS, "GET");
+    if (response.error) {
+      dispatch(openAlertMessage(response?.exception?.response?.data));
+    } else {
+      console.log("response", response);
+      dispatch(setCreatedDeals(response?.data));
+    }
+  };
+};
+
 export const getMyOffers = () => {
   return async (dispatch) => {
     const response = await apiCall({}, ENDPOINTS.GET_MY_OFFERS, "GET");
@@ -80,7 +86,20 @@ export const getMyOffers = () => {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
       console.log("response", response);
-      dispatch(setMyOffers(response?.data));
+      dispatch(setParticipatedDeals(response?.data));
+    }
+  };
+};
+
+export const submitOffer = (offerDetails, setShowEdit) => {
+  return async (dispatch) => {
+    const response = await apiCall(offerDetails, ENDPOINTS.GIVE_OFFER, "POST");
+    if (response.error) {
+      dispatch(openAlertMessage(response?.exception?.response?.data));
+    } else {
+      console.log("response", response);
+      dispatch(openAlertMessage(response?.exception?.response?.data));
+      setShowEdit(false);
     }
   };
 };

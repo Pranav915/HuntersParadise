@@ -6,9 +6,12 @@ import MDTypography from "components/MDTypography";
 import { useState } from "react";
 import HostCard from "./components/HostCard";
 import BidPage from "./components/BidPage";
+import ProductCard from "./components/ProductCard";
+import ChatCard from "./components/ChatCard";
 
 const LiveAuction = () => {
   const [progress, setProgress] = useState(0);
+
   return (
     <PageLayout>
       <Grid container>
@@ -17,8 +20,8 @@ const LiveAuction = () => {
             <Grid item xs={12}>
               <HostCard />
             </Grid>
-            <Grid item xs={12}>
-              <Card>
+            <Grid item xs={12} sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+              <Card sx={{ flex: 1 }}>
                 <MDBox p={2}>
                   <MDTypography variant="h5" color="text">
                     500 of 700 Products Remaining
@@ -27,6 +30,20 @@ const LiveAuction = () => {
                     <LinearProgress variant="determinate" value={progress} />
                   </MDBox>
                 </MDBox>
+                <Card
+                  sx={{
+                    maxHeight: "386px",
+                    overflow: "hidden",
+                    paddingBottom: 2,
+                  }}
+                >
+                  <MDBox sx={{ overflow: "auto" }}>
+                    <ProductCard />
+                    <ProductCard />
+                    <ProductCard />
+                    <ProductCard />
+                  </MDBox>
+                </Card>
               </Card>
             </Grid>
           </Grid>
@@ -34,9 +51,9 @@ const LiveAuction = () => {
         <Grid item xs={12} md={6} py={2}>
           <BidPage />
         </Grid>
-        <Grid item xs={12} md={3} p={2}>
-          <Card>
-            <MDBox p={2}>CHATS</MDBox>
+        <Grid item xs={12} md={3} p={2} sx={{ display: "flex", flexDirection: "column" }}>
+          <Card sx={{ flex: 1 }}>
+            <ChatCard />
           </Card>
         </Grid>
       </Grid>

@@ -23,7 +23,6 @@ const getDeals = (req, res) => {
         };
         return newItem;
       });
-      console.log("data", data);
       res.status(200).send(data);
     });
   } else {
