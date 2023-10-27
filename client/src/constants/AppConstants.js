@@ -11,5 +11,10 @@ export const ENDPOINTS = {
   CREATE_DEAL: "/deal/createDeal",
   GET_DASHBOARD_DETAILS: "",
   GET_ALL_DEALS: "/deal/getdeals?cat=all",
+  GET_MY_DEALS: "/deal/getMyDeals",
   GET_MY_OFFERS: "/deal/getMyOffers",
+  GET_CATEGORY_DATA: "/data/categoryData",
+  GIVE_OFFER: "/deal/giveOffer",
+  GET_LIVE_DATA: "data/getLiveData",
+  GET_DEAL_DETAILS: "/deal/getDealDetails",
 };

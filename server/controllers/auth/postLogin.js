@@ -37,9 +37,10 @@ const postLogin = async (req, res) => {
           age: user.age,
           country: user.country,
           name: user.name,
+          profilePhoto: user.profilePhoto,
           phoneNumber: user.phoneNumber,
-          categories: user.categories,
-          wallet: user.wallet
+          categories: user.subscribedCategories,
+          wallet: user.wallet,
         },
       });
     }

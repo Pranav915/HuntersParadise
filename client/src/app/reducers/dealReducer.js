@@ -1,14 +1,18 @@
 import { dealActions } from "app/actions/dealActions";
 
 const initState = {
+  allDeals: [],
   createdDeals: [],
   participatedDeals: [],
-  allDeals: [],
-  myOffers: [],
 };
 
 const dealReducer = (state = initState, action) => {
   switch (action.type) {
+    case dealActions.SET_ALL_DEALS:
+      return {
+        ...state,
+        allDeals: action.data,
+      };
     case dealActions.SET_CREATED_DEALS:
       return {
         ...state,
@@ -18,16 +22,6 @@ const dealReducer = (state = initState, action) => {
       return {
         ...state,
         participatedDeals: action.data,
-      };
-    case dealActions.SET_ALL_DEALS:
-      return {
-        ...state,
-        allDeals: action.data,
-      };
-    case dealActions.SET_MY_OFFERS:
-      return {
-        ...state,
-        myOffers: action.data,
       };
     default:
       return state;

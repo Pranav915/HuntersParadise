@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -16,19 +18,21 @@ import DataTable from "examples/Tables/DataTable";
 import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
 
 // Data
-import authorsTableData from "layouts/tables/data/authorsTableData";
-import projectsTableData from "layouts/tables/data/projectsTableData";
 import MDButton from "components/MDButton";
 import { IconButton, Modal } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMaterialUIController } from "context";
+import { connect } from "react-redux";
+import { getDealActions } from "app/actions/dealActions";
+import AllDealsTableData from "./data/AllDealsTableData";
+import UserCreatedDealsData from "./data/UserCreatedDealsData";
 
-function Tables() {
+const Tables = ({ getAllDeals, allDeals, getMyDeals, createdDeals }) => {
   const [open, setOpen] = useState(false);
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
-  const { columns, rows } = authorsTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+  const { columns, rows } = AllDealsTableData(allDeals);
+  const { columns: pColumns, rows: pRows } = UserCreatedDealsData(createdDeals);
 
   const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
     color: () => {
@@ -46,6 +50,11 @@ function Tables() {
     if (reason && reason === "backdropClick") return;
     setOpen(false);
   };
+
+  useEffect(() => {
+    getAllDeals();
+    getMyDeals();
+  }, []);
 
   return (
     <DashboardLayout>
@@ -156,6 +165,17 @@ function Tables() {
       <Footer />
     </DashboardLayout>
   );
-}
+};
 
-export default Tables;
+const mapStoreStateToProps = ({ deal }) => {
+  return {
+    ...deal,
+  };
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {
+    ...getDealActions(dispatch),
+  };
+};
+export default connect(mapStoreStateToProps, mapActionsToProps)(Tables);

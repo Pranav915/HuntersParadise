@@ -1,5 +1,7 @@
+/* eslint-disable react/prop-types */
 // @mui material components
 import Grid from "@mui/material/Grid";
+import CloseIcon from "@mui/icons-material/Close";
 
 // Code Pulse React components
 import MDBox from "components/MDBox";
@@ -10,18 +12,70 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import MasterCard from "examples/Cards/MasterCard";
 import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
+import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
 
 // Billing page components
 import PaymentMethod from "layouts/billing/components/PaymentMethod";
 import Invoices from "layouts/billing/components/Invoices";
 import BillingInformation from "layouts/billing/components/BillingInformation";
 import Transactions from "layouts/billing/components/Transactions";
-import { Card, Icon } from "@mui/material";
+import { Card, Icon, IconButton, Modal } from "@mui/material";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import { connect } from "react-redux";
+import { useState } from "react";
+import MDInput from "components/MDInput";
+import { useMaterialUIController } from "context";
 
-function Billing() {
+const Billing = ({ userDetails }) => {
+  const [controller, dispatch] = useMaterialUIController();
+  const { transparentNavbar, darkMode } = controller;
+  const [openAdd, setOpenAdd] = useState(false);
+  const [openWithdraw, setOpenWithdraw] = useState(false);
+  const [addValue, setAddValue] = useState(null);
+  const [withdrawValue, setWithdrawValue] = useState(null);
+
+  const handleCloseAdd = (event, reason) => {
+    if (reason && reason === "backdropClick") return;
+    setOpenAdd(false);
+  };
+
+  const handleCloseWithdraw = (event, reason) => {
+    if (reason && reason === "backdropClick") return;
+    setOpenWithdraw(false);
+  };
+
+  const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
+    color: () => {
+      let colorValue = darkMode ? white.main : dark.main;
+
+      if (transparentNavbar) {
+        colorValue = darkMode ? rgba(text.main, 0.6) : text.main;
+      }
+
+      return colorValue;
+    },
+  });
+
+  const handleSubmitAdd = (event) => {
+    event.preventDefault();
+    const data = {
+      addValue: addValue,
+    };
+    handleCloseAdd();
+    console.log("Add Value", data);
+  };
+
+  const handleSubmitWithdraw = (event) => {
+    event.preventDefault();
+    const data = {
+      withdrawValue: withdrawValue,
+    };
+    handleCloseWithdraw();
+    console.log("Withdraw Value", data);
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar absolute isMini />
@@ -35,7 +89,7 @@ function Billing() {
                     icon="account_balance"
                     title="Total Balance"
                     description="(AB + TB + FB)"
-                    value="$770"
+                    value={"$" + userDetails?.wallet?.totalBalance}
                   />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
@@ -43,7 +97,7 @@ function Billing() {
                     icon="wallet"
                     title="Available Balance"
                     description="Available for transactions"
-                    value="$455.00"
+                    value={"$" + userDetails?.wallet?.availableBalance}
                   />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
@@ -51,7 +105,7 @@ function Billing() {
                     icon="hourglass_top"
                     title="Transit Balance"
                     description="Incoming Payment"
-                    value="$125.00"
+                    value={"$" + userDetails?.wallet?.outStandingBalance}
                   />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
@@ -59,7 +113,7 @@ function Billing() {
                     icon="ac_unit"
                     title="Freezed Balance"
                     description="Outgoing Payment"
-                    value="$200.00"
+                    value={"$" + userDetails?.wallet?.freezedBalance}
                   />
                 </Grid>
                 {/* <Grid item xs={12}>
@@ -94,18 +148,155 @@ function Billing() {
                     <AccountBalanceWalletIcon />
                   </MDBox>
                   <MDTypography variant="h3" fontWeight="medium" p={1} mt={1}>
-                    $455.00
+                    {"$" + userDetails?.wallet?.totalBalance}
                   </MDTypography>
                   <MDBox display="flex" justifyContent="center" mt={1}>
                     <Grid item xs={12} sm={6} lg={5} pr={1.5}>
-                      <MDButton variant="gradient" color="success">
+                      <MDButton variant="gradient" color="success" onClick={() => setOpenAdd(true)}>
                         Add Balance
                       </MDButton>
+                      <Modal
+                        open={openAdd}
+                        onClose={handleCloseAdd}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+                      >
+                        <MDBox>
+                          <Card>
+                            <MDBox
+                              sx={{
+                                px: 2,
+                                py: 1,
+                              }}
+                              id="modal-modal-title"
+                            >
+                              <MDBox
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <MDTypography variant="h6" component="h2">
+                                  Add Money
+                                </MDTypography>
+                                <MDBox>
+                                  <IconButton
+                                    sx={navbarIconButton}
+                                    aria-label="Delete"
+                                    onClick={handleCloseAdd}
+                                  >
+                                    <CloseIcon sx={iconsStyle} />
+                                  </IconButton>
+                                </MDBox>
+                              </MDBox>
+                            </MDBox>
+                            <MDBox component="form" role="form" mx={5} onSubmit={handleSubmitAdd}>
+                              <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                  <MDInput
+                                    required
+                                    type="text"
+                                    label="Enter Amount"
+                                    name="addValue"
+                                    value={addValue}
+                                    onChange={(e) => setAddValue(e.target.value)}
+                                    autoComplete="addValue"
+                                    fullWidth
+                                  />
+                                </Grid>
+                              </Grid>
+                              <MDBox
+                                sx={{ display: "flex", justifyContent: "right" }}
+                                mx={5}
+                                my={2}
+                              >
+                                <MDButton color="dark" variant="gradient" type="submit">
+                                  Submit
+                                </MDButton>
+                              </MDBox>
+                            </MDBox>
+                          </Card>
+                        </MDBox>
+                      </Modal>
                     </Grid>
                     <Grid item xs={12} sm={6} lg={5} pl={1.5}>
-                      <MDButton variant="gradient" color="error">
+                      <MDButton
+                        variant="gradient"
+                        color="error"
+                        onClick={() => setOpenWithdraw(true)}
+                      >
                         Withdraw Balance
                       </MDButton>
+                      <Modal
+                        open={openWithdraw}
+                        onClose={handleCloseWithdraw}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+                      >
+                        <MDBox>
+                          <Card>
+                            <MDBox
+                              sx={{
+                                px: 2,
+                                py: 1,
+                              }}
+                              id="modal-modal-title"
+                            >
+                              <MDBox
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <MDTypography variant="h6" component="h2">
+                                  Withdraw Money
+                                </MDTypography>
+                                <MDBox>
+                                  <IconButton
+                                    sx={navbarIconButton}
+                                    aria-label="Delete"
+                                    onClick={handleCloseWithdraw}
+                                  >
+                                    <CloseIcon sx={iconsStyle} />
+                                  </IconButton>
+                                </MDBox>
+                              </MDBox>
+                            </MDBox>
+                            <MDBox
+                              component="form"
+                              role="form"
+                              mx={5}
+                              onSubmit={handleSubmitWithdraw}
+                            >
+                              <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                  <MDInput
+                                    required
+                                    type="text"
+                                    label="Enter Amount"
+                                    name="withdrawValue"
+                                    value={withdrawValue}
+                                    onChange={(e) => setWithdrawValue(e.target.value)}
+                                    autoComplete="withdrawValue"
+                                    fullWidth
+                                  />
+                                </Grid>
+                              </Grid>
+                              <MDBox
+                                sx={{ display: "flex", justifyContent: "right" }}
+                                mx={5}
+                                my={2}
+                              >
+                                <MDButton color="dark" variant="gradient" type="submit">
+                                  Submit
+                                </MDButton>
+                              </MDBox>
+                            </MDBox>
+                          </Card>
+                        </MDBox>
+                      </Modal>
                     </Grid>
                   </MDBox>
                 </MDBox>
@@ -136,6 +327,15 @@ function Billing() {
       <Footer />
     </DashboardLayout>
   );
-}
+};
 
-export default Billing;
+const mapStoreStateToProps = ({ auth }) => {
+  return {
+    ...auth,
+  };
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {};
+};
+export default connect(mapStoreStateToProps, mapActionsToProps)(Billing);

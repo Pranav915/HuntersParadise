@@ -10,7 +10,6 @@ const getMyOffers = (req, res) => {
         res.status(501).send("Error fetching data");
         return;
       }
-      console.log(userOffers);
       res.status(200).send(userOffers);
     });
 };
