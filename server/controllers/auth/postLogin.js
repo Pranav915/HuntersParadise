@@ -39,6 +39,7 @@ const postLogin = async (req, res) => {
           name: user.name,
           phoneNumber: user.phoneNumber,
           categories: user.categories,
+          wallet: user.wallet
         },
       });
     }
