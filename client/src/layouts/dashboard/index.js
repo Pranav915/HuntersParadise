@@ -76,11 +76,13 @@ const Dashboard = ({
   });
   const search = useLocation().search;
   const navigate = useNavigate();
+
   const dealChannel = useChannel("dealChannel", (message) => {
-    console.log("message", message.presence);
-    const content = JSON.parse(message?.data);
-    console.log("content", content);
-    openAlertMessage("New Deal Added");
+    getAllDeals();
+    getMyDeals();
+    getMyOffers();
+    getPieChartData();
+    getLiveData();
   }).channel;
 
   useEffect(() => {

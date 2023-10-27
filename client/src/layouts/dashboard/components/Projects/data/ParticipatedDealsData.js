@@ -95,7 +95,7 @@ export default function ParticipatedDealsData(participatedDeals) {
         name: <Company image={logoXD} name={offer?.deal?.productName} />,
         sPrice: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {offer?.askedPrice}
+            {offer?.deal?.askPrice}
           </MDTypography>
         ),
         cOffer: (

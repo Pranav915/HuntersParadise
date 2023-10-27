@@ -20,7 +20,6 @@ import colors from "assets/theme/base/colors";
 const { gradients, dark } = colors;
 
 function configs(labels, datasets) {
-  console.log("datasets", datasets);
   const backgroundColors = [];
 
   if (datasets.backgroundColors) {
@@ -72,7 +71,7 @@ function configs(labels, datasets) {
       plugins: {
         legend: {
           display: false,
-          position: "top",
+          position: "right",
           labels: {
             usePointStyle: true,
           },

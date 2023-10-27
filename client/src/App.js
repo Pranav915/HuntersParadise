@@ -40,8 +40,16 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 import { connect } from "react-redux";
+import { useChannel } from "ably/react";
+import { getDealActions } from "app/actions/dealActions";
 
-const App = ({ user }) => {
+const App = ({
+  userDetails,
+  totalLiveDealsCount,
+  setTotalLiveDealsCount,
+  categoryLiveDealsCount,
+  setCategoryLiveDealsCount,
+}) => {
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
@@ -57,6 +65,17 @@ const App = ({ user }) => {
   const [rtlCache, setRtlCache] = useState(null);
   const [newRoutes, setNewRoutes] = useState(routes);
   const { pathname } = useLocation();
+
+  const dealChannel = useChannel("dealChannel", (message) => {
+    console.log("message", message);
+    const content = JSON.parse(message?.data);
+    console.log("content", content);
+    if (message.data.action == "create") {
+      if (message.data.category in userDetails?.categories) {
+        openAlertMessage("New Deal Added in " + message.data.category);
+      }
+    }
+  }).channel;
 
   // Cache for the rtl
   useMemo(() => {
@@ -100,14 +119,14 @@ const App = ({ user }) => {
 
   useEffect(() => {
     const tempRoutes = routes.filter((route) => {
-      if (user) {
+      if (userDetails?.username) {
         return route.name !== "Sign In" && route.name !== "Sign Up";
       } else {
         return route.name !== "Logout";
       }
     });
     setNewRoutes(tempRoutes);
-  }, [user]);
+  }, [userDetails]);
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
@@ -197,8 +216,17 @@ const App = ({ user }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  user: state.auth.userDetails?.username,
-});
+const mapStoreStateToProps = ({ auth, deal }) => {
+  return {
+    ...auth,
+    ...deal,
+  };
+};
 
-export default connect(mapStateToProps)(App);
+const mapActionsToProps = (dispatch) => {
+  return {
+    ...getDealActions(dispatch),
+  };
+};
+
+export default connect(mapStoreStateToProps, mapActionsToProps)(App);

@@ -6,7 +6,7 @@ const completedDeal = (req, res) => {
   console.log("offerId", req.body.offerId);
   DealOffers.findOne({ _id: req.body.offerId })
     .populate("deal")
-    .then((offer) => {
+    .then(async (offer) => {
       console.log("offer", offer);
       const newCompletedDeal = new CompletedDeal({
         productName: offer.deal.productName,
@@ -20,8 +20,8 @@ const completedDeal = (req, res) => {
         buyerName: offer.offered_by_name,
         status: "Completed",
       });
-      newCompletedDeal.save().then(async (newdeal) => {
-        CategoryInfo.findOneAndUpdate(
+      await newCompletedDeal.save().then(async (newdeal) => {
+        await CategoryInfo.findOneAndUpdate(
           { category: offer.deal.category },
           {
             $inc: {
