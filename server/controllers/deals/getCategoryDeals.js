@@ -1,5 +1,5 @@
 const LiveDeals = require("../../models/LiveDeals");
-const getDeals = (req, res) => {
+const getDeals = async (req, res) => {
   const querycategory = req.query.cat;
   console.log("querycategory", querycategory);
   if (querycategory == "all") {
@@ -24,6 +24,19 @@ const getDeals = (req, res) => {
         return newItem;
       });
       res.status(200).send(data);
+    });
+  }else if(querycategory == "mycat"){
+    await User.findById(req.user.userId).then((user) => {
+        CategoryInfo.find({category: { $in: user.subscribedCategories }}).then((data) => {
+            res.status(200).send(data);
+        }).catch((err) => {
+            console.log("Error while fetching User Categories data", err);
+            res.status(501).send("Error while fetching User Categories data");
+            return;
+        })
+    }).catch((err) => {
+        console.log("Error getting User categaries", err);
+        res.status(501).send("Error getting User categaries");
     });
   } else {
     LiveDeals.find({ category: querycategory }).then((deals, err) => {
