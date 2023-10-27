@@ -83,7 +83,9 @@ export default function AllDealsTableData(allDeals) {
         action: (
           <MDButton
             onClick={() => {
-              navigate(`/dealDetail/${deal?.productName}`, { state: { data: deal } });
+              navigate(`/dealDetail/${deal?.productName}`, {
+                state: { data: { deal: deal, sender: "all" } },
+              });
             }}
           >
             See Details
