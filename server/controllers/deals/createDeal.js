@@ -1,11 +1,11 @@
 const LiveDeals = require("../../models/LiveDeals");
 const CategoryInfo = require("../../models/CategoryInfo");
 const createDeal = (req, res) => {
-  //   if (req.headers.from != "Pranav") {
-  //     res.status(401).send("Not authorized");
-  //     return;
-  //   }
-  const data = req.body.data;
+  if (req.headers.from != "Pranav") {
+    res.status(401).send("Not authorized");
+    return;
+  }
+  const data = JSON.parse(req.body.messages[0].data);
   const newDeal = new LiveDeals({
     productName: data.productName,
     productImage: data.productImage,
@@ -17,9 +17,9 @@ const createDeal = (req, res) => {
   });
   newDeal
     .save()
-    .then(async (deal) => {
+    .then((deal) => {
       console.log("New deal entry saved:", deal);
-      await CategoryInfo.updateOne(
+      CategoryInfo.updateOne(
         { category: data.category },
         { $inc: { numberLiveDeals: 1 } }
       );

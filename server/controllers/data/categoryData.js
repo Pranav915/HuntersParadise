@@ -8,6 +8,10 @@ const getCategoryInfo = (req, res) => {
     .catch((err) => {
       console.log("Error while fetching data for Categories", err);
       res.status(501).send("Error while fetching data for Categories");
+    })
+    .catch((err) => {
+      console.log("Error while fetching data for Categories", err);
+      res.status(501).send("Error while fetching data for Categories");
     });
 };
 module.exports = getCategoryInfo;
