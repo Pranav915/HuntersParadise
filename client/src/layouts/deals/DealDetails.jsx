@@ -4,6 +4,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import DataTable from "examples/Tables/DataTable";
 
 import DetailsCard from "./components/DetailsCard";
 import MDButton from "components/MDButton";
@@ -12,11 +13,16 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 import { getDealActions } from "app/actions/dealActions";
+import DealUsers from "./data/DealUsers";
 
 const DealDetails = ({ submitOffer, userDetails }) => {
   const [price, setPrice] = useState("");
   const [showEdit, setShowEdit] = useState(true);
   const [dealDetails, setDealDetails] = useState(null);
+  const [userType, setUserType] = useState("");
+
+  const { columns, rows } = DealUsers();
+
   const location = useLocation();
 
   const handleSubmitOffer = () => {
@@ -34,7 +40,8 @@ const DealDetails = ({ submitOffer, userDetails }) => {
 
   useEffect(() => {
     console.log("location.state.data", location.state.data);
-    setDealDetails(location.state.data);
+    setDealDetails(location.state.data.deal);
+    setUserType(location.state.data.sender);
   }, []);
   return (
     <DashboardLayout>
@@ -65,54 +72,66 @@ const DealDetails = ({ submitOffer, userDetails }) => {
                 </Card>
               </Grid>
               <Grid item xs={12} md={8}>
-                <Grid container spacing={2} p={5} pl={10}>
-                  <Grid item xs={12} mt={2.5}>
-                    <MDTypography variant="h4" color="text">
-                      Your Offered Price
-                    </MDTypography>
+                {userType === "all" ? (
+                  <Grid container spacing={2} p={5} pl={10}>
+                    <Grid item xs={12} mt={2.5}>
+                      <MDTypography variant="h4" color="text">
+                        Your Offered Price
+                      </MDTypography>
+                    </Grid>
+                    <Grid item xs={12} sx={{ display: showEdit ? "none" : "auto" }}>
+                      <MDTypography component="h5" variant="h5" color="text">
+                        {price}
+                      </MDTypography>
+                    </Grid>
+                    <Grid item xs={12} sx={{ display: showEdit ? "auto" : "none" }}>
+                      <MDInput
+                        required
+                        type="text"
+                        label="Add Your Offer"
+                        name="offeredPrice"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        autoComplete="offeredPrice"
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <MDButton color="dark" variant="gradient" onClick={handleSubmitOffer}>
+                        <Icon sx={{ display: showEdit ? "none" : "auto" }}>edit</Icon>
+                        <Icon sx={{ display: showEdit ? "auto" : "none" }}>login</Icon>
+                        <MDTypography
+                          component="h5"
+                          variant="h6"
+                          color="text"
+                          ml={1}
+                          sx={{ display: showEdit ? "auto" : "none" }}
+                        >
+                          Submit
+                        </MDTypography>
+                        <MDTypography
+                          component="h5"
+                          variant="h6"
+                          color="text"
+                          ml={1}
+                          sx={{ display: showEdit ? "none" : "auto" }}
+                        >
+                          Edit
+                        </MDTypography>
+                      </MDButton>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sx={{ display: showEdit ? "none" : "auto" }}>
-                    <MDTypography component="h5" variant="h5" color="text">
-                      {price}
-                    </MDTypography>
-                  </Grid>
-                  <Grid item xs={12} sx={{ display: showEdit ? "auto" : "none" }}>
-                    <MDInput
-                      required
-                      type="text"
-                      label="Add Your Offer"
-                      name="offeredPrice"
-                      value={price}
-                      onChange={(e) => setPrice(e.target.value)}
-                      autoComplete="offeredPrice"
-                      fullWidth
+                ) : (
+                  <MDBox ml={5} width="80%">
+                    <DataTable
+                      table={{ columns, rows }}
+                      isSorted={false}
+                      entriesPerPage={false}
+                      showTotalEntries={false}
+                      noEndBorder
                     />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <MDButton color="dark" variant="gradient" onClick={handleSubmitOffer}>
-                      <Icon sx={{ display: showEdit ? "none" : "auto" }}>edit</Icon>
-                      <Icon sx={{ display: showEdit ? "auto" : "none" }}>login</Icon>
-                      <MDTypography
-                        component="h5"
-                        variant="h6"
-                        color="text"
-                        ml={1}
-                        sx={{ display: showEdit ? "auto" : "none" }}
-                      >
-                        Submit
-                      </MDTypography>
-                      <MDTypography
-                        component="h5"
-                        variant="h6"
-                        color="text"
-                        ml={1}
-                        sx={{ display: showEdit ? "none" : "auto" }}
-                      >
-                        Edit
-                      </MDTypography>
-                    </MDButton>
-                  </Grid>
-                </Grid>
+                  </MDBox>
+                )}
               </Grid>
             </Grid>
           </Grid>

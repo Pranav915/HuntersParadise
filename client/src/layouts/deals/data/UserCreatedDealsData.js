@@ -20,10 +20,13 @@ import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 import { IconButton } from "@mui/material";
 import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
 import { useMaterialUIController } from "context";
+import MDButton from "components/MDButton";
+import { useNavigate } from "react-router-dom";
 
 export default function UserCreatedDealsData(createdDeals) {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
+  const navigate = useNavigate();
   const Project = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       {/* <MDAvatar src={image} name={name} size="sm" variant="rounded" /> */}
@@ -66,9 +69,6 @@ export default function UserCreatedDealsData(createdDeals) {
 
   const ButtonsBox = () => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      {/* <IconButton sx={navbarIconButton} size="small" disableRipple>
-        <Icon sx={iconsStyle}>chat</Icon>
-      </IconButton> */}
       <IconButton sx={navbarIconButton} size="small">
         <Icon sx={iconsStyle}>info</Icon>
       </IconButton>
@@ -93,7 +93,24 @@ export default function UserCreatedDealsData(createdDeals) {
         askedPrice: <TextComponent data={deal?.askPrice} />,
         category: <TextComponent data={deal?.category} />,
         topOffer: <TextComponent data={deal?.askPrice} />,
-        action: <ButtonsBox />,
+        action: (
+          <MDBox display="flex" alignItems="center" lineHeight={1}>
+            <IconButton
+              sx={navbarIconButton}
+              size="small"
+              onClick={() => {
+                navigate(`/dealDetail/${deal?.productName}`, {
+                  state: { data: { deal: deal, sender: "creator" } },
+                });
+              }}
+            >
+              <Icon sx={iconsStyle}>info</Icon>
+            </IconButton>
+            <IconButton sx={navbarIconButton} size="small">
+              <Icon sx={iconsStyle}>delete</Icon>
+            </IconButton>
+          </MDBox>
+        ),
       };
       return dealData;
     }),

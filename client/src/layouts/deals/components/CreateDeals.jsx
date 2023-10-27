@@ -9,7 +9,7 @@ import MDTypography from "components/MDTypography";
 import CancelIcon from "@mui/icons-material/Cancel";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getDealActions } from "app/actions/dealActions";
 import { connect } from "react-redux";
 import MDButton from "components/MDButton";
@@ -35,7 +35,13 @@ const CreateDeal = ({ userDetails, handleClose }) => {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
   const [productImage, setProductImage] = useState(null);
+  const [productImageUrl, setPoductImageUrl] = useState("");
   const [productCategory, setProductCategory] = useState("");
+  const [productData, setProductData] = useState({
+    productName: "",
+    askPrice: null,
+    description: "",
+  });
   const { channel } = useChannel(`dealChannel:${productCategory}`, (message) => {
     console.log(message);
   });
@@ -60,27 +66,58 @@ const CreateDeal = ({ userDetails, handleClose }) => {
     },
   });
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const dealData = {
-      productName: data.get("productName"),
-      askPrice: data.get("askPrice"),
-      category: productCategory,
-      productImage: data.get("productImage"),
-      description: data.get("description"),
-      seller: userDetails.userId,
-      sellerName: userDetails.username,
-    };
-    console.log("dealDetails", dealData);
-    console.log("channel", channel);
-    channel.publish("createDeal", JSON.stringify(dealData));
-    handleClose();
+  const uploadImagesToCloudinary = async () => {
+    if (productImage) {
+      const data = new FormData();
+      data.append("file", productImage);
+      data.append("upload_preset", "codepulse");
+      data.append("cloud_name", "harshit9829");
+
+      try {
+        const response = await fetch("https://api.cloudinary.com/v1_1/harshit9829/image/upload", {
+          method: "POST",
+          body: data,
+        });
+
+        if (response.ok) {
+          const imageData = await response.json();
+          setPoductImageUrl(imageData.url);
+        } else {
+          console.error("Image upload failed");
+          return;
+        }
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        return;
+      }
+    }
   };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    await uploadImagesToCloudinary();
+  };
+
+  useEffect(() => {
+    if (productImageUrl !== "") {
+      const dealData = {
+        productName: productData.productName,
+        askPrice: productData.askPrice,
+        category: productCategory,
+        productImage: productImageUrl,
+        description: productData.description,
+        seller: userDetails.userId,
+        sellerName: userDetails.username,
+      };
+      console.log("dealDetails", dealData);
+      channel.publish("createDeal", JSON.stringify(dealData));
+      handleClose();
+    }
+  }, [productImageUrl]);
 
   return (
     <MDBox sx={{ maxHeight: "550px", overflowY: "auto" }} mb={3}>
-      <MDBox component="form" role="form" noValidate mx={5} onSubmit={handleSubmit}>
+      <MDBox component="form" role="form" mx={5} onSubmit={handleSubmit}>
         <MDBox
           sx={{
             display: "flex",
@@ -94,6 +131,13 @@ const CreateDeal = ({ userDetails, handleClose }) => {
                   type="text"
                   label="Product Name"
                   name="productName"
+                  value={productData.productName}
+                  onChange={(e) =>
+                    setProductData({
+                      ...productData,
+                      productName: e.target.value,
+                    })
+                  }
                   autoComplete="productName"
                   fullWidth
                 />
@@ -104,6 +148,13 @@ const CreateDeal = ({ userDetails, handleClose }) => {
                   type="text"
                   label="Ask Price"
                   name="askPrice"
+                  value={productData.askPrice}
+                  onChange={(e) =>
+                    setProductData({
+                      ...productData,
+                      askPrice: e.target.value,
+                    })
+                  }
                   autoComplete="askPrice"
                   fullWidth
                 />
@@ -192,6 +243,13 @@ const CreateDeal = ({ userDetails, handleClose }) => {
             label="Description"
             type="text"
             name="description"
+            value={productData.description}
+            onChange={(e) =>
+              setProductData({
+                ...productData,
+                description: e.target.value,
+              })
+            }
             autoComplete="Description"
           />
         </Grid>

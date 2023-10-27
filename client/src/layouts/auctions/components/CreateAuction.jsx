@@ -13,16 +13,18 @@ import MDTypography from "components/MDTypography";
 import CancelIcon from "@mui/icons-material/Cancel";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAuctionActions } from "app/actions/auctionActions";
 import { connect } from "react-redux";
 import MDButton from "components/MDButton";
+import { authActions } from "app/actions/authActions";
 
 const { default: MDBox } = require("components/MDBox");
 
 const CreateAuction = ({ createAuction, handleClose }) => {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
+  const [auctionName, setAuctionName] = useState("");
   const [productList, setProductList] = useState([
     {
       name: "",
@@ -87,23 +89,64 @@ const CreateAuction = ({ createAuction, handleClose }) => {
     },
   });
 
+  const uploadImagesAndSetUrls = async () => {
+    const updatedProductList = await Promise.all(
+      productList.map(async (product) => {
+        if (product.selectedImage) {
+          const data = new FormData();
+          data.append("file", product.selectedImage);
+          data.append("upload_preset", "codepulse");
+          data.append("cloud_name", "harshit9829");
+
+          try {
+            const response = await fetch(
+              "https://api.cloudinary.com/v1_1/harshit9829/image/upload",
+              {
+                method: "POST",
+                body: data,
+              }
+            );
+            console.log(response);
+
+            if (response.ok) {
+              const imageData = await response.json();
+              product.imageUrl = imageData.url;
+            } else {
+              console.error("Image upload failed for product:", product.name);
+            }
+          } catch (error) {
+            console.error("Error uploading image for product:", product.name, error);
+          }
+        }
+        return product;
+      })
+    );
+    setProductList(updatedProductList);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    handleClose();
-    const data = new FormData(event.currentTarget);
-
-    const auctionDetails = {
-      auctionTitle: data.get("auctionTitle"),
-      productList: productList,
-      startTime: startTime,
-    };
-    console.log("auctionDetails", auctionDetails);
-    createAuction(auctionDetails);
+    uploadImagesAndSetUrls();
   };
+
+  useEffect(() => {
+    const allUrlsPresent = productList.every((product) => product.imageUrl);
+
+    if (allUrlsPresent) {
+      const auctionDetails = {
+        auctionTitle: auctionName,
+        productList: productList,
+        startTime: startTime,
+      };
+      console.log("auctionDetails", auctionDetails);
+      createAuction(auctionDetails);
+      handleClose();
+    }
+  }, [productList]);
 
   return (
     <MDBox sx={{ maxHeight: "550px", overflowY: "auto" }} mb={3}>
-      <MDBox component="form" role="form" noValidate mx={5} onSubmit={handleSubmit}>
+      <MDBox component="form" role="form" mx={5} onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <MDInput
@@ -111,6 +154,8 @@ const CreateAuction = ({ createAuction, handleClose }) => {
               type="text"
               label="Auction Title"
               name="auctionTitle"
+              value={auctionName}
+              onChange={(e) => setAuctionName(e.target.value)}
               autoComplete="auctionTitle"
               fullWidth
             />
@@ -163,7 +208,7 @@ const CreateAuction = ({ createAuction, handleClose }) => {
                           autoComplete="productCategory"
                           value={product.productCategory}
                           onChange={(e) => {
-                            handleProductChange(index, "productCategory", e.target.value);
+                            handleProductChange(index, "category", e.target.value);
                           }}
                           fullWidth
                         />
