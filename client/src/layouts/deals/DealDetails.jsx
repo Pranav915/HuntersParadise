@@ -17,7 +17,7 @@ import DealUsers from "./data/DealUsers";
 
 const DealDetails = ({ submitOffer, userDetails, getDealDetails }) => {
   const [offeredPrice, setOfferedPrice] = useState("");
-  const [showEdit, setShowEdit] = useState(true);
+  const [showEdit, setShowEdit] = useState(false);
   const [dealDetails, setDealDetails] = useState(null);
   const [userType, setUserType] = useState("");
 
@@ -27,7 +27,7 @@ const DealDetails = ({ submitOffer, userDetails, getDealDetails }) => {
 
   const handleSubmitOffer = () => {
     const offerDetails = {
-      deal: dealDetails?._id,
+      deal: dealDetails?.dealDetails?._id,
       sellerName: dealDetails?.sellerName,
       offered_by: userDetails?.userId,
       offered_by_name: userDetails?.username,
@@ -38,15 +38,14 @@ const DealDetails = ({ submitOffer, userDetails, getDealDetails }) => {
   };
 
   useEffect(() => {
-    // console.log("location.state.data", location.state.data);
-    // setDealDetails(location.state.data.deal);
     setUserType(location.state.data.sender);
     getDealDetails(location.state.data.deal._id, setDealDetails);
   }, []);
 
   useEffect(() => {
-    if (dealDetails?.dealDetails?.offers.length != 0) {
+    if (dealDetails?.offer) {
       setShowEdit(true);
+      setOfferedPrice(dealDetails?.dealDetails?.offers[0]?.offer?.offeredPrice);
     }
   }, [dealDetails, setDealDetails]);
   return (
@@ -85,12 +84,12 @@ const DealDetails = ({ submitOffer, userDetails, getDealDetails }) => {
                         Your Offered Price
                       </MDTypography>
                     </Grid>
-                    <Grid item xs={12} sx={{ display: showEdit ? "none" : "auto" }}>
+                    <Grid item xs={12} sx={{ display: showEdit ? "auto" : "none" }}>
                       <MDTypography component="h5" variant="h5" color="text">
                         {offeredPrice}
                       </MDTypography>
                     </Grid>
-                    <Grid item xs={12} sx={{ display: showEdit ? "auto" : "none" }}>
+                    <Grid item xs={12} sx={{ display: showEdit ? "none" : "auto" }}>
                       <MDInput
                         required
                         type="text"
@@ -103,28 +102,27 @@ const DealDetails = ({ submitOffer, userDetails, getDealDetails }) => {
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <MDButton color="dark" variant="gradient" onClick={handleSubmitOffer}>
-                        <Icon sx={{ display: showEdit ? "none" : "auto" }}>edit</Icon>
-                        <Icon sx={{ display: showEdit ? "auto" : "none" }}>login</Icon>
-                        <MDTypography
-                          component="h5"
-                          variant="h6"
-                          color="text"
-                          ml={1}
-                          sx={{ display: showEdit ? "auto" : "none" }}
-                        >
-                          Submit
-                        </MDTypography>
-                        <MDTypography
-                          component="h5"
-                          variant="h6"
-                          color="text"
-                          ml={1}
-                          sx={{ display: showEdit ? "none" : "auto" }}
-                        >
-                          Edit
-                        </MDTypography>
-                      </MDButton>
+                      {showEdit ? (
+                        <>
+                          <MDButton
+                            color="dark"
+                            variant="gradient"
+                            onClick={() => setShowEdit(false)}
+                          >
+                            <Icon>edit</Icon>
+                            <MDTypography component="h5" variant="h6" color="text" ml={1}>
+                              Edit
+                            </MDTypography>
+                          </MDButton>
+                        </>
+                      ) : (
+                        <MDButton color="dark" variant="gradient" onClick={handleSubmitOffer}>
+                          <Icon>login</Icon>
+                          <MDTypography component="h5" variant="h6" color="text" ml={1}>
+                            Submit
+                          </MDTypography>
+                        </MDButton>
+                      )}
                     </Grid>
                   </Grid>
                 ) : (

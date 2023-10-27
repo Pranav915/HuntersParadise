@@ -11,7 +11,7 @@ const getDealDetails = (req, res) => {
         res.status(200).send({
           isSeller: true,
           dealDetails: deal,
-          offers: deal.offers,
+          offer: false,
         });
         return;
       }
@@ -31,6 +31,7 @@ const getDealDetails = (req, res) => {
       res.status(200).send({
         isSeller: false,
         dealDetails: deal,
+        offer: false,
       });
     })
     .catch((err) => {

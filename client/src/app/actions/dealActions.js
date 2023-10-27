@@ -21,6 +21,7 @@ export const getDealActions = (dispatch) => {
     getMyOffers: () => dispatch(getMyOffers()),
     submitOffer: (offerDetails, setShowEdit, setOfferedPrice) =>
       dispatch(submitOffer(offerDetails, setShowEdit, setOfferedPrice)),
+    completeDeal: (offerId, navigate) => dispatch(completeDeal(offerId, navigate)),
   };
 };
 
@@ -113,9 +114,22 @@ export const submitOffer = (offerDetails, setShowEdit, setOfferedPrice) => {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
       console.log("response", response);
-      dispatch("Offer added successfully.");
-      setOfferedPrice(response?.data?.offeredPrice);
-      setShowEdit(false);
+      dispatch(openAlertMessage("Offer added successfully."));
+      setOfferedPrice(response?.data?.userOffer);
+      setShowEdit(true);
+    }
+  };
+};
+
+export const completeDeal = (offerId, navigate) => {
+  return async (dispatch) => {
+    const response = await apiCall(offerId, ENDPOINTS.COMPLETE_DEAL, "POST");
+    if (response.error) {
+      dispatch(openAlertMessage(response?.exception?.response?.data));
+    } else {
+      console.log("response", response);
+      dispatch(openAlertMessage(response?.data));
+      navigate("/deals");
     }
   };
 };

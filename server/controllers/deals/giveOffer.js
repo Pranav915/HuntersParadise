@@ -3,6 +3,7 @@ const DealOffers = require("../../models/dealOffers");
 const User = require("../../models/User");
 const giveOffer = async (req, res) => {
   const userId = req.user.userId;
+  const deal = req.body.deal;
   const newOffer = new DealOffers({
     deal: req.body.deal,
     sellerName: req.body.sellerName,
@@ -11,17 +12,18 @@ const giveOffer = async (req, res) => {
     offeredPrice: req.body.offeredPrice,
     askedPrice: req.body.askedPrice,
   });
-  const deal = req.body.deal;
+
   await newOffer
     .save()
     .then((offerCreated) => {
+      console.log("deal", deal);
       LiveDeals.findOneAndUpdate(
         { _id: deal },
         { $push: { offers: { offer: offerCreated._id } } },
         { new: true }
       )
         .then(async (dealUpdated) => {
-          console.log(dealUpdated.topOffer);
+          console.log("dealUpdated", dealUpdated);
           if (
             !dealUpdated.topOffer ||
             dealUpdated.topOffer.offeredPrice < req.body.offeredPrice

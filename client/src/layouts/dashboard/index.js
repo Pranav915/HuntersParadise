@@ -107,7 +107,6 @@ const Dashboard = ({
     setFreezedBalance(userDetails?.wallet?.freezedBalance);
     setLiveUserCount(0);
     setTotalAuctionParticipantsCount(0);
-
     getAllDeals();
     getMyDeals();
     getMyOffers();
@@ -152,9 +151,7 @@ const Dashboard = ({
         {
           label: "Live Deals",
           data: pieChartData?.map((element) => {
-            let dataList = [];
-            dataList.push(element?.numberLiveDeals);
-            return dataList;
+            return element?.numberLiveDeals;
           }),
 
           backgroundColor: [
@@ -243,7 +240,7 @@ const Dashboard = ({
                 percentage={{
                   color: "success",
                   amount: categoryLiveDealsCount,
-                  label: "In your categories",
+                  label: "In Your Favourite Categories",
                 }}
               />
             </MDBox>
@@ -258,7 +255,7 @@ const Dashboard = ({
                 percentage={{
                   color: "success",
                   amount: totalAuctionParticipantsCount,
-                  label: "participants",
+                  label: "Participants",
                 }}
               />
             </MDBox>
@@ -279,17 +276,12 @@ const Dashboard = ({
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
-                {pieChartData ? (
-                  <PieChart
-                    icon={{ color: "info", component: "wallet" }}
-                    title="Category Distribution"
-                    description=""
-                    height={250}
-                    chart={finalPieChartData}
-                  />
-                ) : (
-                  <></>
-                )}
+                <PieChart
+                  icon={{ color: "info", component: "category" }}
+                  title="Category Distribution"
+                  height={250}
+                  chart={finalPieChartData}
+                />
               </MDBox>
             </Grid>
           </Grid>
