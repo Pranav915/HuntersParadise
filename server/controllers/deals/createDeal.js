@@ -17,9 +17,9 @@ const createDeal = (req, res) => {
   });
   newDeal
     .save()
-    .then((deal) => {
+    .then(async (deal) => {
       console.log("New deal entry saved:", deal);
-      CategoryInfo.updateOne(
+      await CategoryInfo.updateOne(
         { category: data.category },
         { $inc: { numberLiveDeals: 1 } }
       );

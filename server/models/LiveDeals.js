@@ -28,7 +28,18 @@ const liveDeals = new Schema({
         type: Schema.Types.ObjectId,
         ref: "DealOffers"
     }
-  }]
+  }],
+  topOffer: {
+    offeredPrice: {
+      type: Number,
+      default: 0
+    },
+    offer: {
+      type: Schema.Types.ObjectId,
+      ref: "DealOffers",
+      default: null
+    }
+  }
 }, {
   timestamps: true
 });
