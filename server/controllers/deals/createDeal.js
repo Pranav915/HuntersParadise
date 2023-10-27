@@ -14,6 +14,10 @@ const createDeal = (req, res) => {
         askPrice: data.askPrice,
         seller: data.seller,
         sellerName: data.sellerName,
+        topOffer: {
+            offeredPrice: 0,
+            offer: null
+        }
     });
     newDeal.save()
     .then(async (deal) => {

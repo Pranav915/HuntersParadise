@@ -1,7 +1,7 @@
 const LiveDeals = require('../../models/LiveDeals');
 const DealOffers = require('../../models/dealOffers');
 const User = require('../../models/User');
-const giveOffer = (req, res) => {
+const giveOffer = async (req, res) => {
     const userId = req.user.userId;
     const newOffer = new DealOffers({
         deal: req.body.deal,
@@ -12,13 +12,22 @@ const giveOffer = (req, res) => {
         askedPrice: req.body.askedPrice
     });
     const deal = req.body.deal;
-    newOffer.save()
+    await newOffer.save()
     .then((offerCreated) => {
         LiveDeals.findOneAndUpdate(
             { _id: deal },
-            { $push: { offers: { offer: offerCreated._id } } }
-        ).then((dealUpdated) => {
-            
+            { $push: { offers: { offer: offerCreated._id } } },
+            { new: true}
+        ).then(async (dealUpdated) => {
+            console.log(dealUpdated.topOffer);
+            if(!dealUpdated.topOffer || dealUpdated.topOffer.offeredPrice < req.body.offeredPrice){
+                dealUpdated.topOffer = {
+                    offeredPrice: req.body.offeredPrice,
+                    offer: offerCreated._id
+                };
+                return await dealUpdated.save();
+            }
+            return dealUpdated;
         }).catch((err) => {
             console.log(err);
             DealOffers.findOneAndDelete({ _id: offerCreated._id});
@@ -29,7 +38,7 @@ const giveOffer = (req, res) => {
             { _id: req.user.userId },
             { $push: { offers: { offerid: offerCreated._id } } }
         ).then((userUpdated) => {
-            res.status(200).send("Offer added successfully");
+            res.status(200).send({userOffer: req.body.offeredPrice});
             return;
         }).catch((err) => {
             console.log(err);

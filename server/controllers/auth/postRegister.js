@@ -47,6 +47,7 @@ const postRegister = async (req, res) => {
         name: user.name,
         phoneNumber: user.phoneNumber,
         categories: user.subscribedCategories,
+        wallet: user.wallet
       },
     });
   } catch (error) {
