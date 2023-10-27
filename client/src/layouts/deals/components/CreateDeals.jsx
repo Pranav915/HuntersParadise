@@ -170,8 +170,8 @@ const CreateDeal = ({ userDetails, handleClose }) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Subscribe your favourite categories"
-                      placeholder="Favorites"
+                      label="Select The Product Category"
+                      placeholder="Category"
                     />
                   )}
                   value={productCategory}

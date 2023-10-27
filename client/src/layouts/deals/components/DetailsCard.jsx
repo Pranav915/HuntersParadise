@@ -51,7 +51,7 @@ const DetailsCard = ({ dealDetails }) => {
               </Grid>
               <Grid item xs={12}>
                 <MDTypography component="p" variant="button" color="text">
-                  {dealDetails?.askPrice}
+                  {"$ " + dealDetails?.askPrice}
                 </MDTypography>
               </Grid>
             </Grid>

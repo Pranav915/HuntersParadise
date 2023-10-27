@@ -13,11 +13,16 @@ import { IconButton } from "@mui/material";
 import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
 import { useMaterialUIController } from "context";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { completeDeal } from "app/actions/dealActions";
 
 export default function DealUsers(dealDetails) {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
+  const dispatchAction = useDispatch();
   const navigate = useNavigate();
+
+  const handleCompleteDeal = () => {};
   const Project = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>
@@ -53,7 +58,7 @@ export default function DealUsers(dealDetails) {
       { Header: "action", accessor: "action", align: "center" },
     ],
 
-    rows: dealDetails?.offers?.map((offer) => {
+    rows: dealDetails?.dealDetails?.offers?.map((offer) => {
       let userData = {
         buyersName: <Project name={offer?.offer?.offered_by_name} />,
         askedPrice: <TextComponent data={"$" + offer?.offer?.offeredPrice} />,
@@ -62,7 +67,13 @@ export default function DealUsers(dealDetails) {
             <IconButton sx={navbarIconButton} size="small">
               <Icon sx={iconsStyle}>chat</Icon>
             </IconButton>
-            <IconButton sx={navbarIconButton} size="small">
+            <IconButton
+              sx={navbarIconButton}
+              size="small"
+              onClick={() => {
+                dispatchAction(completeDeal({ offerId: offer?.offer?._id }, navigate));
+              }}
+            >
               <Icon sx={iconsStyle}>sell</Icon>
             </IconButton>
           </MDBox>
