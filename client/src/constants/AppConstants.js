@@ -15,4 +15,5 @@ export const ENDPOINTS = {
   GET_MY_OFFERS: "/deal/getMyOffers",
   GET_CATEGORY_DATA: "/data/categoryData",
   GIVE_OFFER: "/deal/giveOffer",
+  GET_LIVE_DATA: "data/getLiveData",
 };

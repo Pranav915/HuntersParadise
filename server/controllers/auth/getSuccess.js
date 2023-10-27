@@ -23,8 +23,10 @@ const getSuccess = (req, res) => {
     age: user.age,
     country: user.country,
     name: user.name,
+    profilePhoto: user.profilePhoto,
     phoneNumber: user.phoneNumber,
-    categories: user.categories,
+    categories: user.subscribedCategories,
+    wallet: user.wallet,
   };
   const userDetailedEncrypted = jwt.sign(
     { userDetails },

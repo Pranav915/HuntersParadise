@@ -2,9 +2,12 @@ import { dashboardActions } from "app/actions/dashboardActions";
 
 const initState = {
   totalBalance: null,
-  liveUsersCount: null,
-  liveDealsCount: null,
-  liveAuctions: null,
+  freezedBalance: null,
+  liveUserCount: null,
+  totalLiveDealsCount: null,
+  categoryLiveDealsCount: null,
+  liveAuctionsCount: null,
+  totalAuctionParticipantsCount: null,
   pieChartData: [],
   barChartData: null,
   allAuctions: null,
@@ -15,15 +18,40 @@ const initState = {
 
 const dashboardReducer = (state = initState, action) => {
   switch (action.type) {
+    case dashboardActions.SET_TOTAL_BALANCE:
+      return {
+        ...state,
+        totalBalance: action.totalBalance,
+      };
+    case dashboardActions.SET_FREEZED_BALANCE:
+      return {
+        ...state,
+        freezedBalance: action.freezedBalance,
+      };
     case dashboardActions.SET_LIVE_USER_COUNT:
       return {
         ...state,
         liveUserCount: action.liveUserCount,
       };
-    case dashboardActions.SET_TOTAL_BALANCE:
+    case dashboardActions.SET_TOTAL_LIVE_DEALS_COUNT:
       return {
         ...state,
-        totalBalance: action.totalBalance,
+        totalLiveDealsCount: action.totalLiveDealsCount,
+      };
+    case dashboardActions.SET_CATEGORY_LIVE_DEALS_COUNT:
+      return {
+        ...state,
+        categoryLiveDealsCount: action.categoryLiveDealsCount,
+      };
+    case dashboardActions.SET_LIVE_AUCTIONS_COUNT:
+      return {
+        ...state,
+        liveAuctionsCount: action.liveAuctionsCount,
+      };
+    case dashboardActions.SET_TOTAL_AUCTION_PARTICIPANTS_COUNT:
+      return {
+        ...state,
+        totalAuctionParticipantsCount: action.totalAuctionParticipantsCount,
       };
     case dashboardActions.SET_PIE_CHART_DATA:
       return {

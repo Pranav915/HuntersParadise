@@ -1,11 +1,17 @@
 const User = require("../../models/User");
 const CategoryInfo = require("../../models/CategoryInfo");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const addInitialDetails = async (req, res) => {
   try {
-    const { age, country, name, phoneNumber, subscribedCategories } = req.body;
+    const {
+      age,
+      country,
+      name,
+      phoneNumber,
+      profilePhoto,
+      subscribedCategories,
+    } = req.body;
     console.log("req.body", req.body);
     const userId = req.user.userId;
     console.log("userId", userId);
@@ -16,6 +22,7 @@ const addInitialDetails = async (req, res) => {
         country: country,
         name: name,
         phoneNumber: phoneNumber,
+        profilePhoto: profilePhoto,
         $push: {
           subscribedCategories: subscribedCategories,
         },
@@ -34,7 +41,10 @@ const addInitialDetails = async (req, res) => {
       }
     );
     console.log("user", user);
-    await CategoryInfo.updateMany({category: { $in: subscribedCategories }}, { $inc: { numberSubscribers: 1} });
+    await CategoryInfo.updateMany(
+      { category: { $in: subscribedCategories } },
+      { $inc: { numberSubscribers: 1 } }
+    );
     res.status(201).json({
       userDetails: {
         token: token,
@@ -44,8 +54,10 @@ const addInitialDetails = async (req, res) => {
         age: user.age,
         country: user.country,
         name: user.name,
+        profilePhoto: user.profilePhoto,
         phoneNumber: user.phoneNumber,
         categories: user.subscribedCategories,
+        wallet: user.wallet,
       },
     });
   } catch (error) {

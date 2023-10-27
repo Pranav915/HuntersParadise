@@ -48,13 +48,24 @@ const Dashboard = ({
   allDeals,
   totalBalance,
   setTotalBalance,
+  freezedBalance,
+  setFreezedBalance,
+  liveUserCount,
+  setLiveUserCount,
+  totalLiveDealsCount,
+  setTotalLiveDeals,
+  setTotalLiveDealsCount,
+  categoryLiveDealsCount,
+  setCategoryLiveDealsCount,
+  liveAuctionsCount,
+  setLiveAuctionsCount,
+  totalAuctionParticipantsCount,
+  setTotalAuctionParticipantsCount,
   pieChartData,
   setPieChartData,
+  getLiveData,
 }) => {
   const { sales, tasks } = reportsLineChartData;
-  const [liveUsers, setLiveUsers] = useState(0);
-  const [liveDeals, setLiveDeals] = useState("");
-  const [liveAuctions, setLiveAuctions] = useState("");
   const [finalPieChartData, setfinalPieChartData] = useState({
     labels: [],
     datasets: [],
@@ -92,11 +103,17 @@ const Dashboard = ({
       navigate("/authentication/sign-in");
     }
     initializeAblyClient(userDetails?.username);
-    setTotalBalance(userDetails?.totalBalance);
+    setTotalBalance(userDetails?.wallet?.totalBalance);
+    setFreezedBalance(userDetails?.wallet?.freezedBalance);
+    setLiveUserCount(0);
+    setCategoryLiveDealsCount(0);
+    setTotalAuctionParticipantsCount(0);
+
     getAllDeals();
     getMyDeals();
     getMyOffers();
     getPieChartData();
+    getLiveData();
   }, []);
 
   useEffect(() => {
@@ -197,8 +214,8 @@ const Dashboard = ({
                 count={totalBalance}
                 percentage={{
                   color: "success",
-                  amount: "+2%",
-                  label: "than other users",
+                  amount: freezedBalance,
+                  label: "Freezed Balance",
                 }}
               />
             </MDBox>
@@ -208,7 +225,7 @@ const Dashboard = ({
               <ComplexStatisticsCard
                 icon="leaderboard"
                 title="Live Users"
-                count={liveUsers}
+                count={liveUserCount}
                 percentage={{
                   color: "success",
                   amount: "+3%",
@@ -223,10 +240,10 @@ const Dashboard = ({
                 color="success"
                 icon="handshake"
                 title="Live Deals"
-                count={liveDeals}
+                count={totalLiveDealsCount}
                 percentage={{
                   color: "success",
-                  amount: "*",
+                  amount: categoryLiveDealsCount,
                   label: "In your categories",
                 }}
               />
@@ -238,10 +255,10 @@ const Dashboard = ({
                 color="primary"
                 icon="gavel"
                 title="Live Auctions"
-                count={liveAuctions}
+                count={liveAuctionsCount}
                 percentage={{
                   color: "success",
-                  amount: "34k",
+                  amount: totalAuctionParticipantsCount,
                   label: "participants",
                 }}
               />

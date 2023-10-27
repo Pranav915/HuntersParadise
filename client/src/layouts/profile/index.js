@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
@@ -35,13 +36,15 @@ import team1 from "assets/images/team-1.jpg";
 import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
+import { getAuthActions } from "app/actions/authActions";
+import { connect } from "react-redux";
 
-function Overview() {
+const Overview = ({ userDetails }) => {
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox mb={2} />
-      <Header>
+      <Header userDetails={userDetails}>
         <MDBox mt={5} mb={3}>
           <Grid container spacing={1}>
             <Grid item xs={12} md={6} xl={4}>
@@ -53,10 +56,10 @@ function Overview() {
                 title="profile information"
                 description="Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
                 info={{
-                  fullName: "Alec M. Thompson",
-                  mobile: "(44) 123 1234 123",
-                  email: "alecthompson@mail.com",
-                  location: "USA",
+                  fullName: userDetails?.name,
+                  mobile: userDetails?.phoneNumber,
+                  email: userDetails?.email,
+                  location: userDetails?.country,
                 }}
                 social={[
                   {
@@ -183,6 +186,15 @@ function Overview() {
       <Footer />
     </DashboardLayout>
   );
-}
+};
 
-export default Overview;
+const mapStoreStateToProps = ({ deal, auth }) => {
+  return {
+    ...auth,
+  };
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {};
+};
+export default connect(mapStoreStateToProps, mapActionsToProps)(Overview);

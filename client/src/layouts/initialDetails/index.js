@@ -98,7 +98,7 @@ const InitialDetails = ({ addInitialDetails }) => {
         phoneNumber: userData.phone,
         age: userData.age,
         country: userData.country,
-        profileImage: profileUrl,
+        profilePhoto: profileUrl,
         subscribedCategories: categories,
       };
       console.log("userDetails", userDetails);
