@@ -42,6 +42,7 @@ import brandDark from "assets/images/logo-ct-dark.png";
 import { connect } from "react-redux";
 import { useChannel } from "ably/react";
 import { getDealActions } from "app/actions/dealActions";
+import * as Ably from "ably";
 
 const App = ({
   userDetails,
@@ -68,15 +69,21 @@ const App = ({
 
   const dealChannel = useChannel("dealChannel", (message) => {
     console.log("message", message);
-    const content = JSON.parse(message?.data);
-    console.log("content", content);
     if (message.data.action == "create") {
-      if (message.data.category in userDetails?.categories) {
+      if (userDetails?.categories.includes(message.data.category)) {
+        console.log("new deal added");
         openAlertMessage("New Deal Added in " + message.data.category);
       }
     }
   }).channel;
+  const realtime = new Ably.Realtime("JVzB0Q.TRz-Lw:EPOgTR_aZkDyugsnJ135UEmo4Yc19_oAt4-uEo8kR18");
+  const ch2 = realtime.channels.getDerived("testChannel", {
+    filter: 'name == `"test"` && extras.headers.to == `"rkr2137"`',
+  });
 
+  ch2.subscribe((msg) => {
+    console.log(msg);
+  });
   // Cache for the rtl
   useMemo(() => {
     const cacheRtl = createCache({
