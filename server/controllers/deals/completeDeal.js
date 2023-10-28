@@ -2,6 +2,7 @@ const CategoryInfo = require("../../models/CategoryInfo");
 const CompletedDeal = require("../../models/CompletedDeal");
 const LiveDeals = require("../../models/LiveDeals");
 const DealOffers = require("../../models/dealOffers");
+const ablyService = require("../../ablyService");
 const completedDeal = (req, res) => {
   console.log("offerId", req.body.offerId);
   var dealDetails;
@@ -48,7 +49,6 @@ const completedDeal = (req, res) => {
       var dealChannel = ablyService.client.channels.get("dealChannel");
       dealChannel.publish("DealCompleted", {action: "Completed", deal: dealDetails});
       console.log("Deal Completed Published to Ably");
-      ablyService.client.close();
       res.status(200).send("Offer updated Successfully");
       return;
     })

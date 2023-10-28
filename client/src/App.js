@@ -77,6 +77,16 @@ const App = ({
       }
     }
   }).channel;
+  const comChannel = useChannel("communicationChannel:" + userDetails?.userId, (message) => {
+    console.log("message", message);
+    console.log("Hi from individual");
+    // if (message.data.action == "create") {
+    //   if (userDetails?.categories.includes(message.data.category)) {
+    //     console.log("new deal added");
+    //     openAlertMessage("New Deal Added in " + message.data.category);
+    //   }
+    // }
+  }).channel;
   useMemo(() => {
     const cacheRtl = createCache({
       key: "rtl",

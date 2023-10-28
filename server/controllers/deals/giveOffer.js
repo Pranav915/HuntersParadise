@@ -1,6 +1,7 @@
 const LiveDeals = require("../../models/LiveDeals");
 const DealOffers = require("../../models/dealOffers");
 const User = require("../../models/User");
+const ablyService = require("../../ablyService");
 const giveOffer = async (req, res) => {
   const userId = req.user.userId;
   const deal = req.body.deal;
@@ -11,12 +12,11 @@ const giveOffer = async (req, res) => {
       { _id: req.body.offerId, offered_by: req.user.userId },
       { offeredPrice: req.body.newPrice },
       { new: true }
-    )
+    ).populate("deal")
       .then((updatedOffer) => {
-        var comChannel = ablyService.client.channels.get("communicationChannel:" + userId);
+        var comChannel = ablyService.client.channels.get("communicationChannel:" + updatedOffer.deal.seller);
         comChannel.publish("OfferEdited", {action: "offer edit", Offer: updatedOffer});
         console.log("Edited Offer published to Ably");
-        ablyService.client.close();
         res.status(200).send(updatedOffer);
         return;
       })
@@ -34,18 +34,17 @@ const giveOffer = async (req, res) => {
     offeredPrice: req.body.offeredPrice,
     askedPrice: req.body.askedPrice,
   });
-
+  var nowDeal;
   await newOffer
     .save()
-    .then((offerCreated) => {
-      console.log("deal", deal);
-      LiveDeals.findOneAndUpdate(
+    .then(async (offerCreated) => {
+      await LiveDeals.findOneAndUpdate(
         { _id: deal },
         { $push: { offers: { offer: offerCreated._id } } },
         { new: true }
       )
         .then(async (dealUpdated) => {
-          console.log("dealUpdated", dealUpdated);
+          nowDeal = dealUpdated;
           if (
             !dealUpdated.topOffer ||
             dealUpdated.topOffer.offeredPrice < req.body.offeredPrice
@@ -82,10 +81,10 @@ const giveOffer = async (req, res) => {
           res.status(500).send("Internal Server Error Retry");
           return;
         });
-        var comChannel = ablyService.client.channels.get("communicationChannel:" + userId);
+        console.log(nowDeal);
+        var comChannel = ablyService.client.channels.get("communicationChannel:" + nowDeal.seller);
         comChannel.publish("NewOffer", {action: "new offer", Offer: newOffer});
         console.log("New Offer published to Ably");
-        ablyService.client.close();
     })
     .catch((err) => {
       console.log(err);
