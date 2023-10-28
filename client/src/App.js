@@ -43,6 +43,7 @@ import { connect } from "react-redux";
 import { useChannel } from "ably/react";
 import { getDealActions } from "app/actions/dealActions";
 import * as Ably from "ably";
+import { realtime } from "ably.js";
 
 const App = ({
   userDetails,
