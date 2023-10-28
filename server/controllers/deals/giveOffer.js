@@ -4,6 +4,22 @@ const User = require("../../models/User");
 const giveOffer = async (req, res) => {
   const userId = req.user.userId;
   const deal = req.body.deal;
+  const op = req.body.opt;
+
+  if(opt == "edit"){
+    DealOffers.findOneAndUpdate(
+      { _id: req.body.offerId, offered_by: req.user.userId},
+      { offeredPrice: req.body.newPrice },
+      { new: true },
+    ).then((updatedOffer) => {
+        res.status(200).send("Offer updated Successfully");
+        return;
+    }).catch((err) => {
+        console.log("Error while updating offer", err);
+        res.status(501).send("Internal Server Error while updating deal offer");
+    });
+    return;
+  }
   const newOffer = new DealOffers({
     deal: req.body.deal,
     sellerName: req.body.sellerName,
