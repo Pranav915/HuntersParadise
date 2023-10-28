@@ -1,4 +1,3 @@
-
 const DealOffers = require('../../models/dealOffers');
 const getMyOffers = (req, res) => {
   const userId = req.user.userId;

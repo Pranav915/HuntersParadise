@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const transactionSchema = new Schema({
+  typeOf: {
+    type: "String",
+    default: "transfer"
+  },
   from: {
     type: Schema.Types.ObjectId,
     ref: "user"
