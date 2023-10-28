@@ -76,15 +76,6 @@ const App = ({
       }
     }
   }).channel;
-  const realtime = new Ably.Realtime("JVzB0Q.TRz-Lw:EPOgTR_aZkDyugsnJ135UEmo4Yc19_oAt4-uEo8kR18");
-  const ch2 = realtime.channels.getDerived("testChannel", {
-    filter: 'name == `"test"` && extras.headers.to == `"rkr2137"`',
-  });
-
-  ch2.subscribe((msg) => {
-    console.log(msg);
-  });
-  // Cache for the rtl
   useMemo(() => {
     const cacheRtl = createCache({
       key: "rtl",

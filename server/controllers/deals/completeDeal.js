@@ -4,10 +4,11 @@ const LiveDeals = require("../../models/LiveDeals");
 const DealOffers = require("../../models/dealOffers");
 const completedDeal = (req, res) => {
   console.log("offerId", req.body.offerId);
+  var dealDetails;
   DealOffers.findOne({ _id: req.body.offerId })
     .populate("deal")
     .then(async (offer) => {
-      console.log("offer", offer);
+      dealDetails = offer.deal;
       const newCompletedDeal = new CompletedDeal({
         productName: offer.deal.productName,
         productImage: offer.deal.productImage,
@@ -44,6 +45,10 @@ const completedDeal = (req, res) => {
           }
         });
       });
+      var dealChannel = ablyService.client.channels.get("dealChannel");
+      dealChannel.publish("DealCompleted", {action: "Completed", deal: dealDetails});
+      console.log("Deal Completed Published to Ably");
+      ablyService.client.close();
       res.status(200).send("Offer updated Successfully");
       return;
     })

@@ -2,14 +2,6 @@ const LiveDeals = require("../../models/LiveDeals");
 const User = require("../../models/User");
 const ablyService = require("../../ablyService")
 const getDealDetails = (req, res) => {
-  var notificationChannel = ablyService.client.channels.get("testChannel");
-      extras = {
-        headers: {
-          to: "rkr2137"
-        }
-      }
-      notificationChannel.publish("test", {"test":"sss", "action": "create", "category": "Sports"}, extras);
-      console.log("Published to ably");
   LiveDeals.findOne({ _id: req.query.dealId })
     .populate("offers.offer")
     .populate("seller")

@@ -12,6 +12,10 @@ const giveOffer = async (req, res) => {
       { offeredPrice: req.body.newPrice },
       { new: true },
     ).then((updatedOffer) => {
+        var comChannel = ablyService.client.channels.get("communicationChannel:" + userId);
+        comChannel.publish("OfferEdited", {action: "offer edit", Offer: updatedOffer});
+        console.log("Edited Offer published to Ably");
+        ablyService.client.close();
         res.status(200).send("Offer updated Successfully");
         return;
     }).catch((err) => {
@@ -76,6 +80,10 @@ const giveOffer = async (req, res) => {
           res.status(500).send("Internal Server Error Retry");
           return;
         });
+        var comChannel = ablyService.client.channels.get("communicationChannel:" + userId);
+        comChannel.publish("NewOffer", {action: "new offer", Offer: newOffer});
+        console.log("New Offer published to Ably");
+        ablyService.client.close();
     })
     .catch((err) => {
       console.log(err);
