@@ -80,10 +80,8 @@ const userSchema = new Schema({
     },
     transactions: [
       {
-        transaction: {
-          type: Schema.Types.ObjectId,
-          ref: "Transaction",
-        },
+        type: Schema.Types.ObjectId,
+        ref: "Transaction",
       },
     ],
   },
