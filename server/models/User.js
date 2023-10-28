@@ -63,20 +63,20 @@ const userSchema = new Schema({
   ],
   wallet: {
     totalBalance: {
-      type: String,
-      default: "0",
+      type: Number,
+      default: 0,
     },
     availableBalance: {
-      type: String,
-      default: "0",
+      type: Number,
+      default: 0,
     },
     outStandingBalance: {
-      type: String,
-      default: "0",
+      type: Number,
+      default: 0,
     },
     freezedBalance: {
-      type: String,
-      default: "0",
+      type: Number,
+      default: 0,
     },
     transactions: [
       {

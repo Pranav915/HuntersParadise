@@ -1,26 +1,31 @@
 const LiveAuction = require('../../models/LiveAuction');
-const ablyClient = require("../../index");
+const ablyService = require("../../ablyService");
+const UpcomingAuction = require('../../models/UpcomingAuction');
 const startAuction = (req, res) => {
-    const products = req.body.auction.productList;
-    const productsWithStatus = products.map(product => ({
-        ...product,
-        category: newCategory
-    }));
-    const newLiveAuction = new LiveAuction({
-        auctionTitle: req.body.auction.auctionTitle,
-        productList: productsWithStatus,
-        auctionHost: req.body.auction.auctionHost,
-        startTime: req.body.auction.startTime,
-        bids: []
-    });
-    newLiveAuction.save()
-    .then((auction) => {
-        var notificationChannel = ablyClient.channels.get("notificationChannel");
-        notificationChannel.publish("Started Auction", auction);
-        console.log('Live auction entry saved:', auction);
-        res.status(200).send("Auction Started Successfully");
-    })
-    .catch((error) => { 
+    UpcomingAuction.findOneAndDelete({auctionId: req.body.auctionId}).then((auction) => {
+        if(auction.auctionHost != req.user.userId){
+            res.status(401).send("Not authorized to start Auction, only hosts can.");
+            return;
+        }
+        const newLiveAuction = new LiveAuction({
+            auctionId: auction.auctionId,
+            auctionTitle: auction.auctionTitle,
+            productList: auction.productList,
+            auctionHost: auction.auctionHost,
+            startTime: Date.now(),
+            bids: []
+        });
+        newLiveAuction.save()
+        .then((newAuction) => {
+            var dealChannel = ablyService.client.channels.get("dealChannel");
+            dealChannel.publish("AuctionStarted", {action: "startAuction", auction: newAuction});
+            res.status(200).send("Auction Started Successfully");
+        })
+        .catch((error) => { 
+            console.error('Error saving auction entry:', error);
+            res.status(501).send("Internal Server Error Kindly Try again");
+        });
+    }).catch((err)=>{
         console.error('Error saving auction entry:', error);
         res.status(501).send("Internal Server Error Kindly Try again");
     });

@@ -12,14 +12,24 @@ const upcomingAuctionSchema = new Schema({
   },
   productList:[{
     product: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: "product"
-    },
-    startBid: {
-        type: Number,
-        required: true
-    },
+      name: {
+        type: String,
+      },
+      description: {
+        type: String,
+      },
+      image: {
+        type: String
+      }
+  },
+  startBid: {
+      type: String,
+      required: true
+  },
+  status: {
+    type: String,
+    default: "pending"
+  },
   }],
   auctionHost: {
     type: Schema.Types.ObjectId,
