@@ -19,8 +19,8 @@ export const getDealActions = (dispatch) => {
     getAllDeals: () => dispatch(getAllDeals()),
     getMyDeals: () => dispatch(getMyDeals()),
     getMyOffers: () => dispatch(getMyOffers()),
-    submitOffer: (offerDetails, setShowEdit, setOfferedPrice) =>
-      dispatch(submitOffer(offerDetails, setShowEdit, setOfferedPrice)),
+    submitOffer: (offerDetails, setShowEdit, setOffer) =>
+      dispatch(submitOffer(offerDetails, setShowEdit, setOffer)),
     completeDeal: (offerId, navigate) => dispatch(completeDeal(offerId, navigate)),
   };
 };
@@ -107,7 +107,7 @@ export const getMyOffers = () => {
   };
 };
 
-export const submitOffer = (offerDetails, setShowEdit, setOfferedPrice) => {
+export const submitOffer = (offerDetails, setShowEdit, setOffer) => {
   return async (dispatch) => {
     const response = await apiCall(offerDetails, ENDPOINTS.GIVE_OFFER, "POST");
     if (response.error) {
@@ -115,7 +115,7 @@ export const submitOffer = (offerDetails, setShowEdit, setOfferedPrice) => {
     } else {
       console.log("response", response);
       dispatch(openAlertMessage("Offer added successfully."));
-      setOfferedPrice(response?.data?.userOffer);
+      setOffer(response?.data);
       setShowEdit(true);
     }
   };

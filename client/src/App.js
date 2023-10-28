@@ -43,6 +43,7 @@ import { connect } from "react-redux";
 import { useChannel } from "ably/react";
 import { getDealActions } from "app/actions/dealActions";
 import * as Ably from "ably";
+import { realtime } from "ably.js";
 
 const App = ({
   userDetails,
@@ -76,7 +77,7 @@ const App = ({
       }
     }
   }).channel;
-  const realtime = new Ably.Realtime("JVzB0Q.TRz-Lw:EPOgTR_aZkDyugsnJ135UEmo4Yc19_oAt4-uEo8kR18");
+  // const realtime = new Ably.Realtime("JVzB0Q.TRz-Lw:EPOgTR_aZkDyugsnJ135UEmo4Yc19_oAt4-uEo8kR18");
   const ch2 = realtime.channels.getDerived("testChannel", {
     filter: 'name == `"test"` && extras.headers.to == `"rkr2137"`',
   });
