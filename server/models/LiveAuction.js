@@ -32,7 +32,6 @@ const liveAuctionSchema = new Schema({
     highestbid: {
       highestBidder: {
         type: Schema.Types.ObjectId,
-        required: true,
         ref:"User"
       },
       bidPrice: {

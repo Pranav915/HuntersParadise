@@ -99,8 +99,8 @@ const newBid = async (req, res) => {
     await user.save();
     await auction.save();
 
-    var dealChannel = ablyService.client.channels.get("auction:"+ req.body.auctionId);
-    dealChannel.publish("NewBid", {action: "newBid", bidData: nowBid});
+    var auctionChannel = ablyService.client.channels.get("auction:"+ req.body.auctionId);
+    auctionChannel.publish("NewBid", {action: "newBid", bidData: nowBid});
     res.status(200).send("Bid placed Successfully");
   } catch (err) {
     console.error("Error placing bid:", err);
