@@ -1,5 +1,6 @@
 const LiveDeals = require("../../models/LiveDeals");
 const User = require("../../models/User");
+const ablyService = require("../../ablyService")
 const getDealDetails = (req, res) => {
   LiveDeals.findOne({ _id: req.query.dealId })
     .populate("offers.offer")

@@ -33,6 +33,7 @@ function DataTable({
   isSorted,
   noEndBorder,
 }) {
+  // const [data, setData] = useState(table.rows);
   const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 5;
   const entries = entriesPerPage.entries
     ? entriesPerPage.entries.map((el) => el.toString())
@@ -66,7 +67,7 @@ function DataTable({
   } = tableInstance;
 
   // Set the default value for the entries per page when component mounts
-  // useEffect(() => setPageSize(defaultValue || 10), [defaultValue]);
+  useEffect(() => setPageSize(defaultValue || 10), [defaultValue]);
 
   // Set the entries per page value based on the select value
   const setEntriesPerPage = (value) => setPageSize(value);
@@ -98,6 +99,8 @@ function DataTable({
 
   // Search input state handle
   const onSearchChange = useAsyncDebounce((value) => {
+    console.log("data", data);
+    // data[0]?.name?.props?.children = "Harshit";
     setGlobalFilter(value || undefined);
   }, 100);
 

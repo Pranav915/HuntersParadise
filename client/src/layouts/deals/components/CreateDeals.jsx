@@ -31,7 +31,7 @@ const categories = [
   "Technology",
 ];
 
-const CreateDeal = ({ userDetails, handleClose }) => {
+const CreateDeal = ({ userDetails, createDeal, handleClose }) => {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
   const [productImage, setProductImage] = useState(null);
@@ -41,9 +41,6 @@ const CreateDeal = ({ userDetails, handleClose }) => {
     productName: "",
     askPrice: null,
     description: "",
-  });
-  const { channel } = useChannel("dealChannel", (message) => {
-    console.log(message);
   });
 
   const handleProductImageSelect = (productImage) => {
@@ -111,14 +108,14 @@ const CreateDeal = ({ userDetails, handleClose }) => {
         action: "create",
       };
       console.log("dealDetails", dealData);
-      channel.publish("createDeal", JSON.stringify(dealData));
+      createDeal(dealData);
       handleClose();
     }
   }, [productImageUrl]);
 
   return (
     <MDBox sx={{ maxHeight: "550px", overflowY: "auto" }} mb={3}>
-      <MDBox component="form" role="form" mx={5} onSubmit={handleSubmit}>
+      <MDBox component="form" role="form" mx={5} onSubmit={handleSubmit} noValidate>
         <MDBox
           sx={{
             display: "flex",

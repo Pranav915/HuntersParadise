@@ -3,8 +3,35 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const auctionControllers = require("../controllers/auction/mainControllers");
 
-router.post("/createAuction", auctionControllers.controllers.createAuction);
+router.post(
+  "/createAuction",
+  auth,
+  auctionControllers.controllers.createAuction
+);
 router.post("/startAuction", auth, auctionControllers.controllers.startAuction);
-router.post("/newBid", auctionControllers.controllers.newBid);
+router.post("/newBid", auth, auctionControllers.controllers.newBid);
+router.post("/bidDone", auth, auctionControllers.controllers.bidDone);
+router.post("/startProduct", auth, auctionControllers.controllers.startProduct);
+router.get("/getDetails", auth, auctionControllers.controllers.getDetails);
+router.get(
+  "/getLiveAuctions",
+  auth,
+  auctionControllers.controllers.getLiveAuctions
+);
+router.get(
+  "/getMyAuctions",
+  auth,
+  auctionControllers.controllers.getMyAuctions
+);
+router.get(
+  "/getUpcomingAuctions",
+  auth,
+  auctionControllers.controllers.getUpcomingAuctions
+);
+router.get(
+  "/getUpcomingAuctionDetails",
+  auth,
+  auctionControllers.controllers.getUpcomingAuctionDetails
+);
 
 module.exports = router;

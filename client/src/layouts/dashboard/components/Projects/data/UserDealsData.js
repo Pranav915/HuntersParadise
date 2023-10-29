@@ -19,9 +19,11 @@ import logoJira from "assets/images/small-logos/logo-jira.svg";
 import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 import { Icon } from "@mui/material";
 import { useMaterialUIController } from "context";
+import { useNavigate } from "react-router-dom";
 
 export default function UserDealsData(createdDeals) {
   const [controller, dispatch] = useMaterialUIController();
+  const navigate = useNavigate();
   const { transparentNavbar, darkMode } = controller;
   const avatars = (members) =>
     members.map(([image, name]) => (
@@ -69,21 +71,10 @@ export default function UserDealsData(createdDeals) {
     },
   });
 
-  const ButtonsBox = () => (
-    <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <IconButton sx={navbarIconButton} size="small">
-        <Icon sx={iconsStyle}>info</Icon>
-      </IconButton>
-      <IconButton sx={navbarIconButton} size="small">
-        <Icon sx={iconsStyle}>delete</Icon>
-      </IconButton>
-    </MDBox>
-  );
-
   return {
     columns: [
       { Header: "Name", accessor: "name", width: "45%", align: "left" },
-      { Header: "Asked Price", accessor: "sPrice", align: "center" },
+      { Header: "Ask Price", accessor: "sPrice", align: "center" },
       { Header: "Top Offer", accessor: "topOffer", align: "center" },
       { Header: "", accessor: "btns", align: "center" },
     ],
@@ -93,7 +84,7 @@ export default function UserDealsData(createdDeals) {
         name: <Company image={logoXD} name={deal?.productName} />,
         sPrice: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {deal?.askPrice}
+            {"$" + deal?.askPrice}
           </MDTypography>
         ),
         topOffer: (
@@ -101,7 +92,24 @@ export default function UserDealsData(createdDeals) {
             {}
           </MDTypography>
         ),
-        btns: <ButtonsBox />,
+        btns: (
+          <MDBox display="flex" alignItems="center" lineHeight={1}>
+            <IconButton
+              sx={navbarIconButton}
+              size="small"
+              onClick={() => {
+                navigate(`/dealDetail/${deal?.productName}`, {
+                  state: { data: { deal: deal, sender: "all" } },
+                });
+              }}
+            >
+              <Icon sx={iconsStyle}>info</Icon>
+            </IconButton>
+            <IconButton sx={navbarIconButton} size="small">
+              <Icon sx={iconsStyle}>delete</Icon>
+            </IconButton>
+          </MDBox>
+        ),
       };
       return newdata;
     }),

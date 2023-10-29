@@ -2,12 +2,13 @@ const CategoryInfo = require("../../models/CategoryInfo");
 const CompletedDeal = require("../../models/CompletedDeal");
 const LiveDeals = require("../../models/LiveDeals");
 const DealOffers = require("../../models/dealOffers");
+const ablyService = require("../../ablyService");
 const completedDeal = (req, res) => {
   console.log("offerId", req.body.offerId);
+  var dealDetails;
   DealOffers.findOne({ _id: req.body.offerId })
     .populate("deal")
     .then(async (offer) => {
-      console.log("offer", offer);
       const newCompletedDeal = new CompletedDeal({
         productName: offer.deal.productName,
         productImage: offer.deal.productImage,
@@ -21,6 +22,7 @@ const completedDeal = (req, res) => {
         status: "Completed",
       });
       await newCompletedDeal.save().then(async (newdeal) => {
+        dealDetails = newdeal;
         await CategoryInfo.findOneAndUpdate(
           { category: offer.deal.category },
           {
@@ -44,6 +46,13 @@ const completedDeal = (req, res) => {
           }
         });
       });
+      var dealChannel = ablyService.client.channels.get("dealChannel");
+      dealChannel.publish("DealCompleted", {action: "Completed", deal: dealDetails});
+
+      var comChannel = ablyService.client.channels.get("communicationChannel:" + dealDetails.buyer);
+        comChannel.publish("GotIt", {action: "purchase complete", deal: dealDetails});
+
+      console.log("Deal Completed Published to Ably");
       res.status(200).send("Offer updated Successfully");
       return;
     })

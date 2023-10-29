@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -16,19 +18,30 @@ import DataTable from "examples/Tables/DataTable";
 import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
 
 // Data
-import authorsTableData from "layouts/tables/data/authorsTableData";
-import projectsTableData from "layouts/tables/data/projectsTableData";
 import MDButton from "components/MDButton";
 import { IconButton, Modal } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMaterialUIController } from "context";
+import UserCreatedAuctionsData from "./data/UserCreatedAuctionsData";
+import { connect } from "react-redux";
+import { getAuctionActions } from "app/actions/auctionActions";
+import UpcomingAuctionsData from "./data/UpcomingAuctionsData";
+import LiveAuctionsData from "./data/LiveAuctionsData";
 
-function Tables() {
+const Tables = ({
+  getLiveAuctions,
+  getUpcomingAuctions,
+  getMyAuctions,
+  liveAuctions,
+  upcomingAuctions,
+  myAuctions,
+}) => {
   const [open, setOpen] = useState(false);
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
-  const { columns, rows } = authorsTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+  const { columns, rows } = UpcomingAuctionsData(upcomingAuctions);
+  const { columns: pColumns, rows: pRows } = UserCreatedAuctionsData(myAuctions);
+  const { columns: lColumns, rows: lRows } = LiveAuctionsData(liveAuctions);
 
   const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
     color: () => {
@@ -47,6 +60,12 @@ function Tables() {
     setOpen(false);
   };
 
+  useEffect(() => {
+    getLiveAuctions();
+    getUpcomingAuctions();
+    getMyAuctions();
+  }, []);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -57,7 +76,61 @@ function Tables() {
               <MDBox
                 mx={2}
                 mt={-3}
-                py={3}
+                py={2}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Live Auctions
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3}>
+                <DataTable
+                  table={{ columns: lColumns, rows: lRows }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
+              </MDBox>
+            </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={2}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Upcoming Auctions
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3}>
+                <DataTable
+                  table={{ columns, rows }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
+              </MDBox>
+            </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={2}
                 px={2}
                 variant="gradient"
                 bgColor="info"
@@ -66,7 +139,7 @@ function Tables() {
                 sx={{ display: "flex", justifyContent: "space-between" }}
               >
                 <MDTypography variant="h6" color="white">
-                  All Auctions
+                  Your Created Auctions
                 </MDTypography>
                 <MDBox>
                   <MDButton color="dark" variant="gradient" onClick={() => setOpen(true)}>
@@ -116,33 +189,6 @@ function Tables() {
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
-              </MDBox>
-            </Card>
-          </Grid>
-          <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-              >
-                <MDTypography variant="h6" color="white">
-                  Your Created Auctions
-                </MDTypography>
-              </MDBox>
-              <MDBox pt={3}>
-                <DataTable
                   table={{ columns: pColumns, rows: pRows }}
                   isSorted={false}
                   entriesPerPage={false}
@@ -157,6 +203,17 @@ function Tables() {
       <Footer />
     </DashboardLayout>
   );
-}
+};
 
-export default Tables;
+const mapStoreStateToProps = ({ auction }) => {
+  return {
+    ...auction,
+  };
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {
+    ...getAuctionActions(dispatch),
+  };
+};
+export default connect(mapStoreStateToProps, mapActionsToProps)(Tables);

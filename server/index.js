@@ -12,6 +12,7 @@ const ablyRoutes = require("./routes/ablyRoutes");
 const auctionRoutes = require("./routes/auctionRoutes");
 const dealRoutes = require("./routes/dealRoutes");
 const dataRoutes = require("./routes/dataRoutes");
+const walletRoutes = require("./routes/walletRoutes");
 
 require("./controllers/auth/passport");
 
@@ -36,6 +37,7 @@ app.use("/ably", ablyRoutes);
 app.use("/auction", auctionRoutes);
 app.use("/deal/", dealRoutes);
 app.use("/data", dataRoutes);
+app.use("/wallet", walletRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)

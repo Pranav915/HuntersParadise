@@ -54,14 +54,6 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-    route: "/rtl",
-    component: <RTL />,
-  },
-  {
-    type: "collapse",
     name: "Notifications",
     key: "notifications",
     icon: <Icon fontSize="small">notifications</Icon>,
@@ -131,7 +123,7 @@ const routes = [
     name: "Auction Details",
     key: "auction-details",
     icon: <Icon fontSize="small">create</Icon>,
-    route: "/auctionDetail",
+    route: "/auctionDetail/:auctionName",
     component: <AuctionDetails />,
   },
   {
@@ -147,7 +139,7 @@ const routes = [
     name: "Live Auction",
     key: "live-auction",
     icon: <Icon fontSize="small">live</Icon>,
-    route: "/liveAuction",
+    route: "/liveAuction/:auctionId",
     component: <LiveAuction />,
   },
 ];

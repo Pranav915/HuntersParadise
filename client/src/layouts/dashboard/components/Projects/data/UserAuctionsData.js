@@ -14,7 +14,7 @@ import { Icon } from "@mui/material";
 import { useMaterialUIController } from "context";
 import MDBadge from "components/MDBadge";
 
-export default function UserAuctionsData() {
+export default function UserAuctionsData(myAuctions) {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
   const avatars = (members) =>

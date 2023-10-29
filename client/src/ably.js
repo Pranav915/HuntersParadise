@@ -1,5 +1,4 @@
 import * as Ably from "ably";
-import { setLiveUserCount } from "app/actions/dashboardActions";
 
 export let realtime = null; // Initialize realtime as null
 

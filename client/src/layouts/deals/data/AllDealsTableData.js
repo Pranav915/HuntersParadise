@@ -68,7 +68,7 @@ export default function AllDealsTableData(allDeals) {
   return {
     columns: [
       { Header: "Product Name", accessor: "productName", align: "left" },
-      { Header: "Asked Price", accessor: "askedPrice", align: "left" },
+      { Header: "Ask Price", accessor: "askedPrice", align: "left" },
       { Header: "Category", accessor: "category", align: "center" },
       { Header: "Seller Name", accessor: "sellerName", align: "center" },
       { Header: "Action", accessor: "action", align: "center" },
@@ -77,7 +77,13 @@ export default function AllDealsTableData(allDeals) {
     rows: allDeals.map((deal) => {
       const rowData = {
         productName: <Product name={deal?.productName} />,
-        askedPrice: <AskedPrice price={deal?.askPrice} />,
+        askedPrice: (
+          <MDBox lineHeight={1} textAlign="left">
+            <MDTypography display="block" variant="button" color="text" fontWeight="medium">
+              {"$" + deal?.askPrice}
+            </MDTypography>
+          </MDBox>
+        ),
         category: <AskedPrice price={deal?.category} />,
         sellerName: <AskedPrice price={deal?.sellerName} />,
         action: (

@@ -42,6 +42,8 @@ import brandDark from "assets/images/logo-ct-dark.png";
 import { connect } from "react-redux";
 import { useChannel } from "ably/react";
 import { getDealActions } from "app/actions/dealActions";
+import * as Ably from "ably";
+import { realtime } from "ably.js";
 
 const App = ({
   userDetails,
@@ -68,16 +70,14 @@ const App = ({
 
   const dealChannel = useChannel("dealChannel", (message) => {
     console.log("message", message);
-    const content = JSON.parse(message?.data);
-    console.log("content", content);
-    if (message.data.action == "create") {
-      if (message.data.category in userDetails?.categories) {
-        openAlertMessage("New Deal Added in " + message.data.category);
-      }
-    }
   }).channel;
 
-  // Cache for the rtl
+  const comChannel = useChannel("communicationChannel:" + userDetails?.userId, (message) => {
+    console.log("message", message);
+    if (message.name == "OfferEdited") {
+      // Show Notification (New Offer Received On your Deal: Deal Name)
+    }
+  }).channel;
   useMemo(() => {
     const cacheRtl = createCache({
       key: "rtl",
@@ -174,7 +174,7 @@ const App = ({
             <Sidenav
               color={sidenavColor}
               brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-              brandName="Code Pulse"
+              brandName="Hunter's Paradise"
               routes={newRoutes}
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
@@ -198,7 +198,7 @@ const App = ({
           <Sidenav
             color={sidenavColor}
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="Code Pulse"
+            brandName="Hunter's Paradise"
             routes={newRoutes}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}

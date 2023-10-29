@@ -32,18 +32,17 @@ const liveAuctionSchema = new Schema({
     highestbid: {
       highestBidder: {
         type: Schema.Types.ObjectId,
-        required: true,
-        ref: "product"
+        ref:"User"
       },
       bidPrice: {
-        type: String
+        type: Number
       }
     }
   }],
   auctionHost: {
     type: Schema.Types.ObjectId,
     required: true,
-    ref: "user"
+    ref: "User"
   },
   startTime: {
     type: Date,
@@ -52,11 +51,20 @@ const liveAuctionSchema = new Schema({
   currentProduct: {
     type: String,
   },
+  currentHighestBid: {
+      bidder: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+      },
+      bidValue: {
+        type: String
+      },
+  },
   bids: [{
     bidder: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "user"
+      ref: "User"
     },
     bidValue: {
       type: String
