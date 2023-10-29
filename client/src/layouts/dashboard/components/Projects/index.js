@@ -16,31 +16,35 @@ import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import AllAuctionsData from "layouts/dashboard/components/Projects/data/AllAuctionsData";
 import UserAuctionsData from "layouts/dashboard/components/Projects/data/UserAuctionsData";
 import UserDealsData from "layouts/dashboard/components/Projects/data/UserDealsData";
 import { connect } from "react-redux";
 import { getDealActions } from "app/actions/dealActions";
 import ParticipatedDealsData from "./data/ParticipatedDealsData";
+import LiveAuctionsData from "./data/LiveAuctionsData";
+import { getAuctionActions } from "app/actions/auctionActions";
 
-const Projects = ({ name, participatedDeals, createdDeals }) => {
+const Projects = ({ name, participatedDeals, createdDeals, liveAuctions, myAuctions }) => {
   const [menu, setMenu] = useState(null);
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
-  const auctionsData = AllAuctionsData();
+  const [title, setTitle] = useState("");
+  const liveAuctionsData = LiveAuctionsData(liveAuctions);
   const participatedDealsData = ParticipatedDealsData(participatedDeals);
   const userDealsData = UserDealsData(createdDeals);
-  const userAuctionsData = UserAuctionsData();
+  const userAuctionsData = UserAuctionsData(myAuctions);
 
   useEffect(() => {
     if (name == "Deals") {
       const { columns, rows } = participatedDealsData;
       setColumns(columns);
       setRows(rows);
+      setTitle("My Offers");
     } else {
-      const { columns, rows } = auctionsData;
+      const { columns, rows } = liveAuctionsData;
       setColumns(columns);
       setRows(rows);
+      setTitle("Live Auctions");
     }
   }, []);
 
@@ -52,10 +56,12 @@ const Projects = ({ name, participatedDeals, createdDeals }) => {
       const { columns, rows } = participatedDealsData;
       setColumns(columns);
       setRows(rows);
+      setTitle("My Offers");
     } else {
-      const { columns, rows } = auctionsData;
+      const { columns, rows } = liveAuctionsData;
       setColumns(columns);
       setRows(rows);
+      setTitle("Live Auctions");
     }
   };
   const handleSellerSelect = () => {
@@ -63,10 +69,12 @@ const Projects = ({ name, participatedDeals, createdDeals }) => {
       const { columns, rows } = userDealsData;
       setColumns(columns);
       setRows(rows);
+      setTitle("My Created Deals");
     } else {
       const { columns, rows } = userAuctionsData;
       setColumns(columns);
       setRows(rows);
+      setTitle("My Created Auctions");
     }
   };
 
@@ -86,10 +94,10 @@ const Projects = ({ name, participatedDeals, createdDeals }) => {
       onClose={closeMenu}
     >
       <MenuItem onClick={handleBuyerSelect}>
-        {name == "Deals" ? "My Offers" : "All Auctions"}
+        {name == "Deals" ? "My Offers" : "Live Auctions"}
       </MenuItem>
       <MenuItem onClick={handleSellerSelect}>
-        {name == "Deals" ? "My Created Deals" : "Your Created Auctions"}
+        {name == "Deals" ? "My Created Deals" : "My Created Auctions"}
       </MenuItem>
     </Menu>
   );
@@ -99,7 +107,7 @@ const Projects = ({ name, participatedDeals, createdDeals }) => {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            {name}
+            {title}
           </MDTypography>
         </MDBox>
         <MDBox color="text" px={2}>
@@ -115,7 +123,7 @@ const Projects = ({ name, participatedDeals, createdDeals }) => {
           showTotalEntries={false}
           isSorted={false}
           noEndBorder
-          canSearch={true}
+          canSearch={false}
           entriesPerPage={true}
         />
       </MDBox>
@@ -123,15 +131,17 @@ const Projects = ({ name, participatedDeals, createdDeals }) => {
   );
 };
 
-const mapStoreStateToProps = ({ deal }) => {
+const mapStoreStateToProps = ({ deal, auction }) => {
   return {
     ...deal,
+    ...auction,
   };
 };
 
 const mapActionsToProps = (dispatch) => {
   return {
     ...getDealActions(dispatch),
+    ...getAuctionActions(dispatch),
   };
 };
 export default connect(mapStoreStateToProps, mapActionsToProps)(Projects);

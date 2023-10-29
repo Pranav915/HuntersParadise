@@ -11,6 +11,10 @@ const upcomingAuctionSchema = new Schema(
       type: String,
       required: true,
     },
+    auctionDescription: {
+      type: String,
+      required: true,
+    },
     productList: [
       {
         product: {

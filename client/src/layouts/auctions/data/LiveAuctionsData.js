@@ -70,7 +70,9 @@ export default function LiveAuctionsData(liveAuctions) {
             variant="contained"
             startIcon={<LoginIcon />}
             onClick={() => {
-              navigate("/liveAuction");
+              navigate(`/liveAuction/${auction?.auctionId}`, {
+                state: { data: { auction: auction, sender: "all" } },
+              });
             }}
           >
             Enter

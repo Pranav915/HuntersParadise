@@ -25,6 +25,7 @@ const CreateAuction = ({ createAuction, handleClose }) => {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
   const [auctionName, setAuctionName] = useState("");
+  const [auctionDescription, setAuctionDescription] = useState("");
   const [productList, setProductList] = useState([
     {
       name: "",
@@ -145,6 +146,7 @@ const CreateAuction = ({ createAuction, handleClose }) => {
       });
       const auctionDetails = {
         auctionTitle: auctionName,
+        auctionDescription: auctionDescription,
         productList: tempProductList,
         startTime: startTime,
       };
@@ -168,6 +170,21 @@ const CreateAuction = ({ createAuction, handleClose }) => {
               onChange={(e) => setAuctionName(e.target.value)}
               autoComplete="auctionTitle"
               fullWidth
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              fullWidth
+              multiline
+              rows={4}
+              id="description"
+              label="Description"
+              type="text"
+              name="auctionDescription"
+              value={auctionDescription}
+              onChange={(e) => setAuctionDescription(e.target.value)}
+              autoComplete="Description"
             />
           </Grid>
           <Grid item xs={12}>
@@ -205,20 +222,6 @@ const CreateAuction = ({ createAuction, handleClose }) => {
                           value={product.startBid}
                           onChange={(e) => {
                             handleProductChange(index, "startBid", e.target.value);
-                          }}
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <MDInput
-                          required
-                          type="text"
-                          label="Product Category"
-                          name="productCategory"
-                          autoComplete="productCategory"
-                          value={product.productCategory}
-                          onChange={(e) => {
-                            handleProductChange(index, "category", e.target.value);
                           }}
                           fullWidth
                         />

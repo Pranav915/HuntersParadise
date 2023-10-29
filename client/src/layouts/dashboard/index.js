@@ -32,6 +32,7 @@ import { getMainActions } from "app/actions/mainActions";
 import { getActions } from "app/actions/alertActions";
 import { getDashboardActions } from "app/actions/dashboardActions";
 import { getDealActions } from "app/actions/dealActions";
+import { getAuctionActions } from "app/actions/auctionActions";
 import Cookies from "js-cookie";
 import PieChart from "examples/Charts/PieChart";
 import { useAbly, useChannel, usePresence } from "ably/react";
@@ -64,6 +65,8 @@ const Dashboard = ({
   pieChartData,
   setPieChartData,
   getLiveData,
+  getLiveAuctions,
+  getMyAuctions,
 }) => {
   const { sales, tasks } = reportsLineChartData;
   const [finalPieChartData, setfinalPieChartData] = useState({
@@ -127,28 +130,43 @@ const Dashboard = ({
       setUserDetails(data);
       if (!data?.age) {
         navigate("/initialDetails");
-      } else {
-        navigate("/dashboard");
       }
+      initializeAblyClient(userDetails?.username);
+      setLiveUserCount(0);
+      setTotalAuctionParticipantsCount(0);
+      getAllDeals();
+      getMyDeals();
+      getMyOffers();
+      getLiveAuctions();
+      getMyAuctions();
+      getPieChartData();
+      getLiveData();
       Cookies.set("clientId", data?.username);
     } else if (userDetails) {
       if (!userDetails.age) {
         navigate("/initialDetails");
+      } else {
+        initializeAblyClient(userDetails?.username);
+        setLiveUserCount(0);
+        setTotalAuctionParticipantsCount(0);
+        getAllDeals();
+        getMyDeals();
+        getMyOffers();
+        getLiveAuctions();
+        getMyAuctions();
+        getPieChartData();
+        getLiveData();
+        Cookies.set("clientId", userDetails?.username);
       }
     } else {
       navigate("/authentication/sign-in");
     }
-    initializeAblyClient(userDetails?.username);
+  }, []);
+
+  useEffect(() => {
     setTotalBalance(userDetails?.wallet?.totalBalance);
     setFreezedBalance(userDetails?.wallet?.freezedBalance);
-    setLiveUserCount(0);
-    setTotalAuctionParticipantsCount(0);
-    getAllDeals();
-    getMyDeals();
-    getMyOffers();
-    getPieChartData();
-    getLiveData();
-  }, []);
+  }, [userDetails, setUserDetails]);
 
   useEffect(() => {
     let barChartData = {
@@ -352,6 +370,7 @@ const mapActionsToProps = (dispatch) => {
     ...getActions(dispatch),
     ...getDashboardActions(dispatch),
     ...getDealActions(dispatch),
+    ...getAuctionActions(dispatch),
   };
 };
 export default connect(mapStoreStateToProps, mapActionsToProps)(Dashboard);

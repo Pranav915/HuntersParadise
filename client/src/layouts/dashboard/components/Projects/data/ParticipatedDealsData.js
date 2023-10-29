@@ -52,9 +52,8 @@ export default function ParticipatedDealsData(participatedDeals) {
       </Tooltip>
     ));
 
-  const Company = ({ image, name }) => (
+  const Company = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      {/* <MDAvatar src={image} name={name} size="sm" /> */}
       <MDTypography variant="button" fontWeight="medium" lineHeight={1}>
         {name}
       </MDTypography>
@@ -83,7 +82,11 @@ export default function ParticipatedDealsData(participatedDeals) {
 
     rows: participatedDeals.map((offer) => {
       const newdata = {
-        name: <Company image={logoXD} name={offer?.deal?.productName} />,
+        name: (
+          <MDTypography variant="h6" color="text" fontWeight="medium">
+            {offer?.deal?.productName}
+          </MDTypography>
+        ),
         sPrice: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
             {"$" + offer?.deal?.askPrice}

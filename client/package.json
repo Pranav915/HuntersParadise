@@ -1,16 +1,13 @@
 {
-  "name": "material-dashboard-2-react",
+  "name": "hunters-paradise",
   "version": "2.2.0",
   "private": true,
-  "author": "Creative Tim",
+  "author": "hunters-paradise",
   "license": "See license in https://www.creative-tim.com/license",
   "description": "React version of Code Pulse by Creative Tim",
-  "bugs": {
-    "url": "https://github.com/creativetimofficial/material-dashboard-react/issues"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/creativetimofficial/material-dashboard-react.git"
+    "url": "git+https://github.com/Pranav915/HuntersParadise"
   },
   "dependencies": {
     "@emotion/cache": "11.10.8",

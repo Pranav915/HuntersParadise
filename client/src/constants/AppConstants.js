@@ -22,4 +22,5 @@ export const ENDPOINTS = {
   GET_UPCOMING_AUCTIONS: "/auction/getUpcomingAuctions",
   GET_MY_AUCTIONS: "/auction/getMyAuctions",
   GET_AUCTION_DETAILS: "/auction/getUpcomingAuctionDetails",
+  START_AUCTION: "/auction/startAuction",
 };

@@ -17,7 +17,9 @@ export const getAuctionActions = (dispatch) => {
     setLiveAuctions: (data) => dispatch(setLiveAuctions(data)),
     setUpcomingAuctions: (data) => dispatch(setUpcomingAuctions(data)),
     setMyAuctions: (data) => dispatch(setMyAuctions(data)),
-    getAuctionDetails: (auctionId) => dispatch(getAuctionDetails(auctionId)),
+    getAuctionDetails: (auctionId, setAuctionDetails, setIsLoading, setIsHost) =>
+      dispatch(getAuctionDetails(auctionId, setAuctionDetails, setIsLoading, setIsHost)),
+    startAuction: (auctionId) => dispatch(startAuction(auctionId)),
   };
 };
 
@@ -89,13 +91,27 @@ export const getMyAuctions = () => {
   };
 };
 
-export const getAuctionDetails = (auctionId) => {
+export const getAuctionDetails = (auctionId, setAuctionDetails, setIsLoading, setIsHost) => {
   return async (dispatch) => {
     const response = await apiCall(
       {},
       ENDPOINTS.GET_AUCTION_DETAILS + "?auctionId=" + auctionId,
       "GET"
     );
+    if (response.error) {
+      dispatch(openAlertMessage(response?.exception?.response?.data));
+    } else {
+      console.log("response", response);
+      setAuctionDetails(response?.data?.auction);
+      setIsHost(response?.data?.isHost);
+      setIsLoading(false);
+    }
+  };
+};
+
+export const startAuction = (auctionId) => {
+  return async (dispatch) => {
+    const response = await apiCall(auctionId, ENDPOINTS.START_AUCTION, "POST");
     if (response.error) {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
