@@ -52,6 +52,15 @@ const liveAuctionSchema = new Schema({
   currentProduct: {
     type: String,
   },
+  currentHighestBid: {
+      bidder: {
+        type: Schema.Types.ObjectId,
+        ref: "user"
+      },
+      bidValue: {
+        type: String
+      },
+  },
   bids: [{
     bidder: {
       type: Schema.Types.ObjectId,

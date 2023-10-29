@@ -1,16 +1,10 @@
 const LiveAuction = require('../../models/LiveAuction');
 
 const bidDone = (req, res) => {
-    if(req.headers.from != "Ably"){
-        res.status(401).send("Not authorized");
-        return;
-    }
-    const data = JSON.parse((req.body.messages[0]).data);
-    const auctionIdToUpdate = data.auctionId;
     const productNameToUpdate = data.productName;
     const productSold = true;
 
-    LiveAuction.findOne({ auctionId: auctionIdToUpdate }).then(
+    LiveAuction.findOne({ auctionId: req.body.auctionId }).then(
         (auction) => {
             if (!auction) {
                 console.log('Auction not found.');
