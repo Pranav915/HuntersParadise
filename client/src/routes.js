@@ -131,7 +131,7 @@ const routes = [
     name: "Auction Details",
     key: "auction-details",
     icon: <Icon fontSize="small">create</Icon>,
-    route: "/auctionDetail",
+    route: "/auctionDetail/:auctionName",
     component: <AuctionDetails />,
   },
   {

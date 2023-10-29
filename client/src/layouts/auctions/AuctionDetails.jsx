@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Card, CardContent, CardMedia, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -5,8 +6,19 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 import DetailsCard from "./components/DetailsCard";
+import { useLocation } from "react-router-dom";
+import { getAuctionActions } from "app/actions/auctionActions";
+import { connect } from "react-redux";
+import { useEffect } from "react";
 
-const AuctionDetails = () => {
+const AuctionDetails = ({ getAuctionDetails }) => {
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log("location.state.data", location.state.data);
+    getAuctionDetails(location?.state?.data?.auction?.auctionId);
+  }, []);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -74,4 +86,16 @@ const AuctionDetails = () => {
   );
 };
 
-export default AuctionDetails;
+const mapStoreStateToProps = ({ auth, auction }) => {
+  return {
+    ...auction,
+    ...auth,
+  };
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {
+    ...getAuctionActions(dispatch),
+  };
+};
+export default connect(mapStoreStateToProps, mapActionsToProps)(AuctionDetails);

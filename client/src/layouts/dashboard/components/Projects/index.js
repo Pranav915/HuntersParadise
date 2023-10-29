@@ -28,13 +28,13 @@ const Projects = ({ name, participatedDeals, createdDeals }) => {
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const auctionsData = AllAuctionsData();
-  const dealsData = ParticipatedDealsData(participatedDeals);
+  const participatedDealsData = ParticipatedDealsData(participatedDeals);
   const userDealsData = UserDealsData(createdDeals);
   const userAuctionsData = UserAuctionsData();
 
   useEffect(() => {
     if (name == "Deals") {
-      const { columns, rows } = dealsData;
+      const { columns, rows } = participatedDealsData;
       setColumns(columns);
       setRows(rows);
     } else {
@@ -49,7 +49,7 @@ const Projects = ({ name, participatedDeals, createdDeals }) => {
 
   const handleBuyerSelect = () => {
     if (name == "Deals") {
-      const { columns, rows } = dealsData;
+      const { columns, rows } = participatedDealsData;
       setColumns(columns);
       setRows(rows);
     } else {
@@ -86,10 +86,10 @@ const Projects = ({ name, participatedDeals, createdDeals }) => {
       onClose={closeMenu}
     >
       <MenuItem onClick={handleBuyerSelect}>
-        {name == "Deals" ? "All Deals" : "All Auctions"}
+        {name == "Deals" ? "My Offers" : "All Auctions"}
       </MenuItem>
       <MenuItem onClick={handleSellerSelect}>
-        {name == "Deals" ? "Your Created Deals" : "Your Created Auctions"}
+        {name == "Deals" ? "My Created Deals" : "Your Created Auctions"}
       </MenuItem>
     </Menu>
   );

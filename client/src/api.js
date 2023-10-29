@@ -22,6 +22,7 @@ apiClient.interceptors.request.use(
 );
 
 export const apiCall = async (data, endpoint, method) => {
+  console.log("data", data);
   try {
     if (method === "GET") {
       return await apiClient.get(endpoint, data);

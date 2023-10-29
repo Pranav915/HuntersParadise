@@ -29,7 +29,6 @@ const CreateAuction = ({ createAuction, handleClose }) => {
     {
       name: "",
       startBid: "",
-      category: "",
       description: "",
       selectedImage: null,
       imageUrl: "",
@@ -67,7 +66,6 @@ const CreateAuction = ({ createAuction, handleClose }) => {
       {
         name: "",
         startBid: "",
-        category: "",
         description: "",
         selectedImage: null,
         imageUrl: "",
@@ -133,9 +131,21 @@ const CreateAuction = ({ createAuction, handleClose }) => {
     const allUrlsPresent = productList.every((product) => product.imageUrl);
 
     if (allUrlsPresent) {
+      let tempProductList = [];
+      productList.map((product) => {
+        let tempProduct = {
+          product: {
+            name: product.name,
+            description: product.description,
+            image: product.imageUrl,
+          },
+          startBid: product.startBid,
+        };
+        tempProductList.push(tempProduct);
+      });
       const auctionDetails = {
         auctionTitle: auctionName,
-        productList: productList,
+        productList: tempProductList,
         startTime: startTime,
       };
       console.log("auctionDetails", auctionDetails);

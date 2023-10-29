@@ -7,7 +7,6 @@ export const ENDPOINTS = {
   REQUEST_PASSWORD_RESET: "/auth/requestPasswordReset",
   PASSWORD_RESET: "/auth/passwordReset",
   ADD_INITIAL_DETAILS: "/main/addInitialDetails",
-  CREATE_AUCTION: "/auction/createAuction",
   CREATE_DEAL: "/deal/createDeal",
   GET_DASHBOARD_DETAILS: "",
   GET_ALL_DEALS: "/deal/getdeals?cat=all",
@@ -18,4 +17,9 @@ export const ENDPOINTS = {
   GET_LIVE_DATA: "data/getLiveData",
   GET_DEAL_DETAILS: "/deal/getDealDetails",
   COMPLETE_DEAL: "/deal/completeDeal",
+  CREATE_AUCTION: "/auction/createAuction",
+  GET_LIVE_AUCTIONS: "/auction/getLiveAuctions",
+  GET_UPCOMING_AUCTIONS: "/auction/getUpcomingAuctions",
+  GET_MY_AUCTIONS: "/auction/getMyAuctions",
+  GET_AUCTION_DETAILS: "/auction/getUpcomingAuctionDetails",
 };

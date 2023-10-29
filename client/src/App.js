@@ -70,22 +70,13 @@ const App = ({
 
   const dealChannel = useChannel("dealChannel", (message) => {
     console.log("message", message);
-    if (message.data.action == "create") {
-      if (userDetails?.categories.includes(message.data.category)) {
-        console.log("new deal added");
-        openAlertMessage("New Deal Added in " + message.data.category);
-      }
-    }
   }).channel;
+
   const comChannel = useChannel("communicationChannel:" + userDetails?.userId, (message) => {
     console.log("message", message);
-    console.log("Hi from individual");
-    // if (message.data.action == "create") {
-    //   if (userDetails?.categories.includes(message.data.category)) {
-    //     console.log("new deal added");
-    //     openAlertMessage("New Deal Added in " + message.data.category);
-    //   }
-    // }
+    if (message.name == "OfferEdited") {
+      // Show Notification (New Offer Received On your Deal: Deal Name)
+    }
   }).channel;
   useMemo(() => {
     const cacheRtl = createCache({

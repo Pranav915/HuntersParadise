@@ -46,6 +46,7 @@ const Dashboard = ({
   getMyOffers,
   getPieChartData,
   allDeals,
+  setAllDeals,
   totalBalance,
   setTotalBalance,
   freezedBalance,
@@ -53,7 +54,6 @@ const Dashboard = ({
   liveUserCount,
   setLiveUserCount,
   totalLiveDealsCount,
-  setTotalLiveDeals,
   setTotalLiveDealsCount,
   categoryLiveDealsCount,
   setCategoryLiveDealsCount,
@@ -78,14 +78,48 @@ const Dashboard = ({
   const navigate = useNavigate();
 
   const dealChannel = useChannel("dealChannel", (message) => {
-    getAllDeals();
-    getMyDeals();
-    getMyOffers();
-    getPieChartData();
-    getLiveData();
+    console.log("message", message);
+    if (message.name == "DealCreated") {
+      setTotalLiveDealsCount(totalLiveDealsCount + 1);
+      if (userDetails.categories.includes(message.data.deal.category)) {
+        setCategoryLiveDealsCount(categoryLiveDealsCount + 1);
+      }
+
+      // Update Pie Chart Data
+      let tempPieData = pieChartData.map((data) => {
+        if (data.category === message.data.deal.category) {
+          return {
+            ...data,
+            numberLiveDeals: data.numberLiveDeals + 1,
+          };
+        }
+        return data;
+      });
+      setPieChartData(tempPieData);
+    } else if (message.name == "DealCompleted") {
+      setTotalLiveDealsCount(totalLiveDealsCount - 1);
+      if (userDetails.categories.includes(message.data.deal.category)) {
+        setCategoryLiveDealsCount(categoryLiveDealsCount - 1);
+      }
+
+      // Update Pie Chart Data
+      let tempPieChartData = pieChartData.map((data) => {
+        if (data.category === message.data.deal.category) {
+          return {
+            ...data,
+            numberLiveDeals: data.numberLiveDeals - 1,
+            numberDeals: data.numberDeals + 1,
+            valuation: data.valuation + parseInt(message.data.deal.price),
+          };
+        }
+        return data;
+      });
+      setPieChartData(tempPieChartData);
+    }
   }).channel;
 
   useEffect(() => {
+    console.log("pieChartData", pieChartData);
     const user = new URLSearchParams(search).get("user");
     if (user) {
       const data = jwt_decode(user).userDetails;
@@ -294,7 +328,7 @@ const Dashboard = ({
               <Projects name="Auctions" />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
-              <Projects name="Deals" data={allDeals} />
+              <Projects name="Deals" />
             </Grid>
           </Grid>
         </MDBox>
