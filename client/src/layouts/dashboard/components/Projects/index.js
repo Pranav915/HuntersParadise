@@ -112,10 +112,10 @@ const Projects = ({ name, participatedDeals, createdDeals }) => {
       <MDBox>
         <DataTable
           table={{ columns, rows }}
+          canSearch={true}
           showTotalEntries={false}
           isSorted={false}
           noEndBorder
-          canSearch={true}
           entriesPerPage={true}
         />
       </MDBox>
