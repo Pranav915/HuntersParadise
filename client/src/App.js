@@ -44,6 +44,7 @@ import { useChannel } from "ably/react";
 import { getDealActions } from "app/actions/dealActions";
 import * as Ably from "ably";
 import { realtime } from "ably.js";
+import { initializeAblyClient } from "./ably.js";
 
 const App = ({
   userDetails,
@@ -85,6 +86,10 @@ const App = ({
     });
 
     setRtlCache(cacheRtl);
+  }, []);
+
+  useEffect(() => {
+    initializeAblyClient(userDetails?.username);
   }, []);
 
   // Open sidenav when mouse enter on mini sidenav

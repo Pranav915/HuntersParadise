@@ -22,6 +22,7 @@ export const getAuctionActions = (dispatch) => {
     getLiveAuctionDetails: (auctionId, setLiveAuctionDetails, setIsLoading, setIsHost) =>
       dispatch(getLiveAuctionDetails(auctionId, setLiveAuctionDetails, setIsLoading, setIsHost)),
     startAuction: (auctionId) => dispatch(startAuction(auctionId)),
+    startProduct: (req) => dispatch(startProduct(req)),
   };
 };
 
@@ -141,6 +142,17 @@ export const getLiveAuctionDetails = (
       setLiveAuctionDetails(response?.data?.auction);
       setIsHost(response?.data?.isHost);
       setIsLoading(false);
+    }
+  };
+};
+
+export const startProduct = (req) => {
+  return async (dispatch) => {
+    const response = await apiCall(req, ENDPOINTS.START_PRODUCT, "POST");
+    if (response.error) {
+      dispatch(openAlertMessage(response?.exception?.response?.data));
+    } else {
+      console.log("response", response);
     }
   };
 };

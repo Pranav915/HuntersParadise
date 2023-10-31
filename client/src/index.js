@@ -17,8 +17,8 @@ import AlertNotification from "shared/components/AlertNotification";
 // Code Pulse React Context Provider
 import { MaterialUIControllerProvider } from "context";
 import { initializeAblyClient, realtime } from "./ably";
-import { SpacesProvider } from "@ably/spaces/dist/mjs/react/index.js";
 import Spaces from "@ably/spaces";
+import { SpacesProvider, SpaceProvider } from "@ably/spaces/react";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -41,17 +41,19 @@ const spaces = new Spaces(realtime);
 
 root.render(
   <SpacesProvider client={spaces}>
-    <AblyProvider client={realtime}>
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <BrowserRouter>
-            <MaterialUIControllerProvider>
-              <App />
-              <AlertNotification />
-            </MaterialUIControllerProvider>
-          </BrowserRouter>
-        </PersistGate>
-      </Provider>
-    </AblyProvider>
+    <SpaceProvider name="auction-arena">
+      <AblyProvider client={realtime}>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <BrowserRouter>
+              <MaterialUIControllerProvider>
+                <App />
+                <AlertNotification />
+              </MaterialUIControllerProvider>
+            </BrowserRouter>
+          </PersistGate>
+        </Provider>
+      </AblyProvider>
+    </SpaceProvider>
   </SpacesProvider>
 );

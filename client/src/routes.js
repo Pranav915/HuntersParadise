@@ -141,11 +141,7 @@ const routes = [
     key: "live-auction",
     icon: <Icon fontSize="small">live</Icon>,
     route: "/liveAuction/:auctionId",
-    component: (
-      <SpaceProvider name="auction-arena">
-        <LiveAuction />
-      </SpaceProvider>
-    ),
+    component: <LiveAuction />,
   },
 ];
 

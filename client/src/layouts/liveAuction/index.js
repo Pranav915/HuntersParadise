@@ -8,11 +8,8 @@ import { useEffect, useState } from "react";
 import HostCard from "./components/HostCard";
 import BidPage from "./components/BidPage";
 import ProductCard from "./components/ProductCard";
-import ChatCard from "./components/ChatCard";
-import { useAbly } from "ably/react";
-import Spaces from "@ably/spaces";
-import { SpacesProvider, SpaceProvider, useSpace } from "@ably/spaces/react";
-import { realtime } from "ably.js";
+import ChatCard from "./components/chat/ChatCard";
+import { useChannel } from "ably/react";
 import { getAuctionActions } from "app/actions/auctionActions";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -27,12 +24,42 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
   const [totalProducts, setTotalProducts] = useState(0);
   const [remainingProducts, setRemainingProducts] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const spaces = new Spaces(realtime);
 
-  const space = useSpace((update) => {
-    console.log(update);
-  });
-  console.log("space", space);
+  // const auctionArenaChannel = useChannel(
+  //   "auction:" + getLiveAuctionDetails?.auctionId,
+  //   "ProductStart",
+  //   (message) => {
+  //     let liveAuctionDetails = liveAuctionDetails?.productList.map((product) => {
+  //       if (product.product.name === message.data.product.product.name) {
+  //         return {
+  //           ...product,
+  //           status: "live",
+  //         };
+  //       }
+  //       return product;
+  //     });
+  //     setLiveAuctionDetails(liveAuctionDetails);
+  //   }
+  // ).channel;
+
+  const auctionArenaChannel = useChannel(
+    "auction:" + getLiveAuctionDetails?.auctionId,
+    "auction",
+    (message) => {
+      let liveAuctionDetails = liveAuctionDetails?.productList.map((product) => {
+        if (product.product.name === message.data.product.product.name) {
+          return {
+            ...product,
+            status: "live",
+          };
+        }
+        return product;
+      });
+      setLiveAuctionDetails(liveAuctionDetails);
+    }
+  ).channel;
+
+  const handleUserEnter = async () => {};
 
   useEffect(() => {
     getLiveAuctionDetails(
@@ -41,6 +68,7 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
       setIsLoading,
       setIsHost
     );
+    handleUserEnter();
   }, []);
 
   useEffect(() => {
@@ -55,7 +83,7 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
         <CircularProgress />
       ) : (
         <Grid container>
-          <Grid item xs={0} md={3}>
+          <Grid item xs={12} md={3}>
             <Grid container spacing={2} p={2}>
               <Grid item xs={12}>
                 <HostCard data={liveAuctionDetails} />
@@ -95,12 +123,16 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
             {selectedProduct?.status == "live" ? (
               <BidPage />
             ) : (
-              <ProductDetails selectedProduct={selectedProduct} />
+              <ProductDetails
+                selectedProduct={selectedProduct}
+                isHost={isHost}
+                liveAuctionDetails={liveAuctionDetails}
+              />
             )}
           </Grid>
           <Grid item xs={12} md={3} p={2} sx={{ display: "flex", flexDirection: "column" }}>
             <Card sx={{ flex: 1 }}>
-              <ChatCard />
+              <ChatCard liveAuctionDetails={liveAuctionDetails} />
             </Card>
           </Grid>
         </Grid>

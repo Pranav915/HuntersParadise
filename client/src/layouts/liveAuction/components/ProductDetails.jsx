@@ -8,8 +8,10 @@ import MDTypography from "components/MDTypography";
 import { useMaterialUIController } from "context";
 import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
 import React, { useState } from "react";
+import { getAuctionActions } from "app/actions/auctionActions";
+import { connect } from "react-redux";
 
-const ProductDetails = ({ selectedProduct }) => {
+const ProductDetails = ({ selectedProduct, isHost, startProduct, liveAuctionDetails }) => {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
   const [bid, setBid] = useState(null);
@@ -24,6 +26,15 @@ const ProductDetails = ({ selectedProduct }) => {
       return colorValue;
     },
   });
+
+  const handleStartProduct = () => {
+    const req = {
+      auctionId: liveAuctionDetails?._id,
+      productName: selectedProduct?.product?.name,
+    };
+    console.log("req", req);
+    startProduct(req);
+  };
   return (
     <>
       <Card>
@@ -33,12 +44,8 @@ const ProductDetails = ({ selectedProduct }) => {
               {selectedProduct?.product?.name}
             </MDTypography>
           </MDBox>
-          <MDBox mt={2}>
-            <img
-              src={selectedProduct?.product?.image}
-              alt="test"
-              style={{ width: "100%", height: "350px" }}
-            />
+          <MDBox mt={2} sx={{ display: "flex", justifyContent: "center" }}>
+            <img src={selectedProduct?.product?.image} alt="test" style={{ width: "60%" }} />
           </MDBox>
           <MDBox mt={2}>
             <Grid container p={1}>
@@ -57,6 +64,18 @@ const ProductDetails = ({ selectedProduct }) => {
                   {selectedProduct?.product?.description}
                 </MDTypography>
               </Grid>
+              {isHost ? (
+                <Grid item xs={12} mt={4}>
+                  <MDButton color="success" variant="contained" p={0} onClick={handleStartProduct}>
+                    <MDTypography component="h5" variant="h6" color="text" m={-1}>
+                      Start Product
+                    </MDTypography>
+                  </MDButton>
+                </Grid>
+              ) : (
+                <></>
+              )}
+
               <Grid item xs={12} mt={4}>
                 <MDTypography variant="h5" fontWeight="medium">
                   Add your comment
@@ -87,4 +106,16 @@ const ProductDetails = ({ selectedProduct }) => {
   );
 };
 
-export default ProductDetails;
+const mapStoreStateToProps = ({ auth, auction }) => {
+  return {
+    ...auction,
+    ...auth,
+  };
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {
+    ...getAuctionActions(dispatch),
+  };
+};
+export default connect(mapStoreStateToProps, mapActionsToProps)(ProductDetails);

@@ -35,19 +35,15 @@ import { getDealActions } from "app/actions/dealActions";
 import { getAuctionActions } from "app/actions/auctionActions";
 import Cookies from "js-cookie";
 import PieChart from "examples/Charts/PieChart";
-import { useAbly, useChannel, usePresence } from "ably/react";
+import { useAbly, useChannel } from "ably/react";
 
 const Dashboard = ({
   userDetails,
   setUserDetails,
-  openAlertMessage,
-  getDashboardDetails,
   getAllDeals,
   getMyDeals,
   getMyOffers,
   getPieChartData,
-  allDeals,
-  setAllDeals,
   totalBalance,
   setTotalBalance,
   freezedBalance,
@@ -59,7 +55,6 @@ const Dashboard = ({
   categoryLiveDealsCount,
   setCategoryLiveDealsCount,
   liveAuctionsCount,
-  setLiveAuctionsCount,
   totalAuctionParticipantsCount,
   setTotalAuctionParticipantsCount,
   pieChartData,
@@ -79,9 +74,10 @@ const Dashboard = ({
   });
   const search = useLocation().search;
   const navigate = useNavigate();
+  const ably = useAbly();
 
-  const dealChannel = useChannel("dealChannel", (message) => {
-    console.log("message", message);
+  const { channel } = useChannel({ channelName: "dealChannel" }, (message) => {
+    console.log(message);
     if (message.name == "DealCreated") {
       setTotalLiveDealsCount(totalLiveDealsCount + 1);
       if (userDetails.categories.includes(message.data.deal.category)) {
@@ -119,10 +115,15 @@ const Dashboard = ({
       });
       setPieChartData(tempPieChartData);
     }
-  }).channel;
+  });
+  // const { channel } = useChannel({ channelName: "dealChannel" }, (message) => {});
+  // const channel = ably.channels.get("dealChannel");
+  // channel.subscribe(function (message) {
+  // console.log("Received: " + message.data);
+
+  // });
 
   useEffect(() => {
-    console.log("pieChartData", pieChartData);
     const user = new URLSearchParams(search).get("user");
     if (user) {
       const data = jwt_decode(user).userDetails;
@@ -146,7 +147,6 @@ const Dashboard = ({
       if (!userDetails.age) {
         navigate("/initialDetails");
       } else {
-        initializeAblyClient(userDetails?.username);
         setLiveUserCount(0);
         setTotalAuctionParticipantsCount(0);
         getAllDeals();
