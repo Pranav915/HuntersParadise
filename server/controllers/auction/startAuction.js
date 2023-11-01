@@ -13,7 +13,6 @@ const startAuction = (req, res) => {
       const newLiveAuction = new LiveAuction({
         auctionId: auction.auctionId,
         auctionTitle: auction.auctionTitle,
-        auctionDescription: auction.auctionDescription,
         productList: auction.productList,
         auctionHost: auction.auctionHost,
         startTime: Date.now(),
@@ -35,6 +34,10 @@ const startAuction = (req, res) => {
         });
     })
     .catch((err) => {
+      console.error("Error saving auction entry:", error);
+      res.status(501).send("Internal Server Error Kindly Try again");
+    })
+    .catch((error) => {
       console.error("Error saving auction entry:", error);
       res.status(501).send("Internal Server Error Kindly Try again");
     });

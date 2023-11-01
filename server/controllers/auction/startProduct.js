@@ -29,8 +29,7 @@ const startProduct = async (req, res) => {
     } else {
       res.status(400).send("Product already sold or not found");
     }
-  } catch (err) {
-    console.log("err", err);
+  } catch {
     res.status(501).send("Internal Server Error, kindly retry");
   }
 };
