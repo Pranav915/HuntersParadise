@@ -30,4 +30,5 @@ export const ENDPOINTS = {
   WITHDRAW_FUND: "/wallet/withdrawFunds",
   GET_BALANCE: "/wallet/getBalance",
   BID_DONE: "/auction/bidDone",
+  GET_TRANSACTIONS: "/wallet/getTransactions",
 };

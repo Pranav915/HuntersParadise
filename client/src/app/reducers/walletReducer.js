@@ -6,6 +6,8 @@ const initState = {
   freezedBalance: 0,
   availableBalance: 0,
   outstandingBalance: 0,
+  pendingTransactions: [],
+  completeTransactions: [],
 };
 
 const walletReducer = (state = initState, action) => {
@@ -29,6 +31,16 @@ const walletReducer = (state = initState, action) => {
       return {
         ...state,
         outstandingBalance: action.outstandingBalance,
+      };
+    case walletActions.SET_PENDING_TRANSACTIONS:
+      return {
+        ...state,
+        pendingTransactions: action.pendingTransactions,
+      };
+    case walletActions.SET_COMPLETE_TRANSACTIONS:
+      return {
+        ...state,
+        completeTransactions: action.completeTransactions,
       };
     default:
       return state;

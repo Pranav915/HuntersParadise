@@ -7,6 +7,8 @@ export const walletActions = {
   SET_AVAILABLE_BALANCE: "DASHBOARD.SET_AVAILABLE_BALANCE",
   SET_FREEZED_BALANCE: "DASHBOARD.SET_FREEZED_BALANCE",
   SET_OUTSTANDING_BALANCE: "DASHBOARD.SET_OUTSTANDING_BALANCE",
+  SET_PENDING_TRANSACTIONS: "DASHBOARD.SET_PENDING_TRANSACTIONS",
+  SET_COMPLETE_TRANSACTIONS: "DASHBOARD.SET_COMPLETE_TRANSACTIONS",
 };
 
 export const setTotalBalance = (totalBalance) => {
@@ -37,6 +39,20 @@ export const setOutstandingBalance = (outstandingBalance) => {
   };
 };
 
+export const setPendingTransactions = (pendingTransactions) => {
+  return {
+    type: walletActions.SET_PENDING_TRANSACTIONS,
+    pendingTransactions,
+  };
+};
+
+export const setCompleteTransactions = (completeTransactions) => {
+  return {
+    type: walletActions.SET_COMPLETE_TRANSACTIONS,
+    completeTransactions,
+  };
+};
+
 export const getWalletActions = (dispatch) => {
   return {
     setTotalBalance: (totalBalance) => dispatch(setTotalBalance(totalBalance)),
@@ -44,8 +60,13 @@ export const getWalletActions = (dispatch) => {
     setOutstandingBalance: (outstandingBalance) =>
       dispatch(setOutstandingBalance(outstandingBalance)),
     setAvailableBalance: (availableBalance) => dispatch(setAvailableBalance(availableBalance)),
+    setPendingTransactions: (pendingTransactions) =>
+      dispatch(setPendingTransactions(pendingTransactions)),
+    setCompleteTransactions: (completeTransactions) =>
+      dispatch(setCompleteTransactions(completeTransactions)),
     addFund: (req) => dispatch(addFund(req)),
     withdrawFund: (req) => dispatch(withdrawFund(req)),
+    getTransactions: () => dispatch(getTransactions()),
     getBalance: () => dispatch(getBalance()),
   };
 };
@@ -90,6 +111,19 @@ export const getBalance = () => {
       dispatch(setAvailableBalance(response?.data?.availableBalance));
       dispatch(setFreezedBalance(response?.data?.freezedBalance));
       dispatch(setOutstandingBalance(response?.data?.outStandingBalance));
+    }
+  };
+};
+
+export const getTransactions = () => {
+  return async (dispatch) => {
+    const response = await apiCall({}, ENDPOINTS.GET_TRANSACTIONS, "GET");
+    if (response.error) {
+      dispatch(openAlertMessage(response?.exception?.response?.data));
+    } else {
+      console.log("response2", response);
+      dispatch(setPendingTransactions(response?.data?.pendingTransaction));
+      dispatch(setCompleteTransactions(response?.data?.completeTransaction));
     }
   };
 };

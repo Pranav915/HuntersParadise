@@ -28,7 +28,7 @@ import { useEffect, useState } from "react";
 import MDInput from "components/MDInput";
 import { useMaterialUIController } from "context";
 import { getWalletActions } from "app/actions/walletActions";
-
+import { setPendingTransactions } from "app/actions/walletActions";
 const Billing = ({
   userDetails,
   addFund,
@@ -38,6 +38,9 @@ const Billing = ({
   outstandingBalance,
   totalBalance,
   getBalance,
+  getTransactions,
+  pendingTransactions,
+  completeTransactions,
   setOutstandingBalance,
 }) => {
   const [controller, dispatch] = useMaterialUIController();
@@ -81,7 +84,13 @@ const Billing = ({
 
   useEffect(() => {
     getBalance();
+    getTransactions();
   }, []);
+
+  useEffect(() => {
+    console.log(pendingTransactions);
+    console.log(completeTransactions);
+  }, [pendingTransactions, setPendingTransactions]);
 
   const handleSubmitWithdraw = (event) => {
     event.preventDefault();
@@ -133,9 +142,6 @@ const Billing = ({
                     value={"$" + freezedBalance}
                   />
                 </Grid>
-                {/* <Grid item xs={12}>
-                  <PaymentMethod />
-                </Grid> */}
               </Grid>
             </Grid>
             <Grid item xs={12} lg={4}>
@@ -146,9 +152,6 @@ const Billing = ({
                   flexDirection="column"
                   alignItems="center"
                 >
-                  {/* <MDTypography variant="h4" fontWeight="medium" mt={2}>
-                    Wallet
-                  </MDTypography> */}
                   <MDBox
                     display="grid"
                     justifyContent="center"
@@ -317,15 +320,6 @@ const Billing = ({
                     </Grid>
                   </MDBox>
                 </MDBox>
-                {/* <MDBox p={2}>
-                  <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-                    <Invoice date="March, 01, 2020" id="#MS-415646" price="$180" />
-                    <Invoice date="February, 10, 2021" id="#RV-126749" price="$250" />
-                    <Invoice date="April, 05, 2020" id="#QW-103578" price="$120" />
-                    <Invoice date="June, 25, 2019" id="#MS-415646" price="$180" />
-                    <Invoice date="March, 01, 2019" id="#AR-803481" price="$300" noGutter />
-                  </MDBox>
-                </MDBox> */}
               </Card>
             </Grid>
           </Grid>
@@ -333,10 +327,16 @@ const Billing = ({
         <MDBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={7}>
-              <BillingInformation />
+              <BillingInformation
+                pendingTransactions={pendingTransactions}
+                userId={userDetails?.userId}
+              />
             </Grid>
             <Grid item xs={12} md={5}>
-              <Transactions />
+              <Transactions
+                completeTransactions={completeTransactions}
+                userId={userDetails?.userId}
+              />
             </Grid>
           </Grid>
         </MDBox>

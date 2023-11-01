@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 // react-router components
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -75,6 +75,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
+  const navigate = useNavigate();
 
   // Render the notifications menu
   const renderMenu = () => (
@@ -89,9 +90,16 @@ function DashboardNavbar({ absolute, light, isMini }) {
       onClose={handleCloseMenu}
       sx={{ mt: 2 }}
     >
-      <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
-      <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
-      <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
+      <NotificationItem
+        icon={<Icon>email</Icon>}
+        onClick={() => navigate("/notifications")}
+        title="Check new messages"
+      />
+      <NotificationItem
+        icon={<Icon>shopping_cart</Icon>}
+        onClick={() => navigate("/billing")}
+        title="Funds Status"
+      />
     </Menu>
   );
 
@@ -125,9 +133,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
         </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <MDBox pr={1}>
-              <MDInput label="Search here" />
-            </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
               <Link to="/profile">
                 <IconButton sx={navbarIconButton} size="small" disableRipple>
