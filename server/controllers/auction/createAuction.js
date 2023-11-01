@@ -1,15 +1,24 @@
 const UpcomingAuction = require("../../models/UpcomingAuction");
+const LiveAuction = require("../../models/LiveAuction");
 const ablyService = require("../../ablyService");
 const createAuction = async (req, res) => {
   const data = req.body;
   var nowauctionId = 1;
-  await UpcomingAuction.findOne({})
-    .sort({ createdAt: -1 }) // Sort in descending order (latest first)
-    .then((latestAuction) => {
+  await LiveAuction.findOne({})
+    .sort({ auctionId: -1 }) // Sort in descending order (latest first)
+    .then(async (latestAuction) => {
       if (latestAuction) {
         nowauctionId = latestAuction.auctionId + 1;
       } else {
-        nowauctionId = 1;
+        await UpcomingAuction.findOne({})
+          .sort({ auctionId: -1 }) // Sort in descending order (latest first)
+          .then((latestAuction) => {
+            if (latestAuction) {
+              nowauctionId = latestAuction.auctionId + 1;
+            } else {
+              nowauctionId = 1;
+            }
+          });
       }
     })
     .catch((err) => {

@@ -29,7 +29,7 @@ const ProductDetails = ({ selectedProduct, isHost, startProduct, liveAuctionDeta
 
   const handleStartProduct = () => {
     const req = {
-      auctionId: liveAuctionDetails?._id,
+      auctionId: liveAuctionDetails?.auctionId,
       productName: selectedProduct?.product?.name,
     };
     console.log("req", req);

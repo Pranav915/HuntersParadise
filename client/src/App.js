@@ -73,6 +73,14 @@ const App = ({
 
   const dealChannel = useChannel("dealChannel", (message) => {
     console.log("message", message);
+    if (message.name == "AuctionCreated") {
+      openAlertMessage({
+        title: "Auction Alert!",
+        content: `Gear up for a new auction. ${message.data.auction.auctionTitle}`,
+        link: `/auctionDetail/${message.data.auction.auctionTitle}`,
+        item: message.data.auction,
+      });
+    }
   }).channel;
 
   const comChannel = useChannel("communicationChannel:" + userDetails?.userId, (message) => {

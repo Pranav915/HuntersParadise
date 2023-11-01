@@ -28,22 +28,25 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
   const [liveProduct, setLiveProduct] = useState("");
   const [highestBidder, setHighestBidder] = useState(null);
 
+  const handleProductStart = () => {
+    getLiveAuctionDetails(
+      location?.state?.data?.auction?.auctionId,
+      setLiveAuctionDetails,
+      setIsLoading,
+      setIsHost
+    );
+  };
   const productStartChannel = useChannel(
     "auction:" + liveAuctionDetails?.auctionId,
     "ProductStart",
     (message) => {
       console.log("message", message);
-      getLiveAuctionDetails(
-        location?.state?.data?.auction?.auctionId,
-        setLiveAuctionDetails,
-        setIsLoading,
-        setIsHost
-      );
+      handleProductStart();
     }
   ).channel;
 
   const auctionArenaChannel = useChannel(
-    "auction:" + getLiveAuctionDetails?._id,
+    "auction:" + getLiveAuctionDetails?.auctionId,
     "auction",
     (message) => {
       let liveAuctionDetails = liveAuctionDetails?.productList.map((product) => {
@@ -62,7 +65,7 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
   ).channel;
 
   const auctionProductSoldChannel = useChannel(
-    "auction:" + getLiveAuctionDetails?._id,
+    "auction:" + getLiveAuctionDetails?.auctionId,
     "ProductSold",
     (message) => {
       getLiveAuctionDetails(

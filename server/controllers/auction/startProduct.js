@@ -19,6 +19,7 @@ const startProduct = async (req, res) => {
     if (wantedProduct && wantedProduct.status == "pending") {
       auction.currentProduct = req.body.productName;
       auction.currentHighestBid = {};
+      wantedProduct.status = "live";
       await auction.save();
       var auctionChannel = ablyService.client.channels.get(
         "auction:" + req.body.auctionId
