@@ -25,4 +25,10 @@ export const ENDPOINTS = {
   START_AUCTION: "/auction/startAuction",
   GET_LIVE_AUCTION_DETAILS: "/auction/getLiveAuctionDetails",
   START_PRODUCT: "/auction/startProduct",
+  NEW_BID: "/auction/newBid",
+  ADD_FUND: "/wallet/addFunds",
+  WITHDRAW_FUND: "/wallet/withdrawFunds",
+  GET_BALANCE: "/wallet/getBalance",
+  BID_DONE: "/auction/bidDone",
+  GET_TRANSACTIONS: "/wallet/getTransactions",
 };

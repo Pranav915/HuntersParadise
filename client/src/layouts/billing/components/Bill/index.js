@@ -38,25 +38,6 @@ function Bill({ name, productName, email, status, amount }) {
           <MDTypography variant="button" fontWeight="medium" textTransform="capitalize">
             {name}
           </MDTypography>
-
-          <MDBox display="flex" alignItems="center" mt={{ xs: 2, sm: 0 }} ml={{ xs: -1.5, sm: 0 }}>
-            <MDBox mr={1}>
-              <MDButton variant="text" color="info">
-                <Icon>chat</Icon>&nbsp;Chat
-              </MDButton>
-            </MDBox>
-
-            <MDButton
-              variant="outlined"
-              color={status === "Outstanding" ? "success" : "error"}
-              iconOnly
-              circular
-            >
-              <Icon sx={{ fontWeight: "bold" }}>
-                {status === "Outstanding" ? "expand_less" : "expand_more"}
-              </Icon>
-            </MDButton>
-          </MDBox>
         </MDBox>
         <MDBox
           display="flex"
@@ -65,22 +46,6 @@ function Bill({ name, productName, email, status, amount }) {
           flexDirection={{ xs: "column", sm: "row" }}
         >
           <MDBox>
-            <MDBox mb={1} lineHeight={0}>
-              <MDTypography variant="caption" color="text">
-                Product/Auction Name:&nbsp;&nbsp;&nbsp;
-                <MDTypography variant="caption" fontWeight="medium" textTransform="capitalize">
-                  {productName}
-                </MDTypography>
-              </MDTypography>
-            </MDBox>
-            <MDBox mb={1} lineHeight={0}>
-              <MDTypography variant="caption" color="text">
-                Email Address:&nbsp;&nbsp;&nbsp;
-                <MDTypography variant="caption" fontWeight="medium">
-                  {email}
-                </MDTypography>
-              </MDTypography>
-            </MDBox>
             <MDBox mb={1} lineHeight={0}>
               <MDTypography variant="caption" color="text">
                 Status:&nbsp;&nbsp;&nbsp;

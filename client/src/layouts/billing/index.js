@@ -24,11 +24,25 @@ import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { connect } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MDInput from "components/MDInput";
 import { useMaterialUIController } from "context";
-
-const Billing = ({ userDetails }) => {
+import { getWalletActions } from "app/actions/walletActions";
+import { setPendingTransactions } from "app/actions/walletActions";
+const Billing = ({
+  userDetails,
+  addFund,
+  withdrawFund,
+  availableBalance,
+  freezedBalance,
+  outstandingBalance,
+  totalBalance,
+  getBalance,
+  getTransactions,
+  pendingTransactions,
+  completeTransactions,
+  setOutstandingBalance,
+}) => {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
   const [openAdd, setOpenAdd] = useState(false);
@@ -60,20 +74,32 @@ const Billing = ({ userDetails }) => {
 
   const handleSubmitAdd = (event) => {
     event.preventDefault();
-    const data = {
-      addValue: addValue,
+    const req = {
+      amount: addValue,
     };
+    addFund(req);
+    setAddValue("");
     handleCloseAdd();
-    console.log("Add Value", data);
   };
+
+  useEffect(() => {
+    getBalance();
+    getTransactions();
+  }, []);
+
+  useEffect(() => {
+    console.log(pendingTransactions);
+    console.log(completeTransactions);
+  }, [pendingTransactions, setPendingTransactions]);
 
   const handleSubmitWithdraw = (event) => {
     event.preventDefault();
     const data = {
-      withdrawValue: withdrawValue,
+      amount: withdrawValue,
     };
+    withdrawFund(data);
+    setWithdrawValue("");
     handleCloseWithdraw();
-    console.log("Withdraw Value", data);
   };
 
   return (
@@ -89,7 +115,7 @@ const Billing = ({ userDetails }) => {
                     icon="account_balance"
                     title="Total Balance"
                     description="(AB + TB + FB)"
-                    value={"$" + userDetails?.wallet?.totalBalance}
+                    value={"$" + totalBalance}
                   />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
@@ -97,7 +123,7 @@ const Billing = ({ userDetails }) => {
                     icon="wallet"
                     title="Available Balance"
                     description="Available for transactions"
-                    value={"$" + userDetails?.wallet?.availableBalance}
+                    value={"$" + availableBalance}
                   />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
@@ -105,7 +131,7 @@ const Billing = ({ userDetails }) => {
                     icon="hourglass_top"
                     title="Transit Balance"
                     description="Incoming Payment"
-                    value={"$" + userDetails?.wallet?.outStandingBalance}
+                    value={"$" + outstandingBalance}
                   />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
@@ -113,12 +139,9 @@ const Billing = ({ userDetails }) => {
                     icon="ac_unit"
                     title="Freezed Balance"
                     description="Outgoing Payment"
-                    value={"$" + userDetails?.wallet?.freezedBalance}
+                    value={"$" + freezedBalance}
                   />
                 </Grid>
-                {/* <Grid item xs={12}>
-                  <PaymentMethod />
-                </Grid> */}
               </Grid>
             </Grid>
             <Grid item xs={12} lg={4}>
@@ -129,9 +152,6 @@ const Billing = ({ userDetails }) => {
                   flexDirection="column"
                   alignItems="center"
                 >
-                  {/* <MDTypography variant="h4" fontWeight="medium" mt={2}>
-                    Wallet
-                  </MDTypography> */}
                   <MDBox
                     display="grid"
                     justifyContent="center"
@@ -300,15 +320,6 @@ const Billing = ({ userDetails }) => {
                     </Grid>
                   </MDBox>
                 </MDBox>
-                {/* <MDBox p={2}>
-                  <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-                    <Invoice date="March, 01, 2020" id="#MS-415646" price="$180" />
-                    <Invoice date="February, 10, 2021" id="#RV-126749" price="$250" />
-                    <Invoice date="April, 05, 2020" id="#QW-103578" price="$120" />
-                    <Invoice date="June, 25, 2019" id="#MS-415646" price="$180" />
-                    <Invoice date="March, 01, 2019" id="#AR-803481" price="$300" noGutter />
-                  </MDBox>
-                </MDBox> */}
               </Card>
             </Grid>
           </Grid>
@@ -316,10 +327,16 @@ const Billing = ({ userDetails }) => {
         <MDBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={7}>
-              <BillingInformation />
+              <BillingInformation
+                pendingTransactions={pendingTransactions}
+                userId={userDetails?.userId}
+              />
             </Grid>
             <Grid item xs={12} md={5}>
-              <Transactions />
+              <Transactions
+                completeTransactions={completeTransactions}
+                userId={userDetails?.userId}
+              />
             </Grid>
           </Grid>
         </MDBox>
@@ -329,13 +346,16 @@ const Billing = ({ userDetails }) => {
   );
 };
 
-const mapStoreStateToProps = ({ auth }) => {
+const mapStoreStateToProps = ({ auth, wallet }) => {
   return {
     ...auth,
+    ...wallet,
   };
 };
 
 const mapActionsToProps = (dispatch) => {
-  return {};
+  return {
+    ...getWalletActions(dispatch),
+  };
 };
 export default connect(mapStoreStateToProps, mapActionsToProps)(Billing);

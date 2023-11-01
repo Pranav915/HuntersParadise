@@ -6,7 +6,7 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 
-const ProductCard = ({ product, handleSetSelectedProduct }) => {
+const ProductCard = ({ product, handleSetSelectedProduct, status }) => {
   return (
     <MDBox px={1}>
       <MDBox p={1}>
@@ -29,15 +29,19 @@ const ProductCard = ({ product, handleSetSelectedProduct }) => {
                     {product?.product?.name}
                   </MDTypography>
                   <MDTypography component="p" variant="button" color="text">
-                    {product?.startBid}
+                    {"$" + product?.startBid}
                   </MDTypography>
                 </MDBox>
               </Grid>
               <Grid item xs={12} sx={{ display: "flex", justifyContent: "right" }}>
                 {product?.status == "live" ? (
                   <MDBadge badgeContent="Live" color="success" variant="gradient" size="sm" />
+                ) : product?.status == "pending" ? (
+                  <MDBadge badgeContent="Pending" color="info" variant="gradient" size="sm" />
+                ) : product?.status == "sold" ? (
+                  <MDBadge badgeContent="Sold" color="secondary" variant="gradient" size="sm" />
                 ) : (
-                  <MDBadge badgeContent="Pending" color="secondary" variant="gradient" size="sm" />
+                  <MDBadge badgeContent="Unsold" color="error" variant="gradient" size="sm" />
                 )}
               </Grid>
             </Grid>

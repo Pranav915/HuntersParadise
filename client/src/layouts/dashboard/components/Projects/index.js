@@ -33,6 +33,7 @@ const Projects = ({ name, participatedDeals, createdDeals, liveAuctions, myAucti
   const participatedDealsData = ParticipatedDealsData(participatedDeals);
   const userDealsData = UserDealsData(createdDeals);
   const userAuctionsData = UserAuctionsData(myAuctions);
+  console.log("myAuctions", myAuctions);
 
   useEffect(() => {
     if (name == "Deals") {
@@ -120,7 +121,6 @@ const Projects = ({ name, participatedDeals, createdDeals, liveAuctions, myAucti
       <MDBox>
         <DataTable
           table={{ columns, rows }}
-          canSearch={true}
           showTotalEntries={false}
           isSorted={false}
           noEndBorder

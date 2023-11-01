@@ -4,10 +4,6 @@ const UpcomingAuction = require("../../models/UpcomingAuction");
 const startAuction = (req, res) => {
   UpcomingAuction.findOneAndDelete({ auctionId: req.body.auctionId })
     .then((auction) => {
-        if(!auction){
-            res.status(404).send("no such auction found");
-            return;
-        }
       if (auction.auctionHost != req.user.userId) {
         res
           .status(401)
@@ -17,7 +13,6 @@ const startAuction = (req, res) => {
       const newLiveAuction = new LiveAuction({
         auctionId: auction.auctionId,
         auctionTitle: auction.auctionTitle,
-        auctionDescription: auction.auctionDescription,
         productList: auction.productList,
         auctionHost: auction.auctionHost,
         startTime: Date.now(),
@@ -39,6 +34,10 @@ const startAuction = (req, res) => {
         });
     })
     .catch((err) => {
+      console.error("Error saving auction entry:", error);
+      res.status(501).send("Internal Server Error Kindly Try again");
+    })
+    .catch((error) => {
       console.error("Error saving auction entry:", error);
       res.status(501).send("Internal Server Error Kindly Try again");
     });

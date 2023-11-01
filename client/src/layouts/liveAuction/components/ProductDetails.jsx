@@ -47,7 +47,7 @@ const ProductDetails = ({ selectedProduct, isHost, startProduct, liveAuctionDeta
           <MDBox
             sx={{
               overflowY: "auto",
-              maxHeight: "590px",
+              maxHeight: "620px",
               mt: 1,
               "::-webkit-scrollbar": {
                 width: 0,
@@ -79,16 +79,7 @@ const ProductDetails = ({ selectedProduct, isHost, startProduct, liveAuctionDeta
                     {selectedProduct?.product?.description}
                   </MDTypography>
                 </Grid>
-                <Grid item>
-                  <MDTypography
-                    component="p"
-                    variant="button"
-                    color="text"
-                    sx={{ textAlign: "justify" }}
-                  >
-                    {selectedProduct?.product?.description}
-                  </MDTypography>
-                </Grid>
+
                 {isHost ? (
                   <Grid item xs={12} mt={4}>
                     <MDButton
@@ -96,6 +87,7 @@ const ProductDetails = ({ selectedProduct, isHost, startProduct, liveAuctionDeta
                       variant="contained"
                       p={0}
                       onClick={handleStartProduct}
+                      disabled={selectedProduct?.status != "pending"}
                     >
                       <MDTypography component="h5" variant="h6" color="text" m={-1}>
                         Start Product
@@ -105,29 +97,6 @@ const ProductDetails = ({ selectedProduct, isHost, startProduct, liveAuctionDeta
                 ) : (
                   <></>
                 )}
-
-                <Grid item xs={12} mt={4}>
-                  <MDTypography variant="h5" fontWeight="medium">
-                    Add your comment
-                  </MDTypography>
-                </Grid>
-                <Grid item xs={12} mt={1}>
-                  <MDInput
-                    required
-                    type="text"
-                    label="Bid"
-                    name="bidPrice"
-                    autoComplete="bidPrice"
-                    value={bid}
-                    onChange={(e) => setBid(e.target.value)}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12} mt={2}>
-                  <MDButton color="dark" fullWidth>
-                    BID
-                  </MDButton>
-                </Grid>
               </Grid>
             </MDBox>
           </MDBox>

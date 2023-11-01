@@ -62,6 +62,7 @@ const Dashboard = ({
   getLiveData,
   getLiveAuctions,
   getMyAuctions,
+  openAlertMessage,
 }) => {
   const { sales, tasks } = reportsLineChartData;
   const [finalPieChartData, setfinalPieChartData] = useState({
@@ -76,12 +77,13 @@ const Dashboard = ({
   const navigate = useNavigate();
   const ably = useAbly();
 
-  const { channel } = useChannel({ channelName: "dealChannel" }, (message) => {
+  const dealChannel = useChannel({ channelName: "dealChannel" }, (message) => {
     console.log(message);
     if (message.name == "DealCreated") {
       setTotalLiveDealsCount(totalLiveDealsCount + 1);
       if (userDetails.categories.includes(message.data.deal.category)) {
         setCategoryLiveDealsCount(categoryLiveDealsCount + 1);
+        openAlertMessage("New deal added in your category.");
       }
 
       // Update Pie Chart Data
@@ -115,32 +117,29 @@ const Dashboard = ({
       });
       setPieChartData(tempPieChartData);
     }
-  });
-  // const { channel } = useChannel({ channelName: "dealChannel" }, (message) => {});
-  // const channel = ably.channels.get("dealChannel");
-  // channel.subscribe(function (message) {
-  // console.log("Received: " + message.data);
-
-  // });
+  }).channel;
 
   dealChannel.presence.subscribe("enter", function (member) {
+    setLiveUserCount(liveUserCount + 1);
     console.log("Member " + member.clientId + " entered");
   });
-  dealChannel.presence.enter();
+
+  dealChannel.presence.subscribe("leave", function (member) {
+    setLiveUserCount(liveUserCount - 1);
+    console.log("Member " + member.clientId + " left");
+  });
+
   dealChannel.presence.get(function (err, members) {
     console.log("There are " + members.length + " members on this channel");
-    setLiveUserCount(members.length + 1);
+    setLiveUserCount(members.length);
     members.forEach((m) => {
       console.log(m.clientId);
     });
   });
-  let channelOpts = { params: { occupancy: "metrics" } };
-  // let channel = ably.channels.get("hay-say-pal", channelOpts);
-  // dealChannel.setOptions(channelOpts, (err) => {
-  //   if (!err) {
-  //     console.log("channel params updated");
-  //   }
-  // });
+
+  useEffect(() => {
+    dealChannel.presence.enter();
+  }, []);
 
   dealChannel.subscribe("[meta]occupancy", (message) => {
     console.log("occupancy: ", message.data);
@@ -367,10 +366,10 @@ const Dashboard = ({
         </MDBox>
         <MDBox>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={6}>
+            <Grid item xs={12}>
               <Projects name="Auctions" />
             </Grid>
-            <Grid item xs={12} md={6} lg={6}>
+            <Grid item xs={12}>
               <Projects name="Deals" />
             </Grid>
           </Grid>
