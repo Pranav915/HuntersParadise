@@ -2,9 +2,12 @@
 import { Card, Grid } from "@mui/material";
 import MDAvatar from "components/MDAvatar";
 import MDBox from "components/MDBox";
+import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 
-const HostCard = ({ data }) => {
+const HostCard = ({ data, isHost }) => {
+  const handleEndAuction = () => {};
+  console.log("data", data);
   return (
     <Card>
       <MDBox p={1}>
@@ -38,7 +41,7 @@ const HostCard = ({ data }) => {
           </Card>
         </MDBox>
         <MDBox>
-          <MDTypography
+          {/* <MDTypography
             component="p"
             variant="button"
             color="text"
@@ -46,7 +49,14 @@ const HostCard = ({ data }) => {
             p={1}
           >
             {data?.auctionDescription}
-          </MDTypography>
+          </MDTypography> */}
+          {isHost ? (
+            <MDButton color="error" fullWidth onClick={handleEndAuction}>
+              End Auction
+            </MDButton>
+          ) : (
+            <></>
+          )}
         </MDBox>
       </MDBox>
     </Card>

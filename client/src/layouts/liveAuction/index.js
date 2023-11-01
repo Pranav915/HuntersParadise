@@ -26,11 +26,13 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [productList, setProductList] = useState([]);
   const [liveProduct, setLiveProduct] = useState("");
+  const [highestBidder, setHighestBidder] = useState(null);
 
   const productStartChannel = useChannel(
     "auction:" + liveAuctionDetails?.auctionId,
     "ProductStart",
     (message) => {
+      console.log("message", message);
       getLiveAuctionDetails(
         location?.state?.data?.auction?.auctionId,
         setLiveAuctionDetails,
@@ -59,6 +61,19 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
     }
   ).channel;
 
+  const auctionProductSoldChannel = useChannel(
+    "auction:" + getLiveAuctionDetails?._id,
+    "ProductSold",
+    (message) => {
+      getLiveAuctionDetails(
+        location?.state?.data?.auction?.auctionId,
+        setLiveAuctionDetails,
+        setIsLoading,
+        setIsHost
+      );
+    }
+  ).channel;
+
   useEffect(() => {
     getLiveAuctionDetails(
       location?.state?.data?.auction?.auctionId,
@@ -69,9 +84,21 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
   }, []);
 
   useEffect(() => {
+    console.log("use effect called");
+    let isLiveAvailable = false;
     setTotalProducts(liveAuctionDetails?.productList.length);
     setRemainingProducts(liveAuctionDetails?.productList.length);
-    setSelectedProduct(liveAuctionDetails?.productList[0]);
+    liveAuctionDetails?.productList.forEach((product) => {
+      if (product.status == "live") {
+        isLiveAvailable = true;
+        setSelectedProduct(product);
+      }
+    });
+    if (!isLiveAvailable) {
+      setSelectedProduct(liveAuctionDetails?.productList[0]);
+    }
+
+    setHighestBidder(liveAuctionDetails?.currentHighestBid);
   }, [liveAuctionDetails, setLiveAuctionDetails]);
 
   useEffect(() => {
@@ -87,7 +114,7 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
           <Grid item xs={12} md={3} sx={{ display: "flex", flexDirection: "column" }}>
             <Grid container spacing={2} p={2}>
               <Grid item xs={12}>
-                <HostCard data={liveAuctionDetails} />
+                <HostCard data={liveAuctionDetails} isHost={isHost} />
               </Grid>
               <Grid item xs={12}>
                 <Card sx={{ flex: 1 }}>
@@ -160,11 +187,13 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
             </Grid>
           </Grid>
           <Grid item xs={12} md={6} py={2}>
-            {selectedProduct?.status == "live" ? (
+            {selectedProduct?.status != "pending" ? (
               <BidPage
                 selectedProduct={selectedProduct}
                 isHost={isHost}
                 liveAuctionDetails={liveAuctionDetails}
+                highestBidder={highestBidder}
+                setHighestBidder={setHighestBidder}
               />
             ) : (
               <ProductDetails
@@ -176,7 +205,7 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
           </Grid>
           <Grid item xs={12} md={3} p={2} sx={{ display: "flex", flexDirection: "column" }}>
             <Card sx={{ flex: 1 }}>
-              <ChatCard liveAuctionDetails={liveAuctionDetails} />
+              <ChatCard liveAuctionDetails={liveAuctionDetails} isHost={isHost} />
             </Card>
           </Grid>
         </Grid>

@@ -21,9 +21,10 @@ export const getAuctionActions = (dispatch) => {
       dispatch(getAuctionDetails(auctionId, setAuctionDetails, setIsLoading, setIsHost)),
     getLiveAuctionDetails: (auctionId, setLiveAuctionDetails, setIsLoading, setIsHost) =>
       dispatch(getLiveAuctionDetails(auctionId, setLiveAuctionDetails, setIsLoading, setIsHost)),
-    startAuction: (auctionId) => dispatch(startAuction(auctionId)),
+    startAuction: (auctionId, navigate) => dispatch(startAuction(auctionId, navigate)),
     startProduct: (req) => dispatch(startProduct(req)),
     newBid: (req) => dispatch(newBid(req)),
+    bidDone: (req) => dispatch(bidDone(req)),
   };
 };
 
@@ -55,6 +56,9 @@ export const createAuction = (auctionDetails) => {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
       console.log("response", response);
+      dispatch(getUpcomingAuctions());
+      dispatch(getMyAuctions());
+      dispatch(getLiveAuctions());
     }
   };
 };
@@ -90,7 +94,7 @@ export const getMyAuctions = () => {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
       console.log("response", response);
-      dispatch(setMyAuctions(response?.data));
+      dispatch(setMyAuctions(response?.data?.upcomingAuctions));
     }
   };
 };
@@ -105,7 +109,6 @@ export const getAuctionDetails = (auctionId, setAuctionDetails, setIsLoading, se
     if (response.error) {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
-      console.log("response", response);
       setAuctionDetails(response?.data?.auction);
       setIsHost(response?.data?.isHost);
       setIsLoading(false);
@@ -113,7 +116,7 @@ export const getAuctionDetails = (auctionId, setAuctionDetails, setIsLoading, se
   };
 };
 
-export const startAuction = (auctionId) => {
+export const startAuction = (auctionId, navigate) => {
   return async (dispatch) => {
     const response = await apiCall(auctionId, ENDPOINTS.START_AUCTION, "POST");
     if (response.error) {
@@ -161,6 +164,17 @@ export const startProduct = (req) => {
 export const newBid = (req) => {
   return async (dispatch) => {
     const response = await apiCall(req, ENDPOINTS.NEW_BID, "POST");
+    if (response.error) {
+      dispatch(openAlertMessage(response?.exception?.response?.data));
+    } else {
+      console.log("response", response);
+    }
+  };
+};
+
+export const bidDone = (req) => {
+  return async (dispatch) => {
+    const response = await apiCall(req, ENDPOINTS.BID_DONE, "POST");
     if (response.error) {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {

@@ -1,4 +1,4 @@
-const LiveAuction = require('../../models/LiveAuction');
+const LiveAuction = require("../../models/LiveAuction");
 const User = require("../../models/User");
 const ablyService = require("../../ablyService");
 // const newBid = (req, res) => {
@@ -9,7 +9,7 @@ const ablyService = require("../../ablyService");
 //     bidder: bidder,
 //     bidValue: bidValue,
 //   };
-  
+
 //   User.findOne({ _id: bidder }).then((user) => {
 //     if (user.wallet.availableBalance >= bidValue) {
 //       User.findOneAndUpdate(
@@ -28,7 +28,7 @@ const ablyService = require("../../ablyService");
 //       res.status(400).send("You do not have enough amount in wallet")
 //     }
 //   });
-  
+
 //   LiveAuction.findOne({ _id: req.body.auctionId }, {}, { sort: { "bids.raisedAt": -1 } })
 //   .populate({
 //     path: 'bids.bidder',
@@ -51,7 +51,6 @@ const ablyService = require("../../ablyService");
 //     console.log("Error while unfreezing the amount", err);
 //   });
 
-
 //   LiveAuction.updateOne(
 //     { auctionId: req.body.auctionId },
 //     { $push: { bids: newBidData } }
@@ -69,10 +68,15 @@ const ablyService = require("../../ablyService");
 
 const newBid = async (req, res) => {
   try {
-    const bidValue = req.body.bidValue;
+    const bidValue = parseInt(req.body.bidValue);
     const user = await User.findOne({ _id: req.user.userId });
-    const auction = await LiveAuction.findOne({ auctionId: req.body.auctionId });
-    if (auction.currentHighestBid.bidValue && bidValue <= auction.currentHighestBid.bidValue) {
+    const auction = await LiveAuction.findOne({
+      auctionId: req.body.auctionId,
+    });
+    if (
+      auction.currentHighestBid.bidValue &&
+      bidValue <= auction.currentHighestBid.bidValue
+    ) {
       res.status(400).send("A better Bid exists, try a greater Bid");
       return;
     }
@@ -85,28 +89,39 @@ const newBid = async (req, res) => {
     user.wallet.availableBalance -= bidValue;
     user.wallet.freezedBalance += bidValue;
     if (auction.currentHighestBid.bidder) {
-      const currentHighestBidder = await User.findOne({ _id: auction.currentHighestBid.bidder });
-      currentHighestBidder.wallet.availableBalance += auction.currentHighestBid.bidValue;
-      currentHighestBidder.wallet.freezedBalance -= auction.currentHighestBid.bidValue;
+      const currentHighestBidder = await User.findOne({
+        _id: auction.currentHighestBid.bidder,
+      });
+      currentHighestBidder.wallet.availableBalance +=
+        auction.currentHighestBid.bidValue;
+      currentHighestBidder.wallet.freezedBalance -=
+        auction.currentHighestBid.bidValue;
       await currentHighestBidder.save();
     }
     const nowBid = {
-      bidder: req.user.userId,
-      bidValue: bidValue
-    }
+      bidder: {
+        _id: user._id,
+        name: user.name,
+        profilePhoto: user.profilePhoto,
+        country: user.country,
+      },
+      bidValue: bidValue,
+    };
     auction.currentHighestBid = nowBid;
 
     await user.save();
     await auction.save();
 
-    var auctionChannel = ablyService.client.channels.get("auction:"+ req.body.auctionId);
-    auctionChannel.publish("NewBid", {action: "newBid", bidData: nowBid});
+    var auctionChannel = ablyService.client.channels.get(
+      "auction:" + req.body.auctionId
+    );
+    auctionChannel.publish("NewBid", { action: "newBid", bidData: nowBid });
     res.status(200).send("Bid placed Successfully");
   } catch (err) {
     console.error("Error placing bid:", err);
     res.status(501).send("Internal Server Error, Kindly retry");
   }
   return;
-}
+};
 
 module.exports = newBid;

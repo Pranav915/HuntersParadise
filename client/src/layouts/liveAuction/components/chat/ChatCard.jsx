@@ -12,8 +12,9 @@ import { useState } from "react";
 import Message from "./Message";
 import { useChannel } from "ably/react";
 import { realtime } from "../../../../ably.js";
+import { connect } from "react-redux";
 
-const ChatCard = ({ userDetails, liveAuctionDetails }) => {
+const ChatCard = ({ userDetails, liveAuctionDetails, isHost }) => {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
   const [text, setText] = useState("Type something...");
@@ -23,9 +24,8 @@ const ChatCard = ({ userDetails, liveAuctionDetails }) => {
     "auction:" + liveAuctionDetails?.auctionId,
     "chatMessage",
     (msg) => {
-      console.log("msg", msg);
       const message = {
-        username: msg.clientId,
+        name: msg.data.name,
         msg: msg.data.msg,
       };
       setMessages([message, ...messages]);
@@ -39,9 +39,10 @@ const ChatCard = ({ userDetails, liveAuctionDetails }) => {
   };
 
   const handleSendMessage = () => {
-    console.log("channel", channel);
-    channel.publish("chatMessage", { msg: text });
-    setText("");
+    if (text) {
+      channel.publish("chatMessage", { name: userDetails?.name, msg: text });
+      setText("");
+    }
   };
 
   const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
@@ -82,7 +83,7 @@ const ChatCard = ({ userDetails, liveAuctionDetails }) => {
         }}
       >
         {messages?.map((message, key) => (
-          <Message username={message.username} msg={message.msg} key={key} />
+          <Message name={message.name} msg={message.msg} key={key} />
         ))}
       </MDBox>
 
@@ -116,4 +117,10 @@ const ChatCard = ({ userDetails, liveAuctionDetails }) => {
   );
 };
 
-export default ChatCard;
+const mapStoreStateToProps = ({ auth }) => {
+  return {
+    ...auth,
+  };
+};
+
+export default connect(mapStoreStateToProps)(ChatCard);

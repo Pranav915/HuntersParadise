@@ -54,7 +54,7 @@ const AuctionDetails = ({ getAuctionDetails, startAuction }) => {
   }, []);
 
   const handleStartAuction = () => {
-    startAuction({ auctionId: auctionDetails.auctionId });
+    startAuction({ auctionId: auctionDetails.auctionId }, navigate);
   };
 
   return (
@@ -81,9 +81,11 @@ const AuctionDetails = ({ getAuctionDetails, startAuction }) => {
                     Start Auction
                   </MDButton>
                 ) : (
-                  <MDButton variant="contained" color="success" startIcon={<LoginIcon />}>
+                  <>
+                    {/* <MDButton variant="contained" color="success" startIcon={<LoginIcon />}>
                     Enter Auction Arena
-                  </MDButton>
+                  </MDButton> */}
+                  </>
                 )}
               </MDBox>
             </Grid>
@@ -101,7 +103,7 @@ const AuctionDetails = ({ getAuctionDetails, startAuction }) => {
                       />
                       <CardContent>
                         <MDTypography variant="h4" align="center" pt={1}>
-                          Host Name
+                          {auctionDetails?.auctionHost?.name}
                         </MDTypography>
                       </CardContent>
                     </MDBox>

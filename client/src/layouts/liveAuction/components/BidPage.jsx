@@ -8,15 +8,22 @@ import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 import { useMaterialUIController } from "context";
 import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAuctionActions } from "app/actions/auctionActions";
 import { connect } from "react-redux";
 
-const BidPage = ({ liveAuctionDetails, isHost, selectedProduct, newBid }) => {
+const BidPage = ({
+  liveAuctionDetails,
+  isHost,
+  selectedProduct,
+  newBid,
+  highestBidder,
+  setHighestBidder,
+  bidDone,
+}) => {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
   const [bid, setBid] = useState(null);
-  const [highestBidder, setHighestBidder] = useState(null);
 
   const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
     color: () => {
@@ -31,11 +38,11 @@ const BidPage = ({ liveAuctionDetails, isHost, selectedProduct, newBid }) => {
   });
 
   const auctionArenaChannel = useChannel(
-    "auction:" + liveAuctionDetails?._id,
+    "auction:" + liveAuctionDetails?.auctionId,
     "NewBid",
     (message) => {
       console.log("message", message);
-      setBid(message?.data?.bidData);
+      setHighestBidder(message?.data?.bidData);
     }
   ).channel;
 
@@ -47,6 +54,27 @@ const BidPage = ({ liveAuctionDetails, isHost, selectedProduct, newBid }) => {
     console.log("req", req);
     newBid(req);
   };
+
+  const handleCompleteAuction = () => {
+    const req = {
+      auctionId: liveAuctionDetails?.auctionId,
+    };
+    bidDone(req);
+  };
+
+  useEffect(() => {
+    if (selectedProduct?.highestbid) {
+      const data = {
+        bidder: {
+          name: selectedProduct?.highestbid?.highestBidder?.name,
+          profilePhoto: selectedProduct?.highestbid?.highestBidder?.profilePhoto,
+          country: selectedProduct?.highestbid?.highestBidder?.country,
+        },
+        bidValue: selectedProduct?.highestbid?.bidPrice,
+      };
+      setHighestBidder(data);
+    }
+  }, []);
 
   return (
     <Card>
@@ -82,7 +110,26 @@ const BidPage = ({ liveAuctionDetails, isHost, selectedProduct, newBid }) => {
             <Grid container p={1}>
               <Grid item xs={12}>
                 <MDTypography variant="h5" fontWeight="medium">
-                  TOP BIDDER
+                  Description
+                </MDTypography>
+              </Grid>
+              <Grid item>
+                <MDTypography
+                  component="p"
+                  variant="button"
+                  color="text"
+                  sx={{ textAlign: "justify" }}
+                >
+                  {selectedProduct?.product?.description}
+                </MDTypography>
+              </Grid>
+            </Grid>
+          </MDBox>
+          <MDBox mt={2}>
+            <Grid container p={1}>
+              <Grid item xs={12}>
+                <MDTypography variant="h5" fontWeight="medium">
+                  {selectedProduct?.status == "live" ? "TOP BIDDER" : "WINNER"}
                 </MDTypography>
               </Grid>
               {highestBidder ? (
@@ -91,7 +138,7 @@ const BidPage = ({ liveAuctionDetails, isHost, selectedProduct, newBid }) => {
                     <Grid container alignItems="center" p={1}>
                       <Grid item>
                         <MDAvatar
-                          src="https://source.unsplash.com/random"
+                          src={highestBidder?.bidder?.profilePhoto}
                           alt="profile-image"
                           size="sm"
                           shadow="sm"
@@ -100,7 +147,7 @@ const BidPage = ({ liveAuctionDetails, isHost, selectedProduct, newBid }) => {
                       <Grid item ml={2}>
                         <MDBox height="100%" mt={0.5} lineHeight={1}>
                           <MDTypography variant="h6" fontWeight="medium">
-                            Harshit Pachar
+                            {highestBidder?.bidder?.name}
                           </MDTypography>
                         </MDBox>
                       </Grid>
@@ -109,7 +156,7 @@ const BidPage = ({ liveAuctionDetails, isHost, selectedProduct, newBid }) => {
                   <Grid item xs={12} md={3}>
                     <MDBox height="100%" mt={0.5} lineHeight={1}>
                       <MDTypography variant="h5" fontWeight="regular" color="text">
-                        {"$" + bid?.bidValue}
+                        {"$" + highestBidder?.bidValue}
                       </MDTypography>
                     </MDBox>
                   </Grid>
@@ -123,7 +170,7 @@ const BidPage = ({ liveAuctionDetails, isHost, selectedProduct, newBid }) => {
                       <Grid item>
                         <MDBox height="100%" mt={0.5} lineHeight={1}>
                           <MDTypography variant="h5" fontWeight="regular" color="text">
-                            Maharashtra
+                            {highestBidder?.bidder?.country}
                           </MDTypography>
                         </MDBox>
                       </Grid>
@@ -137,30 +184,46 @@ const BidPage = ({ liveAuctionDetails, isHost, selectedProduct, newBid }) => {
                   </Grid>
                 </>
               )}
-
+              {isHost ? (
+                <></>
+              ) : (
+                <>
+                  <Grid item xs={12} mt={4}>
+                    <MDTypography variant="h5" fontWeight="medium">
+                      ADD YOUR BID
+                    </MDTypography>
+                  </Grid>
+                  <Grid item xs={12} mt={1}>
+                    <MDInput
+                      required
+                      type="text"
+                      label="Bid"
+                      name="bidPrice"
+                      autoComplete="bidPrice"
+                      value={bid}
+                      onChange={(e) => setBid(e.target.value)}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} mt={2}>
+                    <MDButton color="dark" fullWidth onClick={handleAddBid}>
+                      BID
+                    </MDButton>
+                  </Grid>
+                </>
+              )}
+            </Grid>
+            {isHost && selectedProduct?.status == "live" ? (
               <Grid item xs={12} mt={4}>
-                <MDTypography variant="h5" fontWeight="medium">
-                  ADD YOUR BID
-                </MDTypography>
-              </Grid>
-              <Grid item xs={12} mt={1}>
-                <MDInput
-                  required
-                  type="text"
-                  label="Bid"
-                  name="bidPrice"
-                  autoComplete="bidPrice"
-                  value={bid}
-                  onChange={(e) => setBid(e.target.value)}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} mt={2}>
-                <MDButton color="dark" fullWidth onClick={handleAddBid}>
-                  BID
+                <MDButton color="success" variant="contained" p={0} onClick={handleCompleteAuction}>
+                  <MDTypography component="h5" variant="h6" color="text" m={-1}>
+                    Complete Deal
+                  </MDTypography>
                 </MDButton>
               </Grid>
-            </Grid>
+            ) : (
+              <></>
+            )}
           </MDBox>
         </MDBox>
       </MDBox>

@@ -29,15 +29,19 @@ const ProductCard = ({ product, handleSetSelectedProduct, status }) => {
                     {product?.product?.name}
                   </MDTypography>
                   <MDTypography component="p" variant="button" color="text">
-                    {product?.startBid}
+                    {"$" + product?.startBid}
                   </MDTypography>
                 </MDBox>
               </Grid>
               <Grid item xs={12} sx={{ display: "flex", justifyContent: "right" }}>
                 {product?.status == "live" ? (
                   <MDBadge badgeContent="Live" color="success" variant="gradient" size="sm" />
+                ) : product?.status == "pending" ? (
+                  <MDBadge badgeContent="Pending" color="info" variant="gradient" size="sm" />
+                ) : product?.status == "sold" ? (
+                  <MDBadge badgeContent="Sold" color="secondary" variant="gradient" size="sm" />
                 ) : (
-                  <MDBadge badgeContent="Pending" color="secondary" variant="gradient" size="sm" />
+                  <MDBadge badgeContent="Unsold" color="error" variant="gradient" size="sm" />
                 )}
               </Grid>
             </Grid>

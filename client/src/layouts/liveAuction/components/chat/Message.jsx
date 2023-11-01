@@ -6,7 +6,7 @@ import MDTypography from "components/MDTypography";
 import React from "react";
 import { connect } from "react-redux";
 
-const Message = ({ username, msg, userDetails }) => {
+const Message = ({ name, msg, userDetails }) => {
   return (
     <>
       <Card
@@ -15,16 +15,16 @@ const Message = ({ username, msg, userDetails }) => {
           maxWidth: "fit-content",
           padding: "5px 8px",
           marginBottom: "2px",
-          alignSelf: userDetails?.username == username ? "flex-end" : "flex-start",
+          alignSelf: userDetails?.name == name ? "flex-end" : "flex-start",
         }}
       >
         <MDBox pl={1}>
           <MDTypography
             variant="h6"
-            color={userDetails?.username == username ? "success" : "info"}
+            color={userDetails?.name == name ? "success" : "info"}
             sx={{ whiteSpace: "normal" }}
           >
-            {username}
+            {name}
           </MDTypography>
           <MDTypography component="p" variant="button" color="text" sx={{ whiteSpace: "normal" }}>
             {msg}
