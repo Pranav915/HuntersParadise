@@ -4,6 +4,10 @@ const UpcomingAuction = require("../../models/UpcomingAuction");
 const startAuction = (req, res) => {
   UpcomingAuction.findOneAndDelete({ auctionId: req.body.auctionId })
     .then((auction) => {
+        if(!auction){
+            res.status(404).send("no such auction found");
+            return;
+        }
       if (auction.auctionHost != req.user.userId) {
         res
           .status(401)

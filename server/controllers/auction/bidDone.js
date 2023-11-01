@@ -1,6 +1,8 @@
 const CompletedDeal = require('../../models/CompletedDeal');
 const LiveAuction = require('../../models/LiveAuction');
 const Transaction = require('../../models/Transaction');
+const User = require('../../models/User');
+const ablyService = require("../../ablyService");
 
 // const bidDone = (req, res) => {
 //     LiveAuction.findOne({ auctionId: req.body.auctionId }).then(
@@ -31,7 +33,11 @@ const Transaction = require('../../models/Transaction');
 
 const bidDone = async (req, res) => {
     try {
-      const auction = await LiveAuction.findOne({ _id: req.body.auctionId });
+      const auction = await LiveAuction.findOne({ auctionId: req.body.auctionId });
+      if(!auction){
+        res.status(404).send("No such Auction found");
+        return;
+      }
       if(auction.auctionHost != req.user.userId){
         res.status(401).send("You are not authorized to complete Product Sell");
         return;
@@ -43,7 +49,7 @@ const bidDone = async (req, res) => {
       const currentProductInList = auction.productList.find(
         (product) => product.product.name === auction.currentProduct
       );
-      const soldData = {
+      var soldData = {
         product: auction.currentProduct
       }
       if (auction.currentHighestBid.bidder) {
@@ -57,6 +63,38 @@ const bidDone = async (req, res) => {
             highestBidder: auction.currentHighestBid.bidder,
             bidPrice: auction.currentHighestBid.bidValue,
         };
+        const completedDeal = new CompletedDeal({
+          productName: currentProductInList.product.name,
+          productImage: currentProductInList.product.image,
+          dealDescription: currentProductInList.product.description,
+          price: auction.currentHighestBid.bidValue,
+          seller: auction.auctionHost,
+          buyer: auction.currentHighestBid.bidder,
+          status: "pending"
+        });
+  
+        await completedDeal.save().then(async (deal) => {
+          const transaction = new Transaction({
+              typeOf: "transfer",
+              from: auction.currentHighestBid.bidder,
+              to: auction.auctionHost,
+              amount: auction.currentHighestBid.bidValue,
+              status: "pending",
+              dealID: deal._id
+            });
+            await transaction.save().then(async (trns) =>{
+              const auctionHost = await User.findOne({_id: auction.auctionHost});
+              auctionHost.wallet.totalBalance += auction.currentHighestBid.bidValue;
+              auctionHost.wallet.outStandingBalance += auction.currentHighestBid.bidValue;
+              auctionHost.wallet.transactions.push(trns._id);
+              await auctionHost.save();
+
+              const buyer = await User.findOne({_id: auction.currentHighestBid.bidder});
+              buyer.wallet.transactions.push(trns._id);
+              await buyer.save();
+            });
+
+        });
       } else {
           soldData = {
             ...soldData,
@@ -66,41 +104,16 @@ const bidDone = async (req, res) => {
       }
       auction.currentHighestBid = {};
       auction.currentProduct = "";
-      const completedDeal = new CompletedDeal({
-        productName: currentProductInList.product.name,
-        productImage: currentProductInList.product.image,
-        dealDescription: currentProductInList.product.description,
-        price: auction.currentHighestBid.bidValue,
-        seller: auction.auctionHost,
-        buyer: auction.currentHighestBid.bidder,
-        status: "pending"
-      });
-
-      await completedDeal.save().then(async (deal) => {
-        const transaction = new Transaction({
-            typeOf: "transfer",
-            from: auction.currentHighestBid.bidder,
-            to: auction.auctionHost,
-            amount: auction.currentHighestBid.bidValue,
-            status: "pending",
-            dealID: deal._id
-          });
-          await transaction.save();
-      });
       
-      const auctionHost = await User.findOne({_id: auction.auctionHost});
-      auctionHost.wallet.totalBalance += auction.currentHighestBid.bidValue;
-      auctionHost.wallet.outStandingBalance += auction.currentHighestBid.bidValue;
-
-      await auctionHost.save();
       await auction.save();
       var auctionChannel = ablyService.client.channels.get("auction:"+ req.body.auctionId);
-      auctionChannel.publish("ProductSold", {action: "Product Sold", bidData: soldData});
-      res.status(200).send("Product successfully Sold");
+      auctionChannel.publish("ProductSold", {action: "Product Complete", bidData: soldData});
+      res.status(200).send("Product successfully Auctioned");
     } catch (error) {
       console.error("Error completing bid:", error);
       return "An error occurred while completing the bid.";
     }
+    res.status(500).send("Something went wrong");
   }
 
 module.exports = bidDone;
