@@ -8,6 +8,7 @@ const getUpcomingAuctions = require("./getUpcomingAuctions");
 const getMyAuctions = require("./getMyAuctions");
 const getUpcomingAuctionDetails = require("./getUpcomingAuctionDetails");
 const getLiveAuctionDetails = require("./getLiveAuctionDetails");
+const endAuction = require("./endAuction");
 exports.controllers = {
   createAuction,
   startAuction,
@@ -19,4 +20,5 @@ exports.controllers = {
   getMyAuctions,
   getUpcomingAuctionDetails,
   getLiveAuctionDetails,
+  endAuction
 };

@@ -37,5 +37,6 @@ router.get(
   auth,
   auctionControllers.controllers.getLiveAuctionDetails
 );
+router.post("/endAuction", auth, auctionControllers.controllers.endAuction);
 
 module.exports = router;
