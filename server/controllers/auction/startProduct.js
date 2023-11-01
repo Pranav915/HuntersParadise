@@ -2,9 +2,9 @@ const LiveAuction = require("../../models/LiveAuction");
 const ablyService = require("../../ablyService");
 const startProduct = async (req, res) => {
     try{
-        const auction = await LiveAuction.findOne({ _id: req.body.auctionId });
+        const auction = await LiveAuction.findOne({ auctionId: req.body.auctionId });
         if(auction.auctionHost != req.user.userId){
-            res.status(401).send("You are not authorized to complete Product Sell");
+            res.status(401).send("You are not authorized to start Product Sell");
             return;
         }
         if(auction.currentProduct && auction.currentProduct !== ""){
@@ -24,7 +24,8 @@ const startProduct = async (req, res) => {
         }else{
             res.status(400).send("Product already sold or not found");
         }
-    }catch{
+    }catch(err){
+        console.log("Error while Starting product", err);
         res.status(501).send("Internal Server Error, kindly retry");
     }
 };
