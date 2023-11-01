@@ -121,24 +121,24 @@ const Dashboard = ({
     }
   }).channel;
 
-  // dealChannel.presence.subscribe("enter", function (member) {
-  //   console.log("Member " + member.clientId + " entered");
-  // });
-  // dealChannel.presence.enter();
-  // dealChannel.presence.get(function (err, members) {
-  //   console.log("There are " + members.length + " members on this channel");
-  //   setLiveUserCount(members.length + 1);
-  //   members.forEach((m) => {
-  //     console.log(m.clientId);
-  //   });
-  // });
+  dealChannel.presence.subscribe("enter", function (member) {
+    console.log("Member " + member.clientId + " entered");
+  });
+  dealChannel.presence.enter();
+  dealChannel.presence.get(function (err, members) {
+    console.log("There are " + members.length + " members on this channel");
+    setLiveUserCount(members.length + 1);
+    members.forEach((m) => {
+      console.log(m.clientId);
+    });
+  });
   let channelOpts = { params: { occupancy: "metrics" } };
   // let channel = ably.channels.get("hay-say-pal", channelOpts);
-  dealChannel.setOptions(channelOpts, (err) => {
-    if (!err) {
-      console.log("channel params updated");
-    }
-  });
+  // dealChannel.setOptions(channelOpts, (err) => {
+  //   if (!err) {
+  //     console.log("channel params updated");
+  //   }
+  // });
 
   dealChannel.subscribe("[meta]occupancy", (message) => {
     console.log("occupancy: ", message.data);
