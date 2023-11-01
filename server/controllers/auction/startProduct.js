@@ -2,7 +2,7 @@ const LiveAuction = require("../../models/LiveAuction");
 const ablyService = require("../../ablyService");
 const startProduct = async (req, res) => {
   try {
-    const auction = await LiveAuction.findOne({ _id: req.body.auctionId });
+    const auction = await LiveAuction.findOne({ auctionId: req.body.auctionId });
     if (auction.auctionHost != req.user.userId) {
       res.status(401).send("You are not authorized to complete Product Sell");
       return;
