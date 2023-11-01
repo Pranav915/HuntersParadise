@@ -83,12 +83,12 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
         <CircularProgress />
       ) : (
         <Grid container>
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} md={3} sx={{ display: "flex", flexDirection: "column" }}>
             <Grid container spacing={2} p={2}>
               <Grid item xs={12}>
                 <HostCard data={liveAuctionDetails} />
               </Grid>
-              <Grid item xs={12} sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+              <Grid item xs={12}>
                 <Card sx={{ flex: 1 }}>
                   <MDBox p={2}>
                     <MDTypography variant="h5" color="text">
@@ -98,20 +98,30 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
                       <LinearProgress variant="determinate" value={progress} />
                     </MDBox>
                   </MDBox>
-                  <Card
-                    sx={{
-                      maxHeight: "386px",
-                      overflow: "hidden",
-                      paddingBottom: 2,
-                    }}
-                  >
-                    <MDBox sx={{ overflow: "auto" }}>
+                  <Card>
+                    <MDBox
+                      sx={{
+                        overflowY: "auto",
+                        maxHeight: "355px",
+                        mt: 1,
+                        "::-webkit-scrollbar": {
+                          width: 0,
+                          background: "transparent",
+                        },
+                        "::-webkit-scrollbar-thumb": {
+                          background: "transparent",
+                        },
+                        scrollbarWidth: "none",
+                      }}
+                    >
                       {liveAuctionDetails?.productList.map((product, key) => (
-                        <ProductCard
-                          key={key}
-                          product={product}
-                          handleSetSelectedProduct={() => setSelectedProduct(product)}
-                        />
+                        <>
+                          <ProductCard
+                            key={key}
+                            product={product}
+                            handleSetSelectedProduct={() => setSelectedProduct(product)}
+                          />
+                        </>
                       ))}
                     </MDBox>
                   </Card>

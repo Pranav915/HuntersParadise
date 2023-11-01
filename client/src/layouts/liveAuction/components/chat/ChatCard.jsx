@@ -68,15 +68,24 @@ const ChatCard = ({ userDetails, liveAuctionDetails }) => {
           flex: 1,
           display: "flex",
           flexDirection: "column-reverse",
-          maxHeight: "100%",
           overflowY: "auto",
+          maxHeight: "510px",
           mt: 1,
+          "::-webkit-scrollbar": {
+            width: 0,
+            background: "transparent",
+          },
+          "::-webkit-scrollbar-thumb": {
+            background: "transparent",
+          },
+          scrollbarWidth: "none",
         }}
       >
         {messages?.map((message, key) => (
           <Message username={message.username} msg={message.msg} key={key} />
         ))}
       </MDBox>
+
       <MDBox>
         <Grid container p={1}>
           <Grid item xs={12} mt={1}>
