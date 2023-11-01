@@ -69,7 +69,7 @@ const ChatCard = ({ userDetails, liveAuctionDetails }) => {
           display: "flex",
           flexDirection: "column-reverse",
           overflowY: "auto",
-          maxHeight: "510px",
+          maxHeight: "540px",
           mt: 1,
           "::-webkit-scrollbar": {
             width: 0,

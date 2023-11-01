@@ -33,6 +33,8 @@ export const login = (userDetails, navigate) => {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
       const { userDetails } = response?.data;
+      Cookies.set("clientId", userDetails?.username);
+      await initializeAblyClient(Cookies.get("clientId"));
       if (userDetails.age) {
         navigate("/dashboard");
       } else {
@@ -40,8 +42,6 @@ export const login = (userDetails, navigate) => {
       }
       localStorage.setItem("user", JSON.stringify(userDetails));
       dispatch(setUserDetails(userDetails));
-      Cookies.set("clientId", userDetails?.username);
-      initializeAblyClient(Cookies.get("clientId"));
     }
   };
 };
@@ -53,7 +53,8 @@ export const register = (userDetails, navigate) => {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
       const { userDetails } = response?.data;
-      console.log("userDetails", userDetails);
+      Cookies.set("clientId", userDetails?.username);
+      await initializeAblyClient(Cookies.get("clientId"));
       if (userDetails?.age) {
         navigate("/dashboard");
       } else {
@@ -61,8 +62,6 @@ export const register = (userDetails, navigate) => {
       }
       localStorage.setItem("user", JSON.stringify(userDetails));
       dispatch(setUserDetails(userDetails));
-      Cookies.set("clientId", userDetails?.username);
-      initializeAblyClient(Cookies.get("clientId"));
     }
   };
 };

@@ -6,7 +6,7 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 
-const ProductCard = ({ product, handleSetSelectedProduct }) => {
+const ProductCard = ({ product, handleSetSelectedProduct, status }) => {
   return (
     <MDBox px={1}>
       <MDBox p={1}>

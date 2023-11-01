@@ -24,11 +24,22 @@ import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { connect } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MDInput from "components/MDInput";
 import { useMaterialUIController } from "context";
+import { getWalletActions } from "app/actions/walletActions";
 
-const Billing = ({ userDetails }) => {
+const Billing = ({
+  userDetails,
+  addFund,
+  withdrawFund,
+  availableBalance,
+  freezedBalance,
+  outstandingBalance,
+  totalBalance,
+  getBalance,
+  setOutstandingBalance,
+}) => {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
   const [openAdd, setOpenAdd] = useState(false);
@@ -60,20 +71,26 @@ const Billing = ({ userDetails }) => {
 
   const handleSubmitAdd = (event) => {
     event.preventDefault();
-    const data = {
-      addValue: addValue,
+    const req = {
+      amount: addValue,
     };
+    addFund(req);
+    setAddValue("");
     handleCloseAdd();
-    console.log("Add Value", data);
   };
+
+  useEffect(() => {
+    getBalance();
+  }, []);
 
   const handleSubmitWithdraw = (event) => {
     event.preventDefault();
     const data = {
-      withdrawValue: withdrawValue,
+      amount: withdrawValue,
     };
+    withdrawFund(data);
+    setWithdrawValue("");
     handleCloseWithdraw();
-    console.log("Withdraw Value", data);
   };
 
   return (
@@ -89,7 +106,7 @@ const Billing = ({ userDetails }) => {
                     icon="account_balance"
                     title="Total Balance"
                     description="(AB + TB + FB)"
-                    value={"$" + userDetails?.wallet?.totalBalance}
+                    value={"$" + totalBalance}
                   />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
@@ -97,7 +114,7 @@ const Billing = ({ userDetails }) => {
                     icon="wallet"
                     title="Available Balance"
                     description="Available for transactions"
-                    value={"$" + userDetails?.wallet?.availableBalance}
+                    value={"$" + availableBalance}
                   />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
@@ -105,7 +122,7 @@ const Billing = ({ userDetails }) => {
                     icon="hourglass_top"
                     title="Transit Balance"
                     description="Incoming Payment"
-                    value={"$" + userDetails?.wallet?.outStandingBalance}
+                    value={"$" + outstandingBalance}
                   />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
@@ -113,7 +130,7 @@ const Billing = ({ userDetails }) => {
                     icon="ac_unit"
                     title="Freezed Balance"
                     description="Outgoing Payment"
-                    value={"$" + userDetails?.wallet?.freezedBalance}
+                    value={"$" + freezedBalance}
                   />
                 </Grid>
                 {/* <Grid item xs={12}>
@@ -329,13 +346,16 @@ const Billing = ({ userDetails }) => {
   );
 };
 
-const mapStoreStateToProps = ({ auth }) => {
+const mapStoreStateToProps = ({ auth, wallet }) => {
   return {
     ...auth,
+    ...wallet,
   };
 };
 
 const mapActionsToProps = (dispatch) => {
-  return {};
+  return {
+    ...getWalletActions(dispatch),
+  };
 };
 export default connect(mapStoreStateToProps, mapActionsToProps)(Billing);

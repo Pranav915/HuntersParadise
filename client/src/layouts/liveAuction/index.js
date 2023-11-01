@@ -24,26 +24,24 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
   const [totalProducts, setTotalProducts] = useState(0);
   const [remainingProducts, setRemainingProducts] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [productList, setProductList] = useState([]);
+  const [liveProduct, setLiveProduct] = useState("");
 
-  // const auctionArenaChannel = useChannel(
-  //   "auction:" + getLiveAuctionDetails?.auctionId,
-  //   "ProductStart",
-  //   (message) => {
-  //     let liveAuctionDetails = liveAuctionDetails?.productList.map((product) => {
-  //       if (product.product.name === message.data.product.product.name) {
-  //         return {
-  //           ...product,
-  //           status: "live",
-  //         };
-  //       }
-  //       return product;
-  //     });
-  //     setLiveAuctionDetails(liveAuctionDetails);
-  //   }
-  // ).channel;
+  const productStartChannel = useChannel(
+    "auction:" + liveAuctionDetails?.auctionId,
+    "ProductStart",
+    (message) => {
+      getLiveAuctionDetails(
+        location?.state?.data?.auction?.auctionId,
+        setLiveAuctionDetails,
+        setIsLoading,
+        setIsHost
+      );
+    }
+  ).channel;
 
   const auctionArenaChannel = useChannel(
-    "auction:" + getLiveAuctionDetails?.auctionId,
+    "auction:" + getLiveAuctionDetails?._id,
     "auction",
     (message) => {
       let liveAuctionDetails = liveAuctionDetails?.productList.map((product) => {
@@ -56,10 +54,10 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
         return product;
       });
       setLiveAuctionDetails(liveAuctionDetails);
+      setProductList(liveAuctionDetails?.productList);
+      setLiveProduct(liveAuctionDetails?.currentProduct);
     }
   ).channel;
-
-  const handleUserEnter = async () => {};
 
   useEffect(() => {
     getLiveAuctionDetails(
@@ -68,7 +66,6 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
       setIsLoading,
       setIsHost
     );
-    handleUserEnter();
   }, []);
 
   useEffect(() => {
@@ -76,6 +73,10 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
     setRemainingProducts(liveAuctionDetails?.productList.length);
     setSelectedProduct(liveAuctionDetails?.productList[0]);
   }, [liveAuctionDetails, setLiveAuctionDetails]);
+
+  useEffect(() => {
+    console.log("selectedProduct", selectedProduct);
+  }, [selectedProduct, setSelectedProduct]);
 
   return (
     <PageLayout>
@@ -102,7 +103,7 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
                     <MDBox
                       sx={{
                         overflowY: "auto",
-                        maxHeight: "355px",
+                        maxHeight: "384px",
                         mt: 1,
                         "::-webkit-scrollbar": {
                           width: 0,
@@ -114,15 +115,44 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
                         scrollbarWidth: "none",
                       }}
                     >
-                      {liveAuctionDetails?.productList.map((product, key) => (
-                        <>
+                      {liveAuctionDetails?.productList.map((product, key) =>
+                        product.status == "live" ? (
                           <ProductCard
                             key={key}
                             product={product}
                             handleSetSelectedProduct={() => setSelectedProduct(product)}
+                            status="Live"
                           />
-                        </>
-                      ))}
+                        ) : (
+                          <></>
+                        )
+                      )}
+                      {liveAuctionDetails?.productList.map((product, key) =>
+                        product.status == "pending" ? (
+                          <ProductCard
+                            key={key}
+                            product={product}
+                            handleSetSelectedProduct={() => setSelectedProduct(product)}
+                            status="Pending"
+                          />
+                        ) : (
+                          <></>
+                        )
+                      )}
+                      {liveAuctionDetails?.productList.map((product, key) =>
+                        product.status == "sold" ? (
+                          <>
+                            <ProductCard
+                              key={key}
+                              product={product}
+                              handleSetSelectedProduct={() => setSelectedProduct(product)}
+                              status="Sold"
+                            />
+                          </>
+                        ) : (
+                          <></>
+                        )
+                      )}
                     </MDBox>
                   </Card>
                 </Card>
@@ -131,7 +161,11 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
           </Grid>
           <Grid item xs={12} md={6} py={2}>
             {selectedProduct?.status == "live" ? (
-              <BidPage />
+              <BidPage
+                selectedProduct={selectedProduct}
+                isHost={isHost}
+                liveAuctionDetails={liveAuctionDetails}
+              />
             ) : (
               <ProductDetails
                 selectedProduct={selectedProduct}

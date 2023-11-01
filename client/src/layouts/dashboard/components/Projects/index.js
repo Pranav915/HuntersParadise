@@ -120,7 +120,6 @@ const Projects = ({ name, participatedDeals, createdDeals, liveAuctions, myAucti
       <MDBox>
         <DataTable
           table={{ columns, rows }}
-          canSearch={true}
           showTotalEntries={false}
           isSorted={false}
           noEndBorder

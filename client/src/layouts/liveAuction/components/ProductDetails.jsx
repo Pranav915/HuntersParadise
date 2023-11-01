@@ -47,7 +47,7 @@ const ProductDetails = ({ selectedProduct, isHost, startProduct, liveAuctionDeta
           <MDBox
             sx={{
               overflowY: "auto",
-              maxHeight: "590px",
+              maxHeight: "620px",
               mt: 1,
               "::-webkit-scrollbar": {
                 width: 0,

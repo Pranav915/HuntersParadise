@@ -23,6 +23,7 @@ export const getAuctionActions = (dispatch) => {
       dispatch(getLiveAuctionDetails(auctionId, setLiveAuctionDetails, setIsLoading, setIsHost)),
     startAuction: (auctionId) => dispatch(startAuction(auctionId)),
     startProduct: (req) => dispatch(startProduct(req)),
+    newBid: (req) => dispatch(newBid(req)),
   };
 };
 
@@ -149,6 +150,17 @@ export const getLiveAuctionDetails = (
 export const startProduct = (req) => {
   return async (dispatch) => {
     const response = await apiCall(req, ENDPOINTS.START_PRODUCT, "POST");
+    if (response.error) {
+      dispatch(openAlertMessage(response?.exception?.response?.data));
+    } else {
+      console.log("response", response);
+    }
+  };
+};
+
+export const newBid = (req) => {
+  return async (dispatch) => {
+    const response = await apiCall(req, ENDPOINTS.NEW_BID, "POST");
     if (response.error) {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
