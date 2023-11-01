@@ -8,7 +8,7 @@ const initState = {
   categoryLiveDealsCount: null,
   liveAuctionsCount: null,
   totalAuctionParticipantsCount: null,
-  pieChartData: [],
+  pieChartData: null,
   barChartData: null,
   allAuctions: null,
   allDeals: null,

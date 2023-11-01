@@ -18,6 +18,7 @@ import LiveAuction from "layouts/liveAuction";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
+import { SpaceProvider } from "@ably/spaces/dist/mjs/react";
 
 const routes = [
   {
@@ -51,14 +52,6 @@ const routes = [
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/billing",
     component: <Billing />,
-  },
-  {
-    type: "collapse",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-    route: "/rtl",
-    component: <RTL />,
   },
   {
     type: "collapse",
@@ -131,7 +124,7 @@ const routes = [
     name: "Auction Details",
     key: "auction-details",
     icon: <Icon fontSize="small">create</Icon>,
-    route: "/auctionDetail",
+    route: "/auctionDetail/:auctionName",
     component: <AuctionDetails />,
   },
   {
@@ -147,7 +140,7 @@ const routes = [
     name: "Live Auction",
     key: "live-auction",
     icon: <Icon fontSize="small">live</Icon>,
-    route: "/liveAuction",
+    route: "/liveAuction/:auctionId",
     component: <LiveAuction />,
   },
 ];

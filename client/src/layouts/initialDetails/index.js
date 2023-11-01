@@ -3,7 +3,7 @@
 import { Autocomplete, Card, Checkbox, Grid, Paper, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getMainActions } from "app/actions/mainActions";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 
@@ -15,6 +15,7 @@ import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { Logout } from "shared/utils/Logout";
 
 const topFilms = [
   "Art",
@@ -263,6 +264,18 @@ const InitialDetails = ({ addInitialDetails }) => {
               <MDButton variant="gradient" type="submit" color="info" fullWidth>
                 Submit Details
               </MDButton>
+            </MDBox>
+            <MDBox mt={3} textAlign="center">
+              <MDTypography
+                component={Link}
+                onClick={Logout}
+                variant="button"
+                color="info"
+                fontWeight="medium"
+                textGradient
+              >
+                Login with different account?
+              </MDTypography>
             </MDBox>
           </MDBox>
         </MDBox>

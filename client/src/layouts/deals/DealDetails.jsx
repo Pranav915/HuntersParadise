@@ -20,21 +20,36 @@ const DealDetails = ({ submitOffer, userDetails, getDealDetails }) => {
   const [showEdit, setShowEdit] = useState(false);
   const [dealDetails, setDealDetails] = useState(null);
   const [userType, setUserType] = useState("");
+  const [opt, setopt] = useState("create");
+  const [offer, setOffer] = useState(null);
 
   const { columns, rows } = DealUsers(dealDetails);
 
   const location = useLocation();
 
   const handleSubmitOffer = () => {
-    const offerDetails = {
-      deal: dealDetails?.dealDetails?._id,
-      sellerName: dealDetails?.sellerName,
-      offered_by: userDetails?.userId,
-      offered_by_name: userDetails?.username,
-      offeredPrice: offeredPrice,
-      askedPrice: dealDetails?.askPrice,
-    };
-    submitOffer(offerDetails, setShowEdit, setOfferedPrice);
+    let offerDetails;
+    if (opt == "edit") {
+      offerDetails = {
+        offerId: offer._id,
+        newPrice: offeredPrice,
+        opt: opt,
+      };
+    } else {
+      offerDetails = {
+        deal: dealDetails?.dealDetails?._id,
+        sellerName: dealDetails?.dealDetails.sellerName,
+        offered_by: userDetails?.userId,
+        offered_by_name: userDetails?.username,
+        offeredPrice: offeredPrice,
+        askedPrice: dealDetails?.dealDetails?.askPrice,
+        opt: opt,
+      };
+    }
+
+    console.log("offerDetails", offerDetails);
+    submitOffer(offerDetails, setShowEdit, setOffer);
+    setopt("edit");
   };
 
   useEffect(() => {
@@ -45,9 +60,18 @@ const DealDetails = ({ submitOffer, userDetails, getDealDetails }) => {
   useEffect(() => {
     if (dealDetails?.offer) {
       setShowEdit(true);
+      setopt("edit");
       setOfferedPrice(dealDetails?.dealDetails?.offers[0]?.offer?.offeredPrice);
+      setOffer(dealDetails?.dealDetails?.offers[0]?.offer);
     }
   }, [dealDetails, setDealDetails]);
+
+  useEffect(() => {
+    if (dealDetails?.offer) {
+      setOfferedPrice(offer?.offeredPrice);
+    }
+  }, [offer, setOffer]);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />

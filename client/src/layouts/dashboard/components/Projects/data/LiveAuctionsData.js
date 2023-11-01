@@ -10,13 +10,15 @@ import IconButton from "@mui/material/IconButton";
 import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
 
 // Images
-import { Icon } from "@mui/material";
+import { Button, Icon } from "@mui/material";
 import { useMaterialUIController } from "context";
 import MDBadge from "components/MDBadge";
+import { useNavigate } from "react-router-dom";
 
-export default function AllAuctionsData() {
+export default function LiveAuctionsData(liveAuctions) {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
+  const navigate = useNavigate();
   const avatars = (members) =>
     members.map(([image, name]) => (
       <Tooltip key={name} title={name} placeholder="bottom">
@@ -64,48 +66,56 @@ export default function AllAuctionsData() {
 
   return {
     columns: [
-      { Header: "Name", accessor: "name", width: "45%", align: "left" },
-      { Header: "Start Price", accessor: "sPrice", align: "center" },
-      { Header: "Participants", accessor: "participants", align: "center" },
-      { Header: "Status", accessor: "status", align: "center" },
-      { Header: "", accessor: "btn", align: "center" },
+      { Header: "Auction Title", accessor: "auctionTitle", width: "30%", align: "left" },
+      { Header: "Ongoing Product", accessor: "ongoingProduct", width: "30%", align: "center" },
+      { Header: "Top Bid", accessor: "highestBid", align: "center" },
+      {
+        Header: "Participants",
+        accessor: "totalParticipants",
+        align: "center",
+      },
+      { Header: "Action", accessor: "action", align: "center" },
     ],
 
-    rows: [
-      {
-        name: (
-          <MDTypography variant="h6" color="text" fontWeight="medium">
-            Pranav
+    rows: liveAuctions.map((auction) => {
+      const rowData = {
+        auctionTitle: (
+          <MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>
+            {auction?.auctionTitle}
           </MDTypography>
         ),
-        sPrice: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $14,000
+        totalParticipants: (
+          <MDTypography display="block" variant="button" fontWeight="medium">
+            152
           </MDTypography>
         ),
-        participants: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            100
+        ongoingProduct: (
+          <MDTypography display="block" variant="button" fontWeight="medium">
+            {auction?.currentProduct}
           </MDTypography>
         ),
-        topBid: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            500
+        highestBid: (
+          <MDTypography variant="button" fontWeight="medium">
+            {auction?.currentHighestBid?.bidValue}
           </MDTypography>
         ),
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
+        action: (
+          <MDBox display="flex" alignItems="center" lineHeight={1}>
+            <IconButton
+              sx={navbarIconButton}
+              size="small"
+              onClick={() => {
+                navigate(`/liveAuction/${auction?.auctionId}`, {
+                  state: { data: { auction: auction, sender: "all" } },
+                });
+              }}
+            >
+              <Icon sx={iconsStyle}>login</Icon>
+            </IconButton>
           </MDBox>
         ),
-        btn: true ? (
-          <BtnBox />
-        ) : (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            500
-          </MDTypography>
-        ),
-      },
-    ],
+      };
+      return rowData;
+    }),
   };
 }

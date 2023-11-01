@@ -20,10 +20,12 @@ import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 import { Icon } from "@mui/material";
 import { useMaterialUIController } from "context";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ParticipatedDealsData(participatedDeals) {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
+  const navigate = useNavigate();
 
   const avatars = (members) =>
     members.map(([image, name]) => (
@@ -50,9 +52,8 @@ export default function ParticipatedDealsData(participatedDeals) {
       </Tooltip>
     ));
 
-  const Company = ({ image, name }) => (
+  const Company = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      {/* <MDAvatar src={image} name={name} size="sm" /> */}
       <MDTypography variant="button" fontWeight="medium" lineHeight={1}>
         {name}
       </MDTypography>
@@ -71,39 +72,49 @@ export default function ParticipatedDealsData(participatedDeals) {
     },
   });
 
-  const ButtonsBox = () => (
-    <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <IconButton sx={navbarIconButton} size="small">
-        <Icon sx={iconsStyle}>chat</Icon>
-      </IconButton>
-      <IconButton sx={navbarIconButton} size="small">
-        <Icon sx={iconsStyle}>info</Icon>
-      </IconButton>
-    </MDBox>
-  );
-
   return {
     columns: [
       { Header: "Name", accessor: "name", width: "45%", align: "left" },
-      { Header: "Asked Price", accessor: "sPrice", align: "center" },
+      { Header: "Ask Price", accessor: "sPrice", align: "center" },
       { Header: "Offered Price", accessor: "cOffer", align: "center" },
       { Header: "", accessor: "btns", align: "center" },
     ],
 
     rows: participatedDeals.map((offer) => {
       const newdata = {
-        name: <Company image={logoXD} name={offer?.deal?.productName} />,
+        name: (
+          <MDTypography variant="h6" color="text" fontWeight="medium">
+            {offer?.deal?.productName}
+          </MDTypography>
+        ),
         sPrice: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {offer?.deal?.askPrice}
+            {"$" + offer?.deal?.askPrice}
           </MDTypography>
         ),
         cOffer: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {offer?.offeredPrice}
+            {"$" + offer?.offeredPrice}
           </MDTypography>
         ),
-        btns: <ButtonsBox />,
+        btns: (
+          <MDBox display="flex" alignItems="center" lineHeight={1}>
+            <IconButton sx={navbarIconButton} size="small">
+              <Icon sx={iconsStyle}>chat</Icon>
+            </IconButton>
+            <IconButton
+              sx={navbarIconButton}
+              size="small"
+              onClick={() => {
+                navigate(`/dealDetail/${offer?.productName}`, {
+                  state: { data: { deal: offer, sender: "all" } },
+                });
+              }}
+            >
+              <Icon sx={iconsStyle}>info</Icon>
+            </IconButton>
+          </MDBox>
+        ),
       };
       return newdata;
     }),

@@ -33,85 +33,101 @@ const BidPage = () => {
             Time Left
           </MDTypography>
         </MDBox>
-        <MDBox mt={2}>
-          <img
-            src="https://source.unsplash.com/random"
-            alt="test"
-            style={{ width: "100%", height: "350px" }}
-          />
-        </MDBox>
-        <MDBox mt={2}>
-          <Grid container p={1}>
-            <Grid item xs={12}>
-              <MDTypography variant="h5" fontWeight="medium">
-                TOP BIDDER
-              </MDTypography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Grid container alignItems="center" p={1}>
-                <Grid item>
-                  <MDAvatar
-                    src="https://source.unsplash.com/random"
-                    alt="profile-image"
-                    size="sm"
-                    shadow="sm"
-                  />
-                </Grid>
-                <Grid item ml={2}>
-                  <MDBox height="100%" mt={0.5} lineHeight={1}>
-                    <MDTypography variant="h6" fontWeight="medium">
-                      Harshit Pachar
-                    </MDTypography>
-                  </MDBox>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <MDBox height="100%" mt={0.5} lineHeight={1}>
-                <MDTypography variant="h5" fontWeight="regular" color="text">
-                  $5000
+        <MDBox
+          sx={{
+            overflowY: "auto",
+            maxHeight: "590px",
+            mt: 1,
+            "::-webkit-scrollbar": {
+              width: 0,
+              background: "transparent",
+            },
+            "::-webkit-scrollbar-thumb": {
+              background: "transparent",
+            },
+            scrollbarWidth: "none",
+          }}
+        >
+          <MDBox mt={2}>
+            <img
+              src="https://source.unsplash.com/random"
+              alt="test"
+              style={{ width: "100%", height: "350px" }}
+            />
+          </MDBox>
+          <MDBox mt={2}>
+            <Grid container p={1}>
+              <Grid item xs={12}>
+                <MDTypography variant="h5" fontWeight="medium">
+                  TOP BIDDER
                 </MDTypography>
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Grid container alignItems="center">
-                <Grid item>
-                  <IconButton sx={navbarIconButton} size="small" disableRipple>
-                    <Icon sx={iconsStyle}>place</Icon>
-                  </IconButton>
-                </Grid>
-                <Grid item>
-                  <MDBox height="100%" mt={0.5} lineHeight={1}>
-                    <MDTypography variant="h5" fontWeight="regular" color="text">
-                      Maharashtra
-                    </MDTypography>
-                  </MDBox>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Grid container alignItems="center" p={1}>
+                  <Grid item>
+                    <MDAvatar
+                      src="https://source.unsplash.com/random"
+                      alt="profile-image"
+                      size="sm"
+                      shadow="sm"
+                    />
+                  </Grid>
+                  <Grid item ml={2}>
+                    <MDBox height="100%" mt={0.5} lineHeight={1}>
+                      <MDTypography variant="h6" fontWeight="medium">
+                        Harshit Pachar
+                      </MDTypography>
+                    </MDBox>
+                  </Grid>
                 </Grid>
               </Grid>
+              <Grid item xs={12} md={3}>
+                <MDBox height="100%" mt={0.5} lineHeight={1}>
+                  <MDTypography variant="h5" fontWeight="regular" color="text">
+                    $5000
+                  </MDTypography>
+                </MDBox>
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <Grid container alignItems="center">
+                  <Grid item>
+                    <IconButton sx={navbarIconButton} size="small" disableRipple>
+                      <Icon sx={iconsStyle}>place</Icon>
+                    </IconButton>
+                  </Grid>
+                  <Grid item>
+                    <MDBox height="100%" mt={0.5} lineHeight={1}>
+                      <MDTypography variant="h5" fontWeight="regular" color="text">
+                        Maharashtra
+                      </MDTypography>
+                    </MDBox>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} mt={4}>
+                <MDTypography variant="h5" fontWeight="medium">
+                  ADD YOUR BID
+                </MDTypography>
+              </Grid>
+              <Grid item xs={12} mt={1}>
+                <MDInput
+                  required
+                  type="text"
+                  label="Bid"
+                  name="bidPrice"
+                  autoComplete="bidPrice"
+                  value={bid}
+                  onChange={(e) => setBid(e.target.value)}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} mt={2}>
+                <MDButton color="dark" fullWidth>
+                  BID
+                </MDButton>
+              </Grid>
             </Grid>
-            <Grid item xs={12} mt={4}>
-              <MDTypography variant="h5" fontWeight="medium">
-                ADD YOUR BID
-              </MDTypography>
-            </Grid>
-            <Grid item xs={12} mt={1}>
-              <MDInput
-                required
-                type="text"
-                label="Bid"
-                name="bidPrice"
-                autoComplete="bidPrice"
-                value={bid}
-                onChange={(e) => setBid(e.target.value)}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} mt={2}>
-              <MDButton color="dark" fullWidth>
-                BID
-              </MDButton>
-            </Grid>
-          </Grid>
+          </MDBox>
         </MDBox>
       </MDBox>
     </Card>
