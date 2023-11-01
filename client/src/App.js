@@ -45,6 +45,7 @@ import { getDealActions } from "app/actions/dealActions";
 import * as Ably from "ably";
 import { realtime } from "ably.js";
 import { initializeAblyClient } from "./ably.js";
+import { getActions } from "app/actions/alertActions.js";
 
 const App = ({
   userDetails,
@@ -52,6 +53,7 @@ const App = ({
   setTotalLiveDealsCount,
   categoryLiveDealsCount,
   setCategoryLiveDealsCount,
+  openAlertMessage,
 }) => {
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -75,8 +77,28 @@ const App = ({
 
   const comChannel = useChannel("communicationChannel:" + userDetails?.userId, (message) => {
     console.log("message", message);
-    if (message.name == "OfferEdited") {
+    if (message.name == "NewOffer") {
       // Show Notification (New Offer Received On your Deal: Deal Name)
+      openAlertMessage({
+        title: "Offer Alert!",
+        content: `Hey, Somebody's interested in your deal. New Offer of $ ${message.data.offer.offeredPrice} Received.`,
+        link: `/dealDetail/${message.data.deal.productName}`,
+        item: message.data.deal,
+      });
+    } else if (message.name == "OfferEdited") {
+      openAlertMessage({
+        title: "Offer Alert!",
+        content: `Hey, Somebody has edited their previous offer to $ ${message.data.offer.offeredPrice}`,
+        link: `/dealDetail/${message.data.deal.productName}`,
+        item: message.data.deal,
+      });
+    } else if (message.name == "GotIt") {
+      openAlertMessage({
+        title: "Congratulations!",
+        content: `Your Offer Has Been Accepted on ${message.data.deal.productName}`,
+        link: `/dealDetail/${message.data.deal.productName}`,
+        item: message.data.deal,
+      });
     }
   }).channel;
   useMemo(() => {
@@ -231,6 +253,7 @@ const mapStoreStateToProps = ({ auth, deal }) => {
 const mapActionsToProps = (dispatch) => {
   return {
     ...getDealActions(dispatch),
+    ...getActions(dispatch),
   };
 };
 

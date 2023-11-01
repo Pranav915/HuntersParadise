@@ -36,6 +36,7 @@ import { getAuctionActions } from "app/actions/auctionActions";
 import Cookies from "js-cookie";
 import PieChart from "examples/Charts/PieChart";
 import { useAbly, useChannel } from "ably/react";
+import { getWalletActions } from "app/actions/walletActions";
 
 const Dashboard = ({
   userDetails,
@@ -46,6 +47,8 @@ const Dashboard = ({
   getPieChartData,
   totalBalance,
   setTotalBalance,
+  availableBalance,
+  setAvailableBalance,
   freezedBalance,
   setFreezedBalance,
   liveUserCount,
@@ -63,6 +66,7 @@ const Dashboard = ({
   getLiveAuctions,
   getMyAuctions,
   openAlertMessage,
+  getBalance,
 }) => {
   const { sales, tasks } = reportsLineChartData;
   const [finalPieChartData, setfinalPieChartData] = useState({
@@ -82,8 +86,14 @@ const Dashboard = ({
     if (message.name == "DealCreated") {
       setTotalLiveDealsCount(totalLiveDealsCount + 1);
       if (userDetails.categories.includes(message.data.deal.category)) {
+        console.log("message", message);
         setCategoryLiveDealsCount(categoryLiveDealsCount + 1);
-        openAlertMessage("New deal added in your category.");
+        openAlertMessage({
+          title: "New Deal Alert!",
+          content: `New deal () added in ${message.data.deal.category}. Check it out now!`,
+          link: `/dealDetail/${message.data.deal.productName}`,
+          item: message.data.deal,
+        });
       }
 
       // Update Pie Chart Data
@@ -101,6 +111,10 @@ const Dashboard = ({
       setTotalLiveDealsCount(totalLiveDealsCount - 1);
       if (userDetails.categories.includes(message.data.deal.category)) {
         setCategoryLiveDealsCount(categoryLiveDealsCount - 1);
+        openAlertMessage({
+          title: "Deal Regret!",
+          content: "Great deals go fast! You just missed out on one.",
+        });
       }
 
       // Update Pie Chart Data
@@ -164,6 +178,7 @@ const Dashboard = ({
       getMyAuctions();
       getPieChartData();
       getLiveData();
+      getBalance();
       Cookies.set("clientId", data?.username);
     } else if (userDetails) {
       if (!userDetails.age) {
@@ -178,18 +193,13 @@ const Dashboard = ({
         getMyAuctions();
         getPieChartData();
         getLiveData();
+        getBalance();
         Cookies.set("clientId", userDetails?.username);
       }
-      // dealChannel.presence.enter();
     } else {
       navigate("/authentication/sign-in");
     }
   }, []);
-
-  useEffect(() => {
-    setTotalBalance(userDetails?.wallet?.totalBalance);
-    setFreezedBalance(userDetails?.wallet?.freezedBalance);
-  }, [userDetails, setUserDetails]);
 
   useEffect(() => {
     let barChartData = {
@@ -288,8 +298,8 @@ const Dashboard = ({
                 count={totalBalance}
                 percentage={{
                   color: "success",
-                  amount: freezedBalance,
-                  label: "Freezed Balance",
+                  amount: availableBalance,
+                  label: "Available Balance",
                 }}
               />
             </MDBox>
@@ -380,10 +390,11 @@ const Dashboard = ({
   );
 };
 
-const mapStoreStateToProps = ({ auth, dashboard }) => {
+const mapStoreStateToProps = ({ auth, dashboard, wallet }) => {
   return {
     ...auth,
     ...dashboard,
+    ...wallet,
   };
 };
 
@@ -395,6 +406,7 @@ const mapActionsToProps = (dispatch) => {
     ...getDashboardActions(dispatch),
     ...getDealActions(dispatch),
     ...getAuctionActions(dispatch),
+    ...getWalletActions(dispatch),
   };
 };
 export default connect(mapStoreStateToProps, mapActionsToProps)(Dashboard);

@@ -1,8 +1,6 @@
 import { dashboardActions } from "app/actions/dashboardActions";
 
 const initState = {
-  totalBalance: null,
-  freezedBalance: null,
   liveUserCount: null,
   totalLiveDealsCount: null,
   categoryLiveDealsCount: null,
@@ -18,16 +16,6 @@ const initState = {
 
 const dashboardReducer = (state = initState, action) => {
   switch (action.type) {
-    case dashboardActions.SET_TOTAL_BALANCE:
-      return {
-        ...state,
-        totalBalance: action.totalBalance,
-      };
-    case dashboardActions.SET_FREEZED_BALANCE:
-      return {
-        ...state,
-        freezedBalance: action.freezedBalance,
-      };
     case dashboardActions.SET_LIVE_USER_COUNT:
       return {
         ...state,

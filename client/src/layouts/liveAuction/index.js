@@ -84,7 +84,6 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
   }, []);
 
   useEffect(() => {
-    console.log("use effect called");
     let isLiveAvailable = false;
     setTotalProducts(liveAuctionDetails?.productList.length);
     setRemainingProducts(liveAuctionDetails?.productList.length);

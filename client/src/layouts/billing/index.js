@@ -168,7 +168,7 @@ const Billing = ({
                     <AccountBalanceWalletIcon />
                   </MDBox>
                   <MDTypography variant="h3" fontWeight="medium" p={1} mt={1}>
-                    {"$" + userDetails?.wallet?.totalBalance}
+                    {"$" + totalBalance}
                   </MDTypography>
                   <MDBox display="flex" justifyContent="center" mt={1}>
                     <Grid item xs={12} sm={6} lg={5} pr={1.5}>

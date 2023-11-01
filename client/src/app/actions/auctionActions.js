@@ -53,7 +53,12 @@ export const createAuction = (auctionDetails) => {
   return async (dispatch) => {
     const response = await apiCall(auctionDetails, ENDPOINTS.CREATE_AUCTION, "POST");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       console.log("response", response);
       dispatch(getUpcomingAuctions());
@@ -67,7 +72,12 @@ export const getLiveAuctions = () => {
   return async (dispatch) => {
     const response = await apiCall({}, ENDPOINTS.GET_LIVE_AUCTIONS, "GET");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       console.log("response", response);
       dispatch(setLiveAuctions(response?.data));
@@ -79,7 +89,12 @@ export const getUpcomingAuctions = () => {
   return async (dispatch) => {
     const response = await apiCall({}, ENDPOINTS.GET_UPCOMING_AUCTIONS, "GET");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       console.log("response", response);
       dispatch(setUpcomingAuctions(response?.data));
@@ -91,7 +106,12 @@ export const getMyAuctions = () => {
   return async (dispatch) => {
     const response = await apiCall({}, ENDPOINTS.GET_MY_AUCTIONS, "GET");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       console.log("response", response);
       dispatch(setMyAuctions(response?.data?.upcomingAuctions));
@@ -107,7 +127,12 @@ export const getAuctionDetails = (auctionId, setAuctionDetails, setIsLoading, se
       "GET"
     );
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       setAuctionDetails(response?.data?.auction);
       setIsHost(response?.data?.isHost);
@@ -120,7 +145,12 @@ export const startAuction = (auctionId, navigate) => {
   return async (dispatch) => {
     const response = await apiCall(auctionId, ENDPOINTS.START_AUCTION, "POST");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       console.log("response", response);
     }
@@ -140,7 +170,12 @@ export const getLiveAuctionDetails = (
       "GET"
     );
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       console.log("response", response?.data?.auction);
       setLiveAuctionDetails(response?.data?.auction);
@@ -154,7 +189,12 @@ export const startProduct = (req) => {
   return async (dispatch) => {
     const response = await apiCall(req, ENDPOINTS.START_PRODUCT, "POST");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       console.log("response", response);
     }
@@ -165,7 +205,12 @@ export const newBid = (req) => {
   return async (dispatch) => {
     const response = await apiCall(req, ENDPOINTS.NEW_BID, "POST");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       console.log("response", response);
     }
@@ -176,7 +221,12 @@ export const bidDone = (req) => {
   return async (dispatch) => {
     const response = await apiCall(req, ENDPOINTS.BID_DONE, "POST");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       console.log("response", response);
     }

@@ -1,7 +1,6 @@
 import * as Ably from "ably";
 
-export let realtime = null; // Initialize realtime as null
-
+export let realtime = null;
 export async function initializeAblyClient(clientId) {
   // Initialize the Ably client with the new clientId
   realtime = new Ably.Realtime({

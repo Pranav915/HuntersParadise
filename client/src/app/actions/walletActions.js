@@ -89,7 +89,12 @@ export const withdrawFund = (req) => {
   return async (dispatch) => {
     const response = await apiCall(req, ENDPOINTS.WITHDRAW_FUND, "POST");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       console.log("response", response);
       dispatch(setTotalBalance(response?.data?.totalBalance));
@@ -104,7 +109,12 @@ export const getBalance = () => {
   return async (dispatch) => {
     const response = await apiCall({}, ENDPOINTS.GET_BALANCE, "GET");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       console.log("response", response);
       dispatch(setTotalBalance(response?.data?.totalBalance));

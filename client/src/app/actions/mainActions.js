@@ -18,7 +18,12 @@ const addInitialDetails = (userDetails, navigate) => {
   return async (dispatch) => {
     const response = await apiCall(userDetails, ENDPOINTS.ADD_INITIAL_DETAILS, "POST");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       const { userDetails } = response?.data;
       if (userDetails.age) {

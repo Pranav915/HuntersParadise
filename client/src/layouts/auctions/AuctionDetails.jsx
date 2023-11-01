@@ -24,6 +24,8 @@ const AuctionDetails = ({ getAuctionDetails, startAuction }) => {
   const navigate = useNavigate();
 
   const { channel } = useChannel("dealChannel", (message) => {
+    console.log("message", message);
+    console.log("auctionDetails", auctionDetails);
     if (message.name == "AuctionStarted") {
       navigate(`/liveAuction/${auctionDetails?.auctionId}`, {
         state: { data: { auction: auction, sender: "all" } },

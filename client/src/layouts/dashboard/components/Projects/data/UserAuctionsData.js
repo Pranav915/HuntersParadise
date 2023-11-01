@@ -13,11 +13,12 @@ import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
 import { Icon } from "@mui/material";
 import { useMaterialUIController } from "context";
 import MDBadge from "components/MDBadge";
+import { useNavigate } from "react-router-dom";
 
 export default function UserAuctionsData(myAuctions) {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
-  console.log("myAuctions123", myAuctions);
+  const navigate = useNavigate();
   const avatars = (members) =>
     members.map(([image, name]) => (
       <Tooltip key={name} title={name} placeholder="bottom">
@@ -63,12 +64,25 @@ export default function UserAuctionsData(myAuctions) {
     </MDBox>
   );
 
+  const options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+
+  const formatAuctionStartTime = (startTime) => {
+    const date = new Date(startTime);
+    return date.toLocaleDateString("en-US", options);
+  };
+
   return {
     columns: [
       { Header: "Name", accessor: "auctionTitle", width: "45%", align: "left" },
-      { Header: "Start Price", accessor: "startTime", align: "center" },
+      { Header: "Start Time", accessor: "startTime", align: "center" },
       { Header: "Total Products", accessor: "totalProducts", align: "center" },
-      { Header: "", accessor: "btn", align: "center" },
+      { Header: "", accessor: "action", align: "center" },
     ],
 
     rows: myAuctions.map((auction) => {
@@ -80,12 +94,12 @@ export default function UserAuctionsData(myAuctions) {
         ),
         startTime: (
           <MDTypography display="block" variant="button" fontWeight="medium">
-            152
+            {formatAuctionStartTime(auction?.startTime)}
           </MDTypography>
         ),
         totalProducts: (
           <MDTypography display="block" variant="button" fontWeight="medium">
-            {auction?.currentProduct}
+            {auction?.productList?.length}
           </MDTypography>
         ),
         action: (

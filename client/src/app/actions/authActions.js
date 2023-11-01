@@ -30,7 +30,12 @@ export const login = (userDetails, navigate) => {
   return async (dispatch) => {
     const response = await apiCall(userDetails, ENDPOINTS.LOGIN, "POST");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       const { userDetails } = response?.data;
       Cookies.set("clientId", userDetails?.username);
@@ -50,7 +55,12 @@ export const register = (userDetails, navigate) => {
   return async (dispatch) => {
     const response = await apiCall(userDetails, ENDPOINTS.REGISTER, "POST");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       const { userDetails } = response?.data;
       Cookies.set("clientId", userDetails?.username);
@@ -70,7 +80,12 @@ export const requestPasswordReset = (userDetails, setMailStatus) => {
   return async (dispatch) => {
     const response = await apiCall(userDetails, ENDPOINTS.REQUEST_PASSWORD_RESET, "POST");
     if (response.status !== 200) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       setMailStatus(true);
     }
@@ -81,7 +96,12 @@ export const passwordReset = (userDetails, navigate) => {
   return async (dispatch) => {
     const response = await apiCall(userDetails, ENDPOINTS.PASSWORD_RESET, "POST");
     if (response.status !== 200) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       dispatch(openAlertMessage("Password updated successfully"));
       navigate("/");
