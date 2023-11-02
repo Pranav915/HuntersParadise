@@ -7,13 +7,14 @@ const completeTransaction = async (req, res) => {
       res.status(401).send("Not authorized to complete the transaction.");
       return;
     }
+    const amount = parseInt(transaction.amount);
     const buyer = await User.findOne({_id: transaction.from});
-    buyer.wallet.totalBalance -= transaction.amount;
-    buyer.wallet.freezedBalance -= transaction.amount;
+    buyer.wallet.totalBalance -= amount;
+    buyer.wallet.freezedBalance -= amount;
 
     const seller = await User.findOne({_id: transaction.to});
-    seller.wallet.availableBalance += transaction.amount;
-    seller.wallet.outStandingBalance -= transaction.amount;
+    seller.wallet.availableBalance += amount;
+    seller.wallet.outStandingBalance -= amount;
 
     transaction.status = "Completed";
     await transaction.save();

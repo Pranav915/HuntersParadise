@@ -84,8 +84,8 @@ const bidDone = async (req, res) => {
             });
             await transaction.save().then(async (trns) =>{
               const auctionHost = await User.findOne({_id: auction.auctionHost});
-              auctionHost.wallet.totalBalance += auction.currentHighestBid.bidValue;
-              auctionHost.wallet.outStandingBalance += auction.currentHighestBid.bidValue;
+              auctionHost.wallet.totalBalance += parseInt(auction.currentHighestBid.bidValue);
+              auctionHost.wallet.outStandingBalance += parseInt(auction.currentHighestBid.bidValue);
               auctionHost.wallet.transactions.push(trns._id);
               await auctionHost.save();
 

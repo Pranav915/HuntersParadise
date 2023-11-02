@@ -89,16 +89,12 @@ const giveOffer = async (req, res) => {
           res.status(500).send("Internal Server Error Retry");
           return;
         });
-      const dealData = await LiveDeals.findOne({ _id: newOffer.deal });
+      console.log(nowDeal);
       var comChannel = ablyService.client.channels.get(
         "communicationChannel:" + nowDeal.seller
       );
-      comChannel.publish("NewOffer", {
-        action: "new offer",
-        offer: newOffer,
-        deal: dealData,
-      });
-      console.log("New Offer published to Ably");
+      comChannel.publish("NewOffer", { action: "new offer", Offer: newOffer });
+      console.log("New Offer published to Ably");
     })
     .catch((err) => {
       console.log(err);
