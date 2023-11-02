@@ -23,11 +23,16 @@ const AuctionDetails = ({ getAuctionDetails, startAuction }) => {
   const [isTime, setIsTime] = useState(true);
   const navigate = useNavigate();
 
+  const handleNavigate = () => {
+    navigate(`/liveAuction/${auctionDetails?.auctionId}`, {
+      state: { data: { auction: auction, sender: "all" } },
+    });
+  };
   const { channel } = useChannel("dealChannel", (message) => {
+    console.log("message", message);
+    console.log("auctionDetails", auctionDetails);
     if (message.name == "AuctionStarted") {
-      navigate(`/liveAuction/${auctionDetails?.auctionId}`, {
-        state: { data: { auction: auction, sender: "all" } },
-      });
+      handleNavigate();
     }
   });
 
@@ -54,7 +59,7 @@ const AuctionDetails = ({ getAuctionDetails, startAuction }) => {
   }, []);
 
   const handleStartAuction = () => {
-    startAuction({ auctionId: auctionDetails.auctionId });
+    startAuction({ auctionId: auctionDetails.auctionId }, navigate);
   };
 
   return (
@@ -81,9 +86,11 @@ const AuctionDetails = ({ getAuctionDetails, startAuction }) => {
                     Start Auction
                   </MDButton>
                 ) : (
-                  <MDButton variant="contained" color="success" startIcon={<LoginIcon />}>
+                  <>
+                    {/* <MDButton variant="contained" color="success" startIcon={<LoginIcon />}>
                     Enter Auction Arena
-                  </MDButton>
+                  </MDButton> */}
+                  </>
                 )}
               </MDBox>
             </Grid>
@@ -101,7 +108,7 @@ const AuctionDetails = ({ getAuctionDetails, startAuction }) => {
                       />
                       <CardContent>
                         <MDTypography variant="h4" align="center" pt={1}>
-                          Host Name
+                          {auctionDetails?.auctionHost?.name}
                         </MDTypography>
                       </CardContent>
                     </MDBox>

@@ -54,10 +54,10 @@ function Footer({ company, links }) {
         by
         <Link href={href} target="_blank">
           <MDTypography variant="button" fontWeight="medium">
-            &nbsp;{name}&nbsp;
+            &nbsp;Hunters-Paradise Team&nbsp;
           </MDTypography>
         </Link>
-        for a better web.
+        for a better online auction experience.
       </MDBox>
       <MDBox
         component="ul"
@@ -76,7 +76,13 @@ function Footer({ company, links }) {
           },
         })}
       >
-        {renderLinks()}
+        <MDBox component="li" px={20} lineHeight={1}>
+          <Link href="https://github.com/Pranav915/HuntersParadise" target="_blank">
+            <MDTypography variant="button" fontWeight="regular" color="text">
+              Hunters Paradise
+            </MDTypography>
+          </Link>
+        </MDBox>
       </MDBox>
     </MDBox>
   );

@@ -12,7 +12,7 @@ const getUpcomingAuctionDetails = async (req, res) => {
     }
     console.log("auction", auction);
     res.status(200).send({ isHost, auction });
-  } catch {
+  } catch (err) {
     console.log("Error while fetching auction Data", err);
     res.status(501).send("Error while fetching auction Data");
   }

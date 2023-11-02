@@ -13,10 +13,12 @@ import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
 import { Icon } from "@mui/material";
 import { useMaterialUIController } from "context";
 import MDBadge from "components/MDBadge";
+import { useNavigate } from "react-router-dom";
 
 export default function UserAuctionsData(myAuctions) {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
+  const navigate = useNavigate();
   const avatars = (members) =>
     members.map(([image, name]) => (
       <Tooltip key={name} title={name} placeholder="bottom">
@@ -62,48 +64,61 @@ export default function UserAuctionsData(myAuctions) {
     </MDBox>
   );
 
+  const options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+
+  const formatAuctionStartTime = (startTime) => {
+    const date = new Date(startTime);
+    return date.toLocaleDateString("en-US", options);
+  };
+
   return {
     columns: [
-      { Header: "Name", accessor: "name", width: "45%", align: "left" },
-      { Header: "Start Price", accessor: "sPrice", align: "center" },
-      { Header: "Participants", accessor: "participants", align: "center" },
-      { Header: "Status", accessor: "status", align: "center" },
-      { Header: "", accessor: "btn", align: "center" },
+      { Header: "Name", accessor: "auctionTitle", width: "45%", align: "left" },
+      { Header: "Start Time", accessor: "startTime", align: "center" },
+      { Header: "Total Products", accessor: "totalProducts", align: "center" },
+      { Header: "", accessor: "action", align: "center" },
     ],
 
-    rows: [
-      {
-        name: (
-          <MDTypography variant="h6" color="text" fontWeight="medium">
-            Pranav
+    rows: myAuctions.map((auction) => {
+      const rowData = {
+        auctionTitle: (
+          <MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>
+            {auction?.auctionTitle}
           </MDTypography>
         ),
-        sPrice: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $14,000
+        startTime: (
+          <MDTypography display="block" variant="button" fontWeight="medium">
+            {formatAuctionStartTime(auction?.startTime)}
           </MDTypography>
         ),
-        participants: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            100
+        totalProducts: (
+          <MDTypography display="block" variant="button" fontWeight="medium">
+            {auction?.productList?.length}
           </MDTypography>
         ),
-        topBid: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            500
-          </MDTypography>
-        ),
-        status: false ? (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
+        action: (
+          <MDBox display="flex" alignItems="center" lineHeight={1}>
+            <IconButton
+              sx={navbarIconButton}
+              size="small"
+              onClick={() => {
+                navigate(`/liveAuction/${auction?.auctionId}`, {
+                  state: { data: { auction: auction, sender: "all" } },
+                });
+              }}
+            >
+              <Icon sx={iconsStyle}>login</Icon>
+            </IconButton>
           </MDBox>
-        ) : (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            500
-          </MDTypography>
         ),
-        btn: <BtnBox />,
-      },
-    ],
+      };
+      return rowData;
+    }),
   };
 }

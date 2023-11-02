@@ -195,7 +195,7 @@ const CreateAuction = ({ createAuction, handleClose }) => {
                   display: "flex",
                 }}
               >
-                <Grid container sx={{ border: "0.1px solid #C0C0C0", p: 2 }}>
+                <Grid container sx={{ border: "0.1px solid #C0C0C0", p: 2 }} mb={2}>
                   <Grid item xs={12} md={7} sx={{ mr: 4 }}>
                     <Grid container spacing={1}>
                       <Grid item xs={12}>

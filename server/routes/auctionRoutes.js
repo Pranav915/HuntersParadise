@@ -12,7 +12,6 @@ router.post("/startAuction", auth, auctionControllers.controllers.startAuction);
 router.post("/newBid", auth, auctionControllers.controllers.newBid);
 router.post("/bidDone", auth, auctionControllers.controllers.bidDone);
 router.post("/startProduct", auth, auctionControllers.controllers.startProduct);
-router.get("/getDetails", auth, auctionControllers.controllers.getDetails);
 router.get(
   "/getLiveAuctions",
   auth,
@@ -33,5 +32,11 @@ router.get(
   auth,
   auctionControllers.controllers.getUpcomingAuctionDetails
 );
+router.get(
+  "/getLiveAuctionDetails",
+  auth,
+  auctionControllers.controllers.getLiveAuctionDetails
+);
+router.post("/endAuction", auth, auctionControllers.controllers.endAuction);
 
 module.exports = router;

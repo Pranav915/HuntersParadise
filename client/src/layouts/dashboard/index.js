@@ -35,21 +35,20 @@ import { getDealActions } from "app/actions/dealActions";
 import { getAuctionActions } from "app/actions/auctionActions";
 import Cookies from "js-cookie";
 import PieChart from "examples/Charts/PieChart";
-import { useAbly, useChannel, usePresence } from "ably/react";
+import { useAbly, useChannel } from "ably/react";
+import { getWalletActions } from "app/actions/walletActions";
 
 const Dashboard = ({
   userDetails,
   setUserDetails,
-  openAlertMessage,
-  getDashboardDetails,
   getAllDeals,
   getMyDeals,
   getMyOffers,
   getPieChartData,
-  allDeals,
-  setAllDeals,
   totalBalance,
   setTotalBalance,
+  availableBalance,
+  setAvailableBalance,
   freezedBalance,
   setFreezedBalance,
   liveUserCount,
@@ -59,7 +58,6 @@ const Dashboard = ({
   categoryLiveDealsCount,
   setCategoryLiveDealsCount,
   liveAuctionsCount,
-  setLiveAuctionsCount,
   totalAuctionParticipantsCount,
   setTotalAuctionParticipantsCount,
   pieChartData,
@@ -67,6 +65,9 @@ const Dashboard = ({
   getLiveData,
   getLiveAuctions,
   getMyAuctions,
+  openAlertMessage,
+  getBalance,
+  setLiveAuctionsCount,
 }) => {
   const { sales, tasks } = reportsLineChartData;
   const [finalPieChartData, setfinalPieChartData] = useState({
@@ -80,12 +81,23 @@ const Dashboard = ({
   const search = useLocation().search;
   const navigate = useNavigate();
 
-  const dealChannel = useChannel("dealChannel", (message) => {
-    console.log("message", message);
+  const handleAuctionStarted = () => {
+    getLiveAuctions();
+  };
+
+  const dealChannel = useChannel({ channelName: "dealChannel" }, (message) => {
+    console.log(message);
     if (message.name == "DealCreated") {
       setTotalLiveDealsCount(totalLiveDealsCount + 1);
       if (userDetails.categories.includes(message.data.deal.category)) {
+        console.log("message", message);
         setCategoryLiveDealsCount(categoryLiveDealsCount + 1);
+        openAlertMessage({
+          title: "New Deal Alert!",
+          content: `New deal () added in ${message.data.deal.category}. Check it out now!`,
+          link: `/dealDetail/${message.data.deal.productName}`,
+          item: message.data.deal,
+        });
       }
 
       // Update Pie Chart Data
@@ -103,6 +115,10 @@ const Dashboard = ({
       setTotalLiveDealsCount(totalLiveDealsCount - 1);
       if (userDetails.categories.includes(message.data.deal.category)) {
         setCategoryLiveDealsCount(categoryLiveDealsCount - 1);
+        openAlertMessage({
+          title: "Deal Regret!",
+          content: "Great deals go fast! You just missed out on one.",
+        });
       }
 
       // Update Pie Chart Data
@@ -118,11 +134,20 @@ const Dashboard = ({
         return data;
       });
       setPieChartData(tempPieChartData);
+    } else if (message.name == "AuctionStarted") {
+      setLiveAuctionsCount(liveAuctionsCount + 1);
+      handleAuctionStarted();
+    } else if (message.name == "EndAuction") {
+      setLiveAuctionsCount(liveAuctionsCount - 1);
+      handleAuctionStarted();
     }
   }).channel;
 
+  dealChannel.presence.get(function (err, members) {
+    setLiveUserCount(members.length);
+  });
+
   useEffect(() => {
-    console.log("pieChartData", pieChartData);
     const user = new URLSearchParams(search).get("user");
     if (user) {
       const data = jwt_decode(user).userDetails;
@@ -131,6 +156,7 @@ const Dashboard = ({
       if (!data?.age) {
         navigate("/initialDetails");
       }
+      Cookies.set("clientId", data?.username);
       initializeAblyClient(userDetails?.username);
       setLiveUserCount(0);
       setTotalAuctionParticipantsCount(0);
@@ -141,11 +167,22 @@ const Dashboard = ({
       getMyAuctions();
       getPieChartData();
       getLiveData();
-      Cookies.set("clientId", data?.username);
+      getBalance();
+      dealChannel.presence.subscribe("enter", function (member) {
+        setLiveUserCount(liveUserCount + 1);
+        console.log("Member " + member.clientId + " entered");
+      });
+
+      dealChannel.presence.subscribe("leave", function (member) {
+        setLiveUserCount(liveUserCount - 1);
+        console.log("Member " + member.clientId + " left");
+      });
+      dealChannel.presence.enter();
     } else if (userDetails) {
       if (!userDetails.age) {
         navigate("/initialDetails");
       } else {
+        Cookies.set("clientId", userDetails?.username);
         initializeAblyClient(userDetails?.username);
         setLiveUserCount(0);
         setTotalAuctionParticipantsCount(0);
@@ -156,17 +193,22 @@ const Dashboard = ({
         getMyAuctions();
         getPieChartData();
         getLiveData();
-        Cookies.set("clientId", userDetails?.username);
+        getBalance();
+        dealChannel.presence.subscribe("enter", function (member) {
+          setLiveUserCount(liveUserCount + 1);
+          console.log("Member " + member.clientId + " entered");
+        });
+
+        dealChannel.presence.subscribe("leave", function (member) {
+          setLiveUserCount(liveUserCount - 1);
+          console.log("Member " + member.clientId + " left");
+        });
+        dealChannel.presence.enter();
       }
     } else {
       navigate("/authentication/sign-in");
     }
   }, []);
-
-  useEffect(() => {
-    setTotalBalance(userDetails?.wallet?.totalBalance);
-    setFreezedBalance(userDetails?.wallet?.freezedBalance);
-  }, [userDetails, setUserDetails]);
 
   useEffect(() => {
     let barChartData = {
@@ -252,6 +294,7 @@ const Dashboard = ({
 
   return (
     <DashboardLayout>
+      {dealChannel.presence.enter()}
       <DashboardNavbar />
       <MDBox py={3}>
         <Grid container spacing={3}>
@@ -264,8 +307,8 @@ const Dashboard = ({
                 count={totalBalance}
                 percentage={{
                   color: "success",
-                  amount: freezedBalance,
-                  label: "Freezed Balance",
+                  amount: availableBalance,
+                  label: "Available Balance",
                 }}
               />
             </MDBox>
@@ -342,10 +385,10 @@ const Dashboard = ({
         </MDBox>
         <MDBox>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={6}>
+            <Grid item xs={12}>
               <Projects name="Auctions" />
             </Grid>
-            <Grid item xs={12} md={6} lg={6}>
+            <Grid item xs={12}>
               <Projects name="Deals" />
             </Grid>
           </Grid>
@@ -356,10 +399,11 @@ const Dashboard = ({
   );
 };
 
-const mapStoreStateToProps = ({ auth, dashboard }) => {
+const mapStoreStateToProps = ({ auth, dashboard, wallet }) => {
   return {
     ...auth,
     ...dashboard,
+    ...wallet,
   };
 };
 
@@ -371,6 +415,7 @@ const mapActionsToProps = (dispatch) => {
     ...getDashboardActions(dispatch),
     ...getDealActions(dispatch),
     ...getAuctionActions(dispatch),
+    ...getWalletActions(dispatch),
   };
 };
 export default connect(mapStoreStateToProps, mapActionsToProps)(Dashboard);

@@ -24,7 +24,7 @@ passport.use(
         let user = await User.findOne({ email: profile.email });
         if (!user) {
           user = new User({
-            username: profile.email,
+            username: profile.displayName,
             email: profile.email,
             googleId: profile.id,
             role: "user",

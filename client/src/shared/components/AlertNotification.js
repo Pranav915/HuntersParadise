@@ -1,52 +1,34 @@
 /* eslint-disable react/prop-types */
 
 import React, { useEffect, useState } from "react";
-import { Alert } from "@mui/material";
-import { Snackbar } from "@mui/material";
+import { Alert, Box, Button, IconButton, Snackbar, Typography } from "@mui/material";
 import { connect } from "react-redux";
 import { getActions } from "app/actions/alertActions";
-import MDSnackbar from "components/MDSnackbar";
+import { useNavigate } from "react-router-dom";
 
 const AlertNotification = ({ showAlertMessage, closeAlertMessage, alertMessageContent }) => {
-  const [errorSB, setErrorSB] = useState(false);
-  const closeErrorSB = () => setErrorSB(false);
-  // useEffect(() => {
-  //   console.log("hii", showAlertMessage);
-  //   if (showAlertMessage) setErrorSB(true);
-  // }, [showAlertMessage]);
-  const renderErrorSB = (
-    <MDSnackbar
-      color="error"
-      icon="warning"
-      title="Material Dashboard"
-      content="Hello, world! This is a notification message"
-      dateTime="11 mins ago"
-      open={errorSB}
-      onClose={closeErrorSB}
-      close={closeErrorSB}
-      bgWhite
-    />
-  );
+  console.log("alertMessageContent", alertMessageContent);
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(alertMessageContent?.link, {
+      state: { data: { deal: alertMessageContent.item, sender: "all" } },
+    });
+  };
   return (
     <Snackbar
-      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       open={showAlertMessage}
       onClose={closeAlertMessage}
       autoHideDuration={4000}
+      onClick={handleClick}
     >
-      <Alert severity="info">{alertMessageContent}</Alert>
+      <Alert severity="info">
+        <Box>
+          <Typography>{alertMessageContent?.title}</Typography>
+          <Typography>{alertMessageContent?.content}</Typography>
+        </Box>
+      </Alert>
     </Snackbar>
-    // <MDSnackbar
-    //   color="error"
-    //   icon="warning"
-    //   title="Material Dashboard"
-    //   content="Hello, world! This is a notification message"
-    //   dateTime="11 mins ago"
-    //   open={errorSB}
-    //   onClose={closeErrorSB}
-    //   close={closeErrorSB}
-    //   bgWhite
-    // />
   );
 };
 

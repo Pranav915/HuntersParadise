@@ -4,27 +4,11 @@ import { openAlertMessage } from "./alertActions";
 
 export const dashboardActions = {
   SET_LIVE_USER_COUNT: "DASHBOARD.SET_LIVE_USER_COUNT",
-  SET_TOTAL_BALANCE: "DASHBOARD.SET_TOTAL_BALANCE",
   SET_PIE_CHART_DATA: "DASHBOARD.SET_PIE_CHART_DATA",
-  SET_FREEZED_BALANCE: "DASHBOARD.SET_FREEZED_BALANCE",
   SET_TOTAL_LIVE_DEALS_COUNT: "DASHBOARD.SET_TOTAL_LIVE_DEALS_COUNT",
   SET_CATEGORY_LIVE_DEALS_COUNT: "DASHBOARD.SET_CATEGORY_LIVE_DEALS_COUNT",
   SET_LIVE_AUCTIONS_COUNT: "DASHBOARD.SET_LIVE_AUCTIONS_COUNT",
   SET_TOTAL_AUCTION_PARTICIPANTS_COUNT: "DASHBOARD.SET_TOTAL_AUCTION_PARTICIPANTS_COUNT",
-};
-
-export const setTotalBalance = (totalBalance) => {
-  return {
-    type: dashboardActions.SET_TOTAL_BALANCE,
-    totalBalance,
-  };
-};
-
-export const setFreezedBalance = (freezedBalance) => {
-  return {
-    type: dashboardActions.SET_FREEZED_BALANCE,
-    freezedBalance,
-  };
 };
 
 export const setLiveUserCount = (liveUserCount) => {
@@ -71,8 +55,6 @@ export const setPieChartData = (pieChartData) => {
 
 export const getDashboardActions = (dispatch) => {
   return {
-    setTotalBalance: (totalBalance) => dispatch(setTotalBalance(totalBalance)),
-    setFreezedBalance: (freezedBalance) => dispatch(setFreezedBalance(freezedBalance)),
     setLiveUserCount: (liveUserCount) => dispatch(setLiveUserCount(liveUserCount)),
     setTotalLiveDealsCount: (totalLiveDealsCount) =>
       dispatch(setTotalLiveDealsCount(totalLiveDealsCount)),
@@ -92,7 +74,12 @@ export const getLiveData = () => {
   return async (dispatch) => {
     const response = await apiCall({}, ENDPOINTS.GET_LIVE_DATA, "GET");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       console.log("dashboardDetails", response.data);
       dispatch(setLiveAuctionsCount(response?.data?.liveAuctions));
@@ -106,7 +93,12 @@ export const getDashboardDetails = () => {
   return async (dispatch) => {
     const response = await apiCall({}, ENDPOINTS.GET_DASHBOARD_DETAILS, "GET");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       const { dashboardDetails } = response?.data;
       console.log("dashboardDetails", dashboardDetails);
@@ -118,7 +110,12 @@ export const getPieChartData = () => {
   return async (dispatch) => {
     const response = await apiCall({}, ENDPOINTS.GET_CATEGORY_DATA, "GET");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       const { dashboardDetails } = response?.data;
       console.log("pieChartDataResponse", response?.data);

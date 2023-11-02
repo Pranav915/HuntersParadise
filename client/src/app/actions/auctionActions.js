@@ -19,7 +19,13 @@ export const getAuctionActions = (dispatch) => {
     setMyAuctions: (data) => dispatch(setMyAuctions(data)),
     getAuctionDetails: (auctionId, setAuctionDetails, setIsLoading, setIsHost) =>
       dispatch(getAuctionDetails(auctionId, setAuctionDetails, setIsLoading, setIsHost)),
-    startAuction: (auctionId) => dispatch(startAuction(auctionId)),
+    getLiveAuctionDetails: (auctionId, setLiveAuctionDetails, setIsLoading, setIsHost) =>
+      dispatch(getLiveAuctionDetails(auctionId, setLiveAuctionDetails, setIsLoading, setIsHost)),
+    startAuction: (auctionId, navigate) => dispatch(startAuction(auctionId, navigate)),
+    startProduct: (req) => dispatch(startProduct(req)),
+    newBid: (req) => dispatch(newBid(req)),
+    bidDone: (req) => dispatch(bidDone(req)),
+    endAuction: (req) => dispatch(endAuction(req)),
   };
 };
 
@@ -48,9 +54,16 @@ export const createAuction = (auctionDetails) => {
   return async (dispatch) => {
     const response = await apiCall(auctionDetails, ENDPOINTS.CREATE_AUCTION, "POST");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
-      console.log("response", response);
+      dispatch(getUpcomingAuctions());
+      dispatch(getMyAuctions());
+      dispatch(getLiveAuctions());
     }
   };
 };
@@ -59,9 +72,13 @@ export const getLiveAuctions = () => {
   return async (dispatch) => {
     const response = await apiCall({}, ENDPOINTS.GET_LIVE_AUCTIONS, "GET");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
-      console.log("response", response);
       dispatch(setLiveAuctions(response?.data));
     }
   };
@@ -71,9 +88,13 @@ export const getUpcomingAuctions = () => {
   return async (dispatch) => {
     const response = await apiCall({}, ENDPOINTS.GET_UPCOMING_AUCTIONS, "GET");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
-      console.log("response", response);
       dispatch(setUpcomingAuctions(response?.data));
     }
   };
@@ -83,10 +104,14 @@ export const getMyAuctions = () => {
   return async (dispatch) => {
     const response = await apiCall({}, ENDPOINTS.GET_MY_AUCTIONS, "GET");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
-      console.log("response", response);
-      dispatch(setMyAuctions(response?.data));
+      dispatch(setMyAuctions(response?.data?.upcomingAuctions));
     }
   };
 };
@@ -99,9 +124,13 @@ export const getAuctionDetails = (auctionId, setAuctionDetails, setIsLoading, se
       "GET"
     );
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
-      console.log("response", response);
       setAuctionDetails(response?.data?.auction);
       setIsHost(response?.data?.isHost);
       setIsLoading(false);
@@ -109,13 +138,104 @@ export const getAuctionDetails = (auctionId, setAuctionDetails, setIsLoading, se
   };
 };
 
-export const startAuction = (auctionId) => {
+export const startAuction = (auctionId, navigate) => {
   return async (dispatch) => {
     const response = await apiCall(auctionId, ENDPOINTS.START_AUCTION, "POST");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
-      console.log("response", response);
+    }
+  };
+};
+
+export const getLiveAuctionDetails = (
+  auctionId,
+  setLiveAuctionDetails,
+  setIsLoading,
+  setIsHost
+) => {
+  return async (dispatch) => {
+    const response = await apiCall(
+      {},
+      ENDPOINTS.GET_LIVE_AUCTION_DETAILS + "?auctionId=" + auctionId,
+      "GET"
+    );
+    if (response.error) {
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
+    } else {
+      setLiveAuctionDetails(response?.data?.auction);
+      setIsHost(response?.data?.isHost);
+      setIsLoading(false);
+    }
+  };
+};
+
+export const startProduct = (req) => {
+  return async (dispatch) => {
+    const response = await apiCall(req, ENDPOINTS.START_PRODUCT, "POST");
+    if (response.error) {
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
+    } else {
+    }
+  };
+};
+
+export const newBid = (req) => {
+  return async (dispatch) => {
+    const response = await apiCall(req, ENDPOINTS.NEW_BID, "POST");
+    if (response.error) {
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
+    } else {
+    }
+  };
+};
+
+export const bidDone = (req) => {
+  return async (dispatch) => {
+    const response = await apiCall(req, ENDPOINTS.BID_DONE, "POST");
+    if (response.error) {
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
+    } else {
+    }
+  };
+};
+
+export const endAuction = (req) => {
+  return async (dispatch) => {
+    const response = await apiCall(req, ENDPOINTS.END_AUCTION, "POST");
+    if (response.error) {
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
+    } else {
     }
   };
 };

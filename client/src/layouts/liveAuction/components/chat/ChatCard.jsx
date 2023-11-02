@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import { Card, Grid, Icon, IconButton } from "@mui/material";
 import MDAvatar from "components/MDAvatar";
@@ -8,11 +9,41 @@ import MDTypography from "components/MDTypography";
 import { useMaterialUIController } from "context";
 import { navbarIconButton } from "examples/Navbars/DashboardNavbar/styles";
 import { useState } from "react";
+import Message from "./Message";
+import { useChannel } from "ably/react";
+import { realtime } from "../../../../ably.js";
+import { connect } from "react-redux";
 
-const ChatCard = () => {
+const ChatCard = ({ userDetails, liveAuctionDetails, isHost }) => {
   const [controller, dispatch] = useMaterialUIController();
   const { transparentNavbar, darkMode } = controller;
   const [text, setText] = useState("Type something...");
+  const [messages, setMessages] = useState([]);
+
+  const { channel } = useChannel(
+    "auction:" + liveAuctionDetails?.auctionId,
+    "chatMessage",
+    (msg) => {
+      const message = {
+        name: msg.data.name,
+        msg: msg.data.msg,
+      };
+      setMessages([message, ...messages]);
+    }
+  );
+
+  const handleKeyPressed = (event) => {
+    if (event.key === "Enter") {
+      handleSendMessage();
+    }
+  };
+
+  const handleSendMessage = () => {
+    if (text) {
+      channel.publish("chatMessage", { name: userDetails?.name, msg: text });
+      setText("");
+    }
+  };
 
   const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
     color: () => {
@@ -38,26 +69,31 @@ const ChatCard = () => {
           flex: 1,
           display: "flex",
           flexDirection: "column-reverse",
-          maxHeight: "572px",
           overflowY: "auto",
+          maxHeight: "540px",
           mt: 1,
+          "::-webkit-scrollbar": {
+            width: 0,
+            background: "transparent",
+          },
+          "::-webkit-scrollbar-thumb": {
+            background: "transparent",
+          },
+          scrollbarWidth: "none",
         }}
       >
-        <MDBox sx={{ display: "flex" }}>
-          <MDTypography variant="h6" color="text" sx={{ textAlign: "justify" }}>
-            Harshit:
-          </MDTypography>
-          <MDTypography variant="button" color="text" pl={1} pt={0.5} sx={{ textAlign: "justify" }}>
-            Hello Boys!
-          </MDTypography>
-        </MDBox>
+        {messages?.map((message, key) => (
+          <Message name={message.name} msg={message.msg} key={key} />
+        ))}
       </MDBox>
-      <MDBox mt={2}>
+
+      <MDBox>
         <Grid container p={1}>
           <Grid item xs={12} mt={1}>
             <MDBox sx={{ display: "flex" }}>
               <MDInput
                 required
+                multiline
                 type="text"
                 variant="standard"
                 name="chatText"
@@ -67,9 +103,10 @@ const ChatCard = () => {
                 }}
                 onChange={(e) => setText(e.target.value)}
                 autoComplete="chatText"
+                onKeyDown={handleKeyPressed}
                 fullWidth
               />
-              <IconButton sx={navbarIconButton} size="small" disableRipple>
+              <IconButton sx={navbarIconButton} size="small" onClick={handleSendMessage}>
                 <Icon sx={iconsStyle}>send</Icon>
               </IconButton>
             </MDBox>
@@ -80,4 +117,10 @@ const ChatCard = () => {
   );
 };
 
-export default ChatCard;
+const mapStoreStateToProps = ({ auth }) => {
+  return {
+    ...auth,
+  };
+};
+
+export default connect(mapStoreStateToProps)(ChatCard);

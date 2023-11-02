@@ -84,9 +84,13 @@ function DataTable({
     </MDPagination>
   ));
 
+  console.log("pagination", renderPagination);
+
   // Handler for the input to set the pagination index
-  const handleInputPagination = ({ target: { value } }) =>
+  const handleInputPagination = ({ target: { value } }) => {
+    console.log("no", value);
     value > pageOptions.length || value < 0 ? gotoPage(0) : gotoPage(Number(value));
+  };
 
   // Customized page options starting from 1
   const customizedPageOptions = pageOptions.map((option) => option + 1);

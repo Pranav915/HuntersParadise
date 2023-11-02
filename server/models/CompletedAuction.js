@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const liveAuctionSchema = new Schema(
+const completedAuctionSchema = new Schema(
   {
     auctionId: {
       type: Number,
@@ -54,37 +54,12 @@ const liveAuctionSchema = new Schema(
       type: Date,
       required: true,
     },
-    currentProduct: {
-      type: String,
-    },
-    currentHighestBid: {
-      bidder: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-      bidValue: {
-        type: String,
-      },
-    },
-    bids: [
-      {
-        bidder: {
-          type: Schema.Types.ObjectId,
-          required: true,
-          ref: "User",
-        },
-        bidValue: {
-          type: String,
-        },
-        raisedAt: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
+    endTime: {
+        type: Date
+    }
   },
   {
     timestamps: true,
   }
 );
-module.exports = mongoose.model("LiveAuction", liveAuctionSchema);
+module.exports = mongoose.model("CompletedAuction", completedAuctionSchema);

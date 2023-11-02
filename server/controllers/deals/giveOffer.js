@@ -12,11 +12,19 @@ const giveOffer = async (req, res) => {
       { _id: req.body.offerId, offered_by: req.user.userId },
       { offeredPrice: req.body.newPrice },
       { new: true }
-    ).populate("deal")
-      .then((updatedOffer) => {
-        var comChannel = ablyService.client.channels.get("communicationChannel:" + updatedOffer.deal.seller);
-        comChannel.publish("OfferEdited", {action: "offer edit", Offer: updatedOffer});
-        console.log("Edited Offer published to Ably");
+    )
+      .populate("deal")
+      .then(async (updatedOffer) => {
+        const dealData = await LiveDeals.findOne({ _id: updatedOffer.deal });
+        var comChannel = ablyService.client.channels.get(
+          "communicationChannel:" + updatedOffer.deal.seller
+        );
+        comChannel.publish("OfferEdited", {
+          action: "offer edit",
+          offer: updatedOffer,
+          deal: dealData,
+        });
+        console.log("Edited Offer published to Ably");
         res.status(200).send(updatedOffer);
         return;
       })
@@ -81,10 +89,12 @@ const giveOffer = async (req, res) => {
           res.status(500).send("Internal Server Error Retry");
           return;
         });
-        console.log(nowDeal);
-        var comChannel = ablyService.client.channels.get("communicationChannel:" + nowDeal.seller);
-        comChannel.publish("NewOffer", {action: "new offer", Offer: newOffer});
-        console.log("New Offer published to Ably");
+      console.log(nowDeal);
+      var comChannel = ablyService.client.channels.get(
+        "communicationChannel:" + nowDeal.seller
+      );
+      comChannel.publish("NewOffer", { action: "new offer", Offer: newOffer });
+      console.log("New Offer published to Ably");
     })
     .catch((err) => {
       console.log(err);

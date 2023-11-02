@@ -30,9 +30,16 @@ export const login = (userDetails, navigate) => {
   return async (dispatch) => {
     const response = await apiCall(userDetails, ENDPOINTS.LOGIN, "POST");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       const { userDetails } = response?.data;
+      Cookies.set("clientId", userDetails?.username);
+      await initializeAblyClient(Cookies.get("clientId"));
       if (userDetails.age) {
         navigate("/dashboard");
       } else {
@@ -40,8 +47,6 @@ export const login = (userDetails, navigate) => {
       }
       localStorage.setItem("user", JSON.stringify(userDetails));
       dispatch(setUserDetails(userDetails));
-      Cookies.set("clientId", userDetails?.username);
-      initializeAblyClient(Cookies.get("clientId"));
     }
   };
 };
@@ -50,10 +55,16 @@ export const register = (userDetails, navigate) => {
   return async (dispatch) => {
     const response = await apiCall(userDetails, ENDPOINTS.REGISTER, "POST");
     if (response.error) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       const { userDetails } = response?.data;
-      console.log("userDetails", userDetails);
+      Cookies.set("clientId", userDetails?.username);
+      await initializeAblyClient(Cookies.get("clientId"));
       if (userDetails?.age) {
         navigate("/dashboard");
       } else {
@@ -61,8 +72,6 @@ export const register = (userDetails, navigate) => {
       }
       localStorage.setItem("user", JSON.stringify(userDetails));
       dispatch(setUserDetails(userDetails));
-      Cookies.set("clientId", userDetails?.username);
-      initializeAblyClient(Cookies.get("clientId"));
     }
   };
 };
@@ -71,7 +80,12 @@ export const requestPasswordReset = (userDetails, setMailStatus) => {
   return async (dispatch) => {
     const response = await apiCall(userDetails, ENDPOINTS.REQUEST_PASSWORD_RESET, "POST");
     if (response.status !== 200) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       setMailStatus(true);
     }
@@ -82,7 +96,12 @@ export const passwordReset = (userDetails, navigate) => {
   return async (dispatch) => {
     const response = await apiCall(userDetails, ENDPOINTS.PASSWORD_RESET, "POST");
     if (response.status !== 200) {
-      dispatch(openAlertMessage(response?.exception?.response?.data));
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
     } else {
       dispatch(openAlertMessage("Password updated successfully"));
       navigate("/");

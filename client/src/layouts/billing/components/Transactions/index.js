@@ -1,17 +1,14 @@
-// @mui material components
+/* eslint-disable react/prop-types */
+
 import Card from "@mui/material/Card";
-// import Divider from "@mui/material/Divider";
 import Icon from "@mui/material/Icon";
 
-// Code Pulse React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-// import MDButton from "components/MDButton";
 
-// Billing page components
 import Transaction from "layouts/billing/components/Transaction";
 
-function Transactions() {
+function Transactions({ completeTransactions, userid }) {
   return (
     <Card sx={{ height: "100%" }}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={3} px={2}>
@@ -25,16 +22,11 @@ function Transactions() {
             </Icon>
           </MDBox>
           <MDTypography variant="button" color="text" fontWeight="regular">
-            23 - 30 March 2020
+            Completed
           </MDTypography>
         </MDBox>
       </MDBox>
       <MDBox pt={3} pb={2} px={2}>
-        <MDBox mb={2}>
-          <MDTypography variant="caption" color="text" fontWeight="bold" textTransform="uppercase">
-            newest
-          </MDTypography>
-        </MDBox>
         <MDBox
           component="ul"
           display="flex"
@@ -43,62 +35,44 @@ function Transactions() {
           m={0}
           sx={{ listStyle: "none" }}
         >
-          <Transaction
-            color="error"
-            icon="expand_more"
-            name="Netflix"
-            description="27 March 2020, at 12:30 PM"
-            value="- $ 2,500"
-          />
-          <Transaction
-            color="success"
-            icon="expand_less"
-            name="Apple"
-            description="27 March 2020, at 04:30 AM"
-            value="+ $ 2,000"
-          />
-        </MDBox>
-        <MDBox mt={1} mb={2}>
-          <MDTypography variant="caption" color="text" fontWeight="bold" textTransform="uppercase">
-            yesterday
-          </MDTypography>
-        </MDBox>
-        <MDBox
-          component="ul"
-          display="flex"
-          flexDirection="column"
-          p={0}
-          m={0}
-          sx={{ listStyle: "none" }}
-        >
-          <Transaction
-            color="success"
-            icon="expand_less"
-            name="Stripe"
-            description="26 March 2020, at 13:45 PM"
-            value="+ $ 750"
-          />
-          <Transaction
-            color="success"
-            icon="expand_less"
-            name="HubSpot"
-            description="26 March 2020, at 12:30 PM"
-            value="+ $ 1,000"
-          />
-          <Transaction
-            color="success"
-            icon="expand_less"
-            name="Creative Tim"
-            description="26 March 2020, at 08:30 AM"
-            value="+ $ 2,500"
-          />
-          <Transaction
-            color="dark"
-            icon="priority_high"
-            name="Webflow"
-            description="26 March 2020, at 05:00 AM"
-            value="Pending"
-          />
+          {completeTransactions?.map((transaction, index) => {
+            let color = "";
+            let name = "";
+            if (transaction.typeOf === "addFunds") {
+              color = "success";
+              name = "Added to Wallet";
+            } else if (transaction.typeOf === "withdrawFund") {
+              color = "error";
+              name = "Withdrawn from Wallet";
+            } else if (transaction.to === userid) {
+              color = "success";
+              name = "Transaction";
+            } else if (transaction.from === userid) {
+              color = "error";
+              name = "Transaction";
+            }
+
+            const formattedDate = new Date(transaction.createdAt).toLocaleString("en-US", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+
+            return (
+              <Transaction
+                key={index}
+                color={color}
+                icon={color === "error" ? "expand_more" : "expand_less"}
+                name={name}
+                description={formattedDate}
+                value={
+                  color === "error" ? "- $ " + transaction.amount : "+ $ " + transaction.amount
+                }
+              />
+            );
+          })}
         </MDBox>
       </MDBox>
     </Card>

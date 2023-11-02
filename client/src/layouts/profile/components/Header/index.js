@@ -23,6 +23,7 @@ import breakpoints from "assets/theme/base/breakpoints";
 // Images
 import burceMars from "assets/images/bruce-mars.jpg";
 import backgroundImage from "assets/images/bg-profile.jpeg";
+import { useNavigate } from "react-router-dom";
 
 function Header({ children, userDetails }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
@@ -49,6 +50,7 @@ function Header({ children, userDetails }) {
   }, [tabsOrientation]);
 
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
+  const navigate = useNavigate();
 
   return (
     <MDBox position="relative" mb={5}>
@@ -87,9 +89,6 @@ function Header({ children, userDetails }) {
               <MDTypography variant="h5" fontWeight="medium">
                 {userDetails?.name}
               </MDTypography>
-              <MDTypography variant="button" color="text" fontWeight="regular">
-                CEO / Co-Founder
-              </MDTypography>
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
@@ -97,28 +96,22 @@ function Header({ children, userDetails }) {
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
                   label="App"
+                  onClick={() => navigate("/")}
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
                       home
                     </Icon>
                   }
                 />
-                <Tab
+                {/* <Tab
                   label="Message"
+                  onClick={() => navigate("/notifications")}
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
                       email
                     </Icon>
                   }
-                />
-                <Tab
-                  label="Settings"
-                  icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      settings
-                    </Icon>
-                  }
-                />
+                /> */}
               </Tabs>
             </AppBar>
           </Grid>
