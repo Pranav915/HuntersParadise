@@ -67,6 +67,7 @@ const Dashboard = ({
   getMyAuctions,
   openAlertMessage,
   getBalance,
+  setLiveAuctionsCount,
 }) => {
   const { sales, tasks } = reportsLineChartData;
   const [finalPieChartData, setfinalPieChartData] = useState({
@@ -79,7 +80,10 @@ const Dashboard = ({
   });
   const search = useLocation().search;
   const navigate = useNavigate();
-  const ably = useAbly();
+
+  const handleAuctionStarted = () => {
+    getLiveAuctions();
+  };
 
   const dealChannel = useChannel({ channelName: "dealChannel" }, (message) => {
     console.log(message);
@@ -130,33 +134,17 @@ const Dashboard = ({
         return data;
       });
       setPieChartData(tempPieChartData);
+    } else if (message.name == "AuctionStarted") {
+      setLiveAuctionsCount(liveAuctionsCount + 1);
+      handleAuctionStarted();
+    } else if (message.name == "EndAuction") {
+      setLiveAuctionsCount(liveAuctionsCount - 1);
+      handleAuctionStarted();
     }
   }).channel;
 
-  dealChannel.presence.subscribe("enter", function (member) {
-    setLiveUserCount(liveUserCount + 1);
-    console.log("Member " + member.clientId + " entered");
-  });
-
-  dealChannel.presence.subscribe("leave", function (member) {
-    setLiveUserCount(liveUserCount - 1);
-    console.log("Member " + member.clientId + " left");
-  });
-
   dealChannel.presence.get(function (err, members) {
-    console.log("There are " + members.length + " members on this channel");
     setLiveUserCount(members.length);
-    members.forEach((m) => {
-      console.log(m.clientId);
-    });
-  });
-
-  useEffect(() => {
-    dealChannel.presence.enter();
-  }, []);
-
-  dealChannel.subscribe("[meta]occupancy", (message) => {
-    console.log("occupancy: ", message.data);
   });
 
   useEffect(() => {
@@ -168,6 +156,7 @@ const Dashboard = ({
       if (!data?.age) {
         navigate("/initialDetails");
       }
+      Cookies.set("clientId", data?.username);
       initializeAblyClient(userDetails?.username);
       setLiveUserCount(0);
       setTotalAuctionParticipantsCount(0);
@@ -179,11 +168,22 @@ const Dashboard = ({
       getPieChartData();
       getLiveData();
       getBalance();
-      Cookies.set("clientId", data?.username);
+      dealChannel.presence.subscribe("enter", function (member) {
+        setLiveUserCount(liveUserCount + 1);
+        console.log("Member " + member.clientId + " entered");
+      });
+
+      dealChannel.presence.subscribe("leave", function (member) {
+        setLiveUserCount(liveUserCount - 1);
+        console.log("Member " + member.clientId + " left");
+      });
+      dealChannel.presence.enter();
     } else if (userDetails) {
       if (!userDetails.age) {
         navigate("/initialDetails");
       } else {
+        Cookies.set("clientId", userDetails?.username);
+        initializeAblyClient(userDetails?.username);
         setLiveUserCount(0);
         setTotalAuctionParticipantsCount(0);
         getAllDeals();
@@ -194,7 +194,16 @@ const Dashboard = ({
         getPieChartData();
         getLiveData();
         getBalance();
-        Cookies.set("clientId", userDetails?.username);
+        dealChannel.presence.subscribe("enter", function (member) {
+          setLiveUserCount(liveUserCount + 1);
+          console.log("Member " + member.clientId + " entered");
+        });
+
+        dealChannel.presence.subscribe("leave", function (member) {
+          setLiveUserCount(liveUserCount - 1);
+          console.log("Member " + member.clientId + " left");
+        });
+        dealChannel.presence.enter();
       }
     } else {
       navigate("/authentication/sign-in");

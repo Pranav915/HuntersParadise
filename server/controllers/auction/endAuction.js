@@ -3,7 +3,10 @@ const ablyService = require("../../ablyService");
 const UpcomingAuction = require("../../models/UpcomingAuction");
 const CompletedAuction = require("../../models/CompletedAuction");
 const endAuction = (req, res) => {
-  LiveAuction.findOneAndDelete({ auctionId: req.body.auctionId , auctionHost: req.user.userId})
+  LiveAuction.findOneAndDelete({
+    auctionId: req.body.auctionId,
+    auctionHost: req.user.userId,
+  })
     .then((auction) => {
       if (auction.auctionHost != req.user.userId) {
         res
@@ -23,11 +26,12 @@ const endAuction = (req, res) => {
       newCompletedAuction
         .save()
         .then((endedAuction) => {
+          var auctionChannel = ablyService.client.channels.get(
+            "auction:" + req.body.auctionId
+          );
+          auctionChannel.publish("EndAuction", { action: "EndAuction" });
           var dealChannel = ablyService.client.channels.get("dealChannel");
-          dealChannel.publish("AuctionEnded", {
-            action: "endAuction",
-            auction: endedAuction,
-          });
+          dealChannel.publish("EndAuction", { action: "EndAuction" });
           res.status(200).send("Auction Ended Successfully");
         })
         .catch((error) => {

@@ -12,7 +12,7 @@ import ChatCard from "./components/chat/ChatCard";
 import { useChannel } from "ably/react";
 import { getAuctionActions } from "app/actions/auctionActions";
 import { connect } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ProductDetails from "./components/ProductDetails";
 import { getActions } from "app/actions/alertActions";
 
@@ -28,6 +28,7 @@ const LiveAuction = ({ getLiveAuctionDetails, openAlertMessage }) => {
   const [productList, setProductList] = useState([]);
   const [liveProduct, setLiveProduct] = useState("");
   const [highestBidder, setHighestBidder] = useState(null);
+  const navigate = useNavigate();
 
   const handleProductStart = () => {
     getLiveAuctionDetails(
@@ -38,6 +39,18 @@ const LiveAuction = ({ getLiveAuctionDetails, openAlertMessage }) => {
     );
   };
 
+  const handleEndAuction = () => {
+    navigate("/dashboard");
+  };
+
+  const handleProductSold = () => {
+    getLiveAuctionDetails(
+      location?.state?.data?.auction?.auctionId,
+      setLiveAuctionDetails,
+      setIsLoading,
+      setIsHost
+    );
+  };
   const auctionArenaChannel = useChannel("auction:" + liveAuctionDetails?.auctionId, (message) => {
     console.log("message", message);
     if (message.name == "NewBid") {
@@ -52,7 +65,7 @@ const LiveAuction = ({ getLiveAuctionDetails, openAlertMessage }) => {
       if (message.data.bidData.status == "sold") {
         openAlertMessage({
           title: "Product Sold!",
-          content: `${message.data.bidData.productName} has been sold for ${message.data.bidData.bidData.bidValue}`,
+          content: `${message.data.bidData.product} has been sold.`,
         });
       } else if (message.data.bidData.status == "unsold") {
         openAlertMessage({
@@ -60,17 +73,15 @@ const LiveAuction = ({ getLiveAuctionDetails, openAlertMessage }) => {
           content: `${message.data.bidData.productName} went unsold`,
         });
       }
+    } else if (message.name == "EndAuction") {
+      openAlertMessage({
+        title: "Auction Ended",
+        content: `The host has ended the auction.`,
+      });
+      handleEndAuction();
     }
   }).channel;
 
-  const handleProductSold = () => {
-    getLiveAuctionDetails(
-      location?.state?.data?.auction?.auctionId,
-      setLiveAuctionDetails,
-      setIsLoading,
-      setIsHost
-    );
-  };
   // const auctionProductSoldChannel = useChannel(
   //   "auction:" + getLiveAuctionDetails?.auctionId,
   //   "ProductSold",

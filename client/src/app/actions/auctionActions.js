@@ -61,7 +61,6 @@ export const createAuction = (auctionDetails) => {
         })
       );
     } else {
-      console.log("response", response);
       dispatch(getUpcomingAuctions());
       dispatch(getMyAuctions());
       dispatch(getLiveAuctions());
@@ -80,7 +79,6 @@ export const getLiveAuctions = () => {
         })
       );
     } else {
-      console.log("response", response);
       dispatch(setLiveAuctions(response?.data));
     }
   };
@@ -97,7 +95,6 @@ export const getUpcomingAuctions = () => {
         })
       );
     } else {
-      console.log("response", response);
       dispatch(setUpcomingAuctions(response?.data));
     }
   };
@@ -114,7 +111,6 @@ export const getMyAuctions = () => {
         })
       );
     } else {
-      console.log("response", response);
       dispatch(setMyAuctions(response?.data?.upcomingAuctions));
     }
   };
@@ -153,7 +149,6 @@ export const startAuction = (auctionId, navigate) => {
         })
       );
     } else {
-      console.log("response", response);
     }
   };
 };
@@ -178,7 +173,6 @@ export const getLiveAuctionDetails = (
         })
       );
     } else {
-      console.log("response", response?.data?.auction);
       setLiveAuctionDetails(response?.data?.auction);
       setIsHost(response?.data?.isHost);
       setIsLoading(false);
@@ -197,7 +191,6 @@ export const startProduct = (req) => {
         })
       );
     } else {
-      console.log("response", response);
     }
   };
 };
@@ -213,7 +206,6 @@ export const newBid = (req) => {
         })
       );
     } else {
-      console.log("response", response);
     }
   };
 };
@@ -229,7 +221,6 @@ export const bidDone = (req) => {
         })
       );
     } else {
-      console.log("response", response);
     }
   };
 };
@@ -245,7 +236,6 @@ export const endAuction = (req) => {
         })
       );
     } else {
-      console.log("response", response);
     }
   };
 };

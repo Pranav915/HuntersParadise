@@ -4,9 +4,13 @@ import MDAvatar from "components/MDAvatar";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
+import { getAuctionActions } from "app/actions/auctionActions";
+import { connect } from "react-redux";
 
-const HostCard = ({ data, isHost }) => {
-  const handleEndAuction = () => {};
+const HostCard = ({ data, isHost, endAuction }) => {
+  const handleEndAuction = () => {
+    endAuction({ auctionId: data?.auctionId });
+  };
   console.log("data", data);
   return (
     <Card>
@@ -63,4 +67,16 @@ const HostCard = ({ data, isHost }) => {
   );
 };
 
-export default HostCard;
+const mapStoreStateToProps = ({ auth, auction }) => {
+  return {
+    ...auction,
+    ...auth,
+  };
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {
+    ...getAuctionActions(dispatch),
+  };
+};
+export default connect(mapStoreStateToProps, mapActionsToProps)(HostCard);

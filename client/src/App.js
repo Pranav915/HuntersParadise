@@ -72,7 +72,6 @@ const App = ({
   const { pathname } = useLocation();
 
   const dealChannel = useChannel("dealChannel", (message) => {
-    console.log("message", message);
     if (message.name == "AuctionCreated") {
       openAlertMessage({
         title: "Auction Alert!",
@@ -84,7 +83,6 @@ const App = ({
   }).channel;
 
   const comChannel = useChannel("communicationChannel:" + userDetails?.userId, (message) => {
-    console.log("message", message);
     if (message.name == "NewOffer") {
       // Show Notification (New Offer Received On your Deal: Deal Name)
       openAlertMessage({

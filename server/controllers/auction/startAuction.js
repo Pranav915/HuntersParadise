@@ -33,7 +33,7 @@ const startAuction = (req, res) => {
           res.status(501).send("Internal Server Error Kindly Try again");
         });
     })
-    .catch((err) => {
+    .catch((error) => {
       console.error("Error saving auction entry:", error);
       res.status(501).send("Internal Server Error Kindly Try again");
     })

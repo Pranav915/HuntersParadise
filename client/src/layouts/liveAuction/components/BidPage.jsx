@@ -129,7 +129,7 @@ const BidPage = ({
             <Grid container p={1}>
               <Grid item xs={12}>
                 <MDTypography variant="h5" fontWeight="medium">
-                  {selectedProduct?.status == "live" ? "TOP BIDDER" : "WINNER"}
+                  {selectedProduct?.status == "live" ? "TOP BIDDER" : "Status"}
                 </MDTypography>
               </Grid>
               {highestBidder ? (
@@ -177,16 +177,22 @@ const BidPage = ({
                     </Grid>
                   </Grid>
                 </>
-              ) : (
+              ) : selectedProduct?.status == "live" ? (
                 <>
                   <Grid item xs={12} md={6}>
                     <MDTypography>No Bid Yet</MDTypography>
                   </Grid>
                 </>
+              ) : (
+                <>
+                  <Grid item xs={12} md={6}>
+                    <MDTypography>{selectedProduct?.status}</MDTypography>
+                  </Grid>
+                </>
               )}
               {isHost ? (
                 <></>
-              ) : (
+              ) : selectedProduct?.status == "live" ? (
                 <>
                   <Grid item xs={12} mt={4}>
                     <MDTypography variant="h5" fontWeight="medium">
@@ -211,6 +217,8 @@ const BidPage = ({
                     </MDButton>
                   </Grid>
                 </>
+              ) : (
+                <></>
               )}
             </Grid>
             {isHost && selectedProduct?.status == "live" ? (
