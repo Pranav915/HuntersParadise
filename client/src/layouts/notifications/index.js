@@ -41,11 +41,7 @@ const Notifications = ({
 
   const alertContent = (name) => (
     <MDTypography variant="body2" color="white">
-      A simple {name} alert with{" "}
-      <MDTypography component="a" href="#" variant="body2" fontWeight="medium" color="white">
-        an example link
-      </MDTypography>
-      . Give it a click if you like.
+      A sample notification message example.
     </MDTypography>
   );
 
@@ -122,44 +118,6 @@ const Notifications = ({
                 <MDAlert color="primary" dismissible>
                   {alertContent("primary")}
                 </MDAlert>
-              </MDBox>
-            </Card>
-          </Grid>
-          <Grid item xs={12} lg={8}>
-            <Card>
-              <MDBox p={2} lineHeight={0}>
-                <MDTypography variant="h5">Notifications</MDTypography>
-                <MDTypography variant="button" color="text" fontWeight="regular">
-                  Notifications on this page use Toasts from Bootstrap. Read more details here.
-                </MDTypography>
-              </MDBox>
-              <MDBox p={2}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="success" onClick={openSuccessSB} fullWidth>
-                      success notification
-                    </MDButton>
-                    {renderSuccessSB}
-                  </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="info" onClick={openInfoSB} fullWidth>
-                      info notification
-                    </MDButton>
-                    {renderInfoSB}
-                  </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="warning" onClick={openWarningSB} fullWidth>
-                      warning notification
-                    </MDButton>
-                    {renderWarningSB}
-                  </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="error" onClick={openErrorSB} fullWidth>
-                      error notification
-                    </MDButton>
-                    {renderErrorSB}
-                  </Grid>
-                </Grid>
               </MDBox>
             </Card>
           </Grid>
