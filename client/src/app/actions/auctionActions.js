@@ -25,6 +25,7 @@ export const getAuctionActions = (dispatch) => {
     startProduct: (req) => dispatch(startProduct(req)),
     newBid: (req) => dispatch(newBid(req)),
     bidDone: (req) => dispatch(bidDone(req)),
+    endAuction: (req) => dispatch(endAuction(req)),
   };
 };
 
@@ -220,6 +221,22 @@ export const newBid = (req) => {
 export const bidDone = (req) => {
   return async (dispatch) => {
     const response = await apiCall(req, ENDPOINTS.BID_DONE, "POST");
+    if (response.error) {
+      dispatch(
+        openAlertMessage({
+          title: "Error",
+          content: response?.exception?.response?.data,
+        })
+      );
+    } else {
+      console.log("response", response);
+    }
+  };
+};
+
+export const endAuction = (req) => {
+  return async (dispatch) => {
+    const response = await apiCall(req, ENDPOINTS.END_AUCTION, "POST");
     if (response.error) {
       dispatch(
         openAlertMessage({

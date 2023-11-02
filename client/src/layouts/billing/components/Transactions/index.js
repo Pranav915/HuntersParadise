@@ -35,7 +35,7 @@ function Transactions({ completeTransactions, userid }) {
           m={0}
           sx={{ listStyle: "none" }}
         >
-          {completeTransactions.map((transaction, index) => {
+          {completeTransactions?.map((transaction, index) => {
             let color = "";
             let name = "";
             if (transaction.typeOf === "addFunds") {

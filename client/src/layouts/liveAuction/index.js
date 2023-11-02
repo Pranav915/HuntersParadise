@@ -14,8 +14,9 @@ import { getAuctionActions } from "app/actions/auctionActions";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import ProductDetails from "./components/ProductDetails";
+import { getActions } from "app/actions/alertActions";
 
-const LiveAuction = ({ getLiveAuctionDetails }) => {
+const LiveAuction = ({ getLiveAuctionDetails, openAlertMessage }) => {
   const location = useLocation();
   const [liveAuctionDetails, setLiveAuctionDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,46 +37,58 @@ const LiveAuction = ({ getLiveAuctionDetails }) => {
       setIsHost
     );
   };
-  const productStartChannel = useChannel(
-    "auction:" + liveAuctionDetails?.auctionId,
-    "ProductStart",
-    (message) => {
-      console.log("message", message);
-      handleProductStart();
-    }
-  ).channel;
 
-  const auctionArenaChannel = useChannel(
-    "auction:" + getLiveAuctionDetails?.auctionId,
-    "auction",
-    (message) => {
-      let liveAuctionDetails = liveAuctionDetails?.productList.map((product) => {
-        if (product.product.name === message.data.product.product.name) {
-          return {
-            ...product,
-            status: "live",
-          };
-        }
-        return product;
+  const auctionArenaChannel = useChannel("auction:" + liveAuctionDetails?.auctionId, (message) => {
+    console.log("message", message);
+    if (message.name == "NewBid") {
+      openAlertMessage({
+        title: "Better Bid Received",
+        content: `${message.data.bidData.bidder.name} has raised the bid to $${message.data.bidData.bidValue}`,
       });
-      setLiveAuctionDetails(liveAuctionDetails);
-      setProductList(liveAuctionDetails?.productList);
-      setLiveProduct(liveAuctionDetails?.currentProduct);
+    } else if (message.name == "ProductStart") {
+      handleProductStart();
+    } else if (message.name == "ProductSold") {
+      handleProductSold();
+      if (message.data.bidData.status == "sold") {
+        openAlertMessage({
+          title: "Product Sold!",
+          content: `${message.data.bidData.productName} has been sold for ${message.data.bidData.bidData.bidValue}`,
+        });
+      } else if (message.data.bidData.status == "unsold") {
+        openAlertMessage({
+          title: "Product Unsold!",
+          content: `${message.data.bidData.productName} went unsold`,
+        });
+      }
     }
-  ).channel;
+  }).channel;
 
-  const auctionProductSoldChannel = useChannel(
-    "auction:" + getLiveAuctionDetails?.auctionId,
-    "ProductSold",
-    (message) => {
-      getLiveAuctionDetails(
-        location?.state?.data?.auction?.auctionId,
-        setLiveAuctionDetails,
-        setIsLoading,
-        setIsHost
-      );
-    }
-  ).channel;
+  const handleProductSold = () => {
+    getLiveAuctionDetails(
+      location?.state?.data?.auction?.auctionId,
+      setLiveAuctionDetails,
+      setIsLoading,
+      setIsHost
+    );
+  };
+  // const auctionProductSoldChannel = useChannel(
+  //   "auction:" + getLiveAuctionDetails?.auctionId,
+  //   "ProductSold",
+  //   (message) => {
+  //     handleProductSold();
+  //     if (message.data.bidData.status == "sold") {
+  //       openAlertMessage({
+  //         title: "Product Sold!",
+  //         content: `${message.data.bidData.productName} has been sold for ${message.data.bidData.bidData.bidValue}`,
+  //       });
+  //     } else if (message.data.bidData.status == "unsold") {
+  //       openAlertMessage({
+  //         title: "Product Unsold!",
+  //         content: `${message.data.bidData.productName} went unsold`,
+  //       });
+  //     }
+  //   }
+  // ).channel;
 
   useEffect(() => {
     getLiveAuctionDetails(
@@ -226,6 +239,7 @@ const mapStoreStateToProps = ({ auth, auction }) => {
 const mapActionsToProps = (dispatch) => {
   return {
     ...getAuctionActions(dispatch),
+    ...getActions(dispatch),
   };
 };
 export default connect(mapStoreStateToProps, mapActionsToProps)(LiveAuction);

@@ -103,7 +103,7 @@ function Header({ children, userDetails }) {
                     </Icon>
                   }
                 />
-                <Tab
+                {/* <Tab
                   label="Message"
                   onClick={() => navigate("/notifications")}
                   icon={
@@ -111,7 +111,7 @@ function Header({ children, userDetails }) {
                       email
                     </Icon>
                   }
-                />
+                /> */}
               </Tabs>
             </AppBar>
           </Grid>

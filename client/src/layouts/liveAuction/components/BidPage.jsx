@@ -55,7 +55,7 @@ const BidPage = ({
     newBid(req);
   };
 
-  const handleCompleteAuction = () => {
+  const handleCompleteDeal = () => {
     const req = {
       auctionId: liveAuctionDetails?.auctionId,
     };
@@ -215,7 +215,7 @@ const BidPage = ({
             </Grid>
             {isHost && selectedProduct?.status == "live" ? (
               <Grid item xs={12} mt={4}>
-                <MDButton color="success" variant="contained" p={0} onClick={handleCompleteAuction}>
+                <MDButton color="success" variant="contained" p={0} onClick={handleCompleteDeal}>
                   <MDTypography component="h5" variant="h6" color="text" m={-1}>
                     Complete Deal
                   </MDTypography>

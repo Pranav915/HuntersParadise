@@ -17,7 +17,7 @@ function BillingInformation({ pendingTransactions, userid }) {
       </MDBox>
       <MDBox pt={3} pb={2} px={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          {pendingTransactions.map((transaction, index) => {
+          {pendingTransactions?.map((transaction, index) => {
             transaction.to === userid ? (
               <Bill
                 name={transaction.reciever_name}
