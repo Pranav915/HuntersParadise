@@ -92,10 +92,8 @@ const newBid = async (req, res) => {
       const currentHighestBidder = await User.findOne({
         _id: auction.currentHighestBid.bidder,
       });
-      currentHighestBidder.wallet.availableBalance +=
-        auction.currentHighestBid.bidValue;
-      currentHighestBidder.wallet.freezedBalance -=
-        auction.currentHighestBid.bidValue;
+      currentHighestBidder.wallet.availableBalance += parseInt(auction.currentHighestBid.bidValue);
+      currentHighestBidder.wallet.freezedBalance -= parseInt(auction.currentHighestBid.bidValue);
       await currentHighestBidder.save();
     }
     const nowBid = {

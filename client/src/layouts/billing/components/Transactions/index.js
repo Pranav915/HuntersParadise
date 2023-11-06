@@ -41,7 +41,7 @@ function Transactions({ completeTransactions, userid }) {
             if (transaction.typeOf === "addFunds") {
               color = "success";
               name = "Added to Wallet";
-            } else if (transaction.typeOf === "withdrawFund") {
+            } else if (transaction.typeOf === "withdrawFunds") {
               color = "error";
               name = "Withdrawn from Wallet";
             } else if (transaction.to === userid) {

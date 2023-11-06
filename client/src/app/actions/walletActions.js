@@ -132,8 +132,10 @@ export const getTransactions = () => {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
       console.log("response2", response);
-      dispatch(setPendingTransactions(response?.data?.pendingTransaction));
-      dispatch(setCompleteTransactions(response?.data?.completeTransaction));
+      let reversePTransactions = response?.data?.pendingTransaction.reverse();
+      let reverseCTransactions = response?.data?.completeTransaction.reverse();
+      dispatch(setPendingTransactions(reversePTransactions));
+      dispatch(setCompleteTransactions(reverseCTransactions));
     }
   };
 };
