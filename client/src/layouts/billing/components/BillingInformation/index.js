@@ -20,6 +20,7 @@ function BillingInformation({ pendingTransactions, userId }) {
           {pendingTransactions?.map((transaction, key) =>
             transaction.to === userId ? (
               <Bill
+                transaction={transaction}
                 name={transaction.sender_name}
                 status="Outstanding"
                 amount={transaction.amount}
@@ -27,6 +28,7 @@ function BillingInformation({ pendingTransactions, userId }) {
               />
             ) : (
               <Bill
+                transaction={transaction}
                 name={transaction.sender_name}
                 status="Freezed"
                 amount={transaction.amount}

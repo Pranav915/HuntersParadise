@@ -13,10 +13,20 @@ import MDButton from "components/MDButton";
 // Code Pulse React context
 import { useMaterialUIController } from "context";
 import { Divider } from "@mui/material";
+import { getWalletActions } from "app/actions/walletActions";
+import { connect } from "react-redux";
 
-function Bill({ name, productName, email, status, amount }) {
+function Bill({ transaction, name, productName, email, status, amount, completeTransaction }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
+
+  const handleProductReceived = () => {
+    console.log(transaction);
+    const req = {
+      transactionId: transaction._id,
+    };
+    completeTransaction(req);
+  };
 
   return (
     <MDBox
@@ -74,7 +84,11 @@ function Bill({ name, productName, email, status, amount }) {
         {status === "Outstanding" ? (
           <></>
         ) : (
-          <MDButton variant="text" color={darkMode ? "white" : "dark"}>
+          <MDButton
+            variant="text"
+            color={darkMode ? "white" : "dark"}
+            onClick={handleProductReceived}
+          >
             <Icon>done</Icon>&nbsp;Mark as Product Received
           </MDButton>
         )}
@@ -97,5 +111,16 @@ Bill.propTypes = {
   vat: PropTypes.string.isRequired,
   noGutter: PropTypes.bool,
 };
+const mapStoreStateToProps = ({ auth, wallet }) => {
+  return {
+    ...auth,
+    ...wallet,
+  };
+};
 
-export default Bill;
+const mapActionsToProps = (dispatch) => {
+  return {
+    ...getWalletActions(dispatch),
+  };
+};
+export default connect(mapStoreStateToProps, mapActionsToProps)(Bill);

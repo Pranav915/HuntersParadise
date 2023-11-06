@@ -8,7 +8,7 @@ import MDTypography from "components/MDTypography";
 
 import Transaction from "layouts/billing/components/Transaction";
 
-function Transactions({ completeTransactions, userid }) {
+function Transactions({ completeTransactions, userId }) {
   return (
     <Card sx={{ height: "100%" }}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={3} px={2}>
@@ -44,10 +44,10 @@ function Transactions({ completeTransactions, userid }) {
             } else if (transaction.typeOf === "withdrawFunds") {
               color = "error";
               name = "Withdrawn from Wallet";
-            } else if (transaction.to === userid) {
+            } else if (transaction.to === userId) {
               color = "success";
               name = "Transaction";
-            } else if (transaction.from === userid) {
+            } else if (transaction.from === userId) {
               color = "error";
               name = "Transaction";
             }
