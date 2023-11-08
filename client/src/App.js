@@ -83,11 +83,13 @@ const App = ({
   }).channel;
 
   const comChannel = useChannel("communicationChannel:" + userDetails?.userId, (message) => {
+    console.log("message", message);
     if (message.name == "NewOffer") {
       // Show Notification (New Offer Received On your Deal: Deal Name)
+
       openAlertMessage({
         title: "Offer Alert!",
-        content: `Hey, Somebody's interested in your deal. New Offer of $ ${message.data.offer.offeredPrice} Received.`,
+        content: `Hey, Somebody's interested in your deal. New Offer of $ ${message.data.Offer.offeredPrice} Received.`,
         link: `/dealDetail/${message.data.deal.productName}`,
         item: message.data.deal,
       });

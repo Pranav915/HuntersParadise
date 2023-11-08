@@ -31,6 +31,10 @@ const LiveAuction = ({ getLiveAuctionDetails, openAlertMessage }) => {
   const navigate = useNavigate();
 
   const handleProductStart = () => {
+    openAlertMessage({
+      title: "New Product Live",
+      content: ``,
+    });
     getLiveAuctionDetails(
       location?.state?.data?.auction?.auctionId,
       setLiveAuctionDetails,
@@ -70,7 +74,7 @@ const LiveAuction = ({ getLiveAuctionDetails, openAlertMessage }) => {
       } else if (message.data.bidData.status == "unsold") {
         openAlertMessage({
           title: "Product Unsold!",
-          content: `${message.data.bidData.productName} went unsold`,
+          content: `${message.data.bidData.product} went unsold`,
         });
       }
     } else if (message.name == "EndAuction") {
@@ -174,6 +178,7 @@ const LiveAuction = ({ getLiveAuctionDetails, openAlertMessage }) => {
                             key={key}
                             product={product}
                             handleSetSelectedProduct={() => setSelectedProduct(product)}
+                            selectedProduct={selectedProduct}
                             status="Live"
                           />
                         ) : (
@@ -186,6 +191,7 @@ const LiveAuction = ({ getLiveAuctionDetails, openAlertMessage }) => {
                             key={key}
                             product={product}
                             handleSetSelectedProduct={() => setSelectedProduct(product)}
+                            selectedProduct={selectedProduct}
                             status="Pending"
                           />
                         ) : (
@@ -199,7 +205,23 @@ const LiveAuction = ({ getLiveAuctionDetails, openAlertMessage }) => {
                               key={key}
                               product={product}
                               handleSetSelectedProduct={() => setSelectedProduct(product)}
+                              selectedProduct={selectedProduct}
                               status="Sold"
+                            />
+                          </>
+                        ) : (
+                          <></>
+                        )
+                      )}
+                      {liveAuctionDetails?.productList.map((product, key) =>
+                        product.status == "unsold" ? (
+                          <>
+                            <ProductCard
+                              key={key}
+                              product={product}
+                              handleSetSelectedProduct={() => setSelectedProduct(product)}
+                              selectedProduct={selectedProduct}
+                              status="Unsold"
                             />
                           </>
                         ) : (
@@ -213,7 +235,7 @@ const LiveAuction = ({ getLiveAuctionDetails, openAlertMessage }) => {
             </Grid>
           </Grid>
           <Grid item xs={12} md={6} py={2}>
-            {selectedProduct?.status != "pending" ? (
+            {selectedProduct?.status == "live" ? (
               <BidPage
                 selectedProduct={selectedProduct}
                 isHost={isHost}

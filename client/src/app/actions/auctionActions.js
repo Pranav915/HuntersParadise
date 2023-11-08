@@ -149,6 +149,12 @@ export const startAuction = (auctionId, navigate) => {
         })
       );
     } else {
+      dispatch(
+        openAlertMessage({
+          title: "Success",
+          content: response?.data,
+        })
+      );
     }
   };
 };
