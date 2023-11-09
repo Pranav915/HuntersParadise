@@ -85,4 +85,4 @@ You must see the site UI live on localhost:3000, you can login and enter the das
 
 ### Change themes according to your needs
 
-![Themes](./images/themes.png)
+![Themes](./images/Themes.png)
