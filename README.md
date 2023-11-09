@@ -2,15 +2,6 @@
 
 A Peer to peer rare commodities exchange place, where users can buy and sell rare products through auctions and deals. They will be notified in real-time about each update.
 
-## Table of Contents
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [Features](#features)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact Information](#contact-information)
-
 ## Installation
 
 Follow these steps to get the project up and running.
@@ -47,3 +38,24 @@ npm start
 ```
 
 You must see the site UI live on localhost:3000, you can login and enter the dashboard.
+
+## Description :
+- **Real-Time Rare Commodity Exchange**: Hunter's Paradise is a dynamic online platform enabling real-time buying and selling
+of rare products through auctions and deals, enhancing user interaction.
+- **Live Dashboard**: Implemented a dynamic real-time dashboard, allowing users to track ongoing auctions and deals
+in real-time.
+- **Realtime Chat Integration**: Integrated a chat feature to facilitate communication among users, enhancing the
+collaborative experience on the platform.
+- **Cutting-Edge Technologies**: Leveraged React, Redux, Ably, and Node.js to ensure seamless, instant updates, and
+notifications for users, providing a responsive and engaging user experience
+
+## Images :
+
+### Authentication
+![Login](./images/login.png)
+
+### Realtime Dashboard
+![Dashboard](./images/dashboard.png)
+
+### Live Auction Page
+![Live Auction](./images/LiveAuction.png)
