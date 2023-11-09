@@ -68,6 +68,7 @@ export const getWalletActions = (dispatch) => {
     withdrawFund: (req) => dispatch(withdrawFund(req)),
     getTransactions: () => dispatch(getTransactions()),
     getBalance: () => dispatch(getBalance()),
+    completeTransaction: (req) => dispatch(completeTransaction(req)),
   };
 };
 
@@ -82,6 +83,7 @@ export const addFund = (req) => {
       dispatch(setAvailableBalance(response?.data?.availableBalance));
       dispatch(setFreezedBalance(response?.data?.freezedBalance));
       dispatch(setOutstandingBalance(response?.data?.outStandingBalance));
+      dispatch(getTransactions());
     }
   };
 };
@@ -101,6 +103,7 @@ export const withdrawFund = (req) => {
       dispatch(setAvailableBalance(response?.data?.availableBalance));
       dispatch(setFreezedBalance(response?.data?.freezedBalance));
       dispatch(setOutstandingBalance(response?.data?.outStandingBalance));
+      dispatch(getTransactions());
     }
   };
 };
@@ -132,8 +135,23 @@ export const getTransactions = () => {
       dispatch(openAlertMessage(response?.exception?.response?.data));
     } else {
       console.log("response2", response);
-      dispatch(setPendingTransactions(response?.data?.pendingTransaction));
-      dispatch(setCompleteTransactions(response?.data?.completeTransaction));
+      let reversePTransactions = response?.data?.pendingTransaction.reverse();
+      let reverseCTransactions = response?.data?.completeTransaction.reverse();
+      dispatch(setPendingTransactions(reversePTransactions));
+      dispatch(setCompleteTransactions(reverseCTransactions));
+    }
+  };
+};
+
+export const completeTransaction = (transactionId) => {
+  return async (dispatch) => {
+    const response = await apiCall(transactionId, ENDPOINTS.COMPLETE_TRANSACTION, "POST");
+    if (response.error) {
+      dispatch(openAlertMessage(response?.exception?.response?.data));
+    } else {
+      console.log("response", response);
+      dispatch(getBalance());
+      dispatch(getTransactions());
     }
   };
 };

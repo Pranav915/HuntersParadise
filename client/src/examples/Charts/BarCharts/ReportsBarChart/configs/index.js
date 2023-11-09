@@ -48,6 +48,10 @@ function configs(labels, datasets) {
         legend: {
           display: false,
         },
+        title: {
+          display: true,
+          text: "Category-Wise Deal Valuation",
+        },
       },
       interaction: {
         intersect: false,

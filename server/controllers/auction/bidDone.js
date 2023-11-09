@@ -35,12 +35,12 @@ const bidDone = async (req, res) => {
   try {
     const auction = await LiveAuction.findOne({
       auctionId: req.body.auctionId,
-    });
+    }).populate("auctionHost").populate("currentHighestBid.bidder");
     if (!auction) {
       res.status(404).send("No such Auction found");
       return;
     }
-    if (auction.auctionHost != req.user.userId) {
+    if (auction.auctionHost._id != req.user.userId) {
       res.status(401).send("You are not authorized to complete Product Sell");
       return;
     }
@@ -70,7 +70,7 @@ const bidDone = async (req, res) => {
         productImage: currentProductInList.product.image,
         dealDescription: currentProductInList.product.description,
         price: auction.currentHighestBid.bidValue,
-        seller: auction.auctionHost,
+        seller: auction.auctionHost._id,
         buyer: auction.currentHighestBid.bidder,
         status: "pending",
       });
@@ -79,13 +79,15 @@ const bidDone = async (req, res) => {
         const transaction = new Transaction({
           typeOf: "transfer",
           from: auction.currentHighestBid.bidder,
-          to: auction.auctionHost,
+          to: auction.auctionHost._id,
           amount: auction.currentHighestBid.bidValue,
+          reciever_name: auction.auctionHost.name,
+          sender_name: auction.currentHighestBid.bidder.name,
           status: "pending",
           dealID: deal._id,
         });
         await transaction.save().then(async (trns) => {
-          const auctionHost = await User.findOne({ _id: auction.auctionHost });
+          const auctionHost = await User.findOne({ _id: auction.auctionHost._id });
           auctionHost.wallet.totalBalance += parseInt(
             auction.currentHighestBid.bidValue
           );

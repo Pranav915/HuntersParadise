@@ -10,12 +10,14 @@ import DetailsCard from "./components/DetailsCard";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { getDealActions } from "app/actions/dealActions";
 import DealUsers from "./data/DealUsers";
+import { useChannel } from "ably/react";
 
 const DealDetails = ({ submitOffer, userDetails, getDealDetails }) => {
+  const navigate = useNavigate();
   const [offeredPrice, setOfferedPrice] = useState("");
   const [showEdit, setShowEdit] = useState(false);
   const [dealDetails, setDealDetails] = useState(null);
@@ -26,6 +28,16 @@ const DealDetails = ({ submitOffer, userDetails, getDealDetails }) => {
   const { columns, rows } = DealUsers(dealDetails);
 
   const location = useLocation();
+
+  const handleDealAccepted = () => {
+    navigate("/deals");
+  };
+  const comChannel = useChannel("communicationChannel:" + userDetails?.userId, (message) => {
+    getDealDetails(dealDetails?.dealDetails?._id, setDealDetails);
+    if (message.name == "GotIt") {
+      handleDealAccepted();
+    }
+  }).channel;
 
   const handleSubmitOffer = () => {
     let offerDetails;

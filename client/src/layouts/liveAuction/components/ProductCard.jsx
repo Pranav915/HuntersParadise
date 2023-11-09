@@ -6,11 +6,16 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 
-const ProductCard = ({ product, handleSetSelectedProduct, status }) => {
+const ProductCard = ({ product, handleSetSelectedProduct, status, selectedProduct }) => {
   return (
     <MDBox px={1}>
       <MDBox p={1}>
-        <Card onClick={handleSetSelectedProduct}>
+        <Card
+          onClick={handleSetSelectedProduct}
+          style={{
+            border: selectedProduct === product ? "2px solid white" : "",
+          }}
+        >
           <CardActionArea>
             <Grid container p={1}>
               <Grid item>

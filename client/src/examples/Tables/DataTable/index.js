@@ -84,8 +84,6 @@ function DataTable({
     </MDPagination>
   ));
 
-  console.log("pagination", renderPagination);
-
   // Handler for the input to set the pagination index
   const handleInputPagination = ({ target: { value } }) => {
     console.log("no", value);

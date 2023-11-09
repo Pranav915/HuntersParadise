@@ -38,6 +38,8 @@ export const login = (userDetails, navigate) => {
       );
     } else {
       const { userDetails } = response?.data;
+      localStorage.setItem("user", JSON.stringify(userDetails));
+      dispatch(setUserDetails(userDetails));
       Cookies.set("clientId", userDetails?.username);
       await initializeAblyClient(Cookies.get("clientId"));
       if (userDetails.age) {
@@ -45,8 +47,6 @@ export const login = (userDetails, navigate) => {
       } else {
         navigate("/initialDetails");
       }
-      localStorage.setItem("user", JSON.stringify(userDetails));
-      dispatch(setUserDetails(userDetails));
     }
   };
 };
@@ -63,6 +63,8 @@ export const register = (userDetails, navigate) => {
       );
     } else {
       const { userDetails } = response?.data;
+      localStorage.setItem("user", JSON.stringify(userDetails));
+      dispatch(setUserDetails(userDetails));
       Cookies.set("clientId", userDetails?.username);
       await initializeAblyClient(Cookies.get("clientId"));
       if (userDetails?.age) {
@@ -70,8 +72,6 @@ export const register = (userDetails, navigate) => {
       } else {
         navigate("/initialDetails");
       }
-      localStorage.setItem("user", JSON.stringify(userDetails));
-      dispatch(setUserDetails(userDetails));
     }
   };
 };

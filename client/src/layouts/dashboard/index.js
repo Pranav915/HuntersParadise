@@ -35,7 +35,7 @@ import { getDealActions } from "app/actions/dealActions";
 import { getAuctionActions } from "app/actions/auctionActions";
 import Cookies from "js-cookie";
 import PieChart from "examples/Charts/PieChart";
-import { useAbly, useChannel } from "ably/react";
+import { useAbly, useChannel, usePresence } from "ably/react";
 import { getWalletActions } from "app/actions/walletActions";
 
 const Dashboard = ({
@@ -80,10 +80,70 @@ const Dashboard = ({
   });
   const search = useLocation().search;
   const navigate = useNavigate();
+  const { presenceData, updateStatus } = usePresence("dealChannel", "initialPresenceStatus");
 
   const handleAuctionStarted = () => {
     getLiveAuctions();
   };
+
+  useEffect(() => {
+    const user = new URLSearchParams(search).get("user");
+    if (user) {
+      const data = jwt_decode(user).userDetails;
+      console.log("data", data);
+      setUserDetails(data);
+      if (!data?.age) {
+        navigate("/initialDetails");
+      }
+      Cookies.set("clientId", data?.username);
+      initializeAblyClient(userDetails?.username);
+      setLiveUserCount(0);
+      setTotalAuctionParticipantsCount(0);
+      getAllDeals();
+      getMyDeals();
+      getMyOffers();
+      getLiveAuctions();
+      getMyAuctions();
+      getPieChartData();
+      getLiveData();
+      getBalance();
+      dealChannel.presence.subscribe("enter", function (member) {
+        setLiveUserCount(liveUserCount + 1);
+      });
+
+      dealChannel.presence.subscribe("leave", function (member) {
+        setLiveUserCount(liveUserCount - 1);
+      });
+      dealChannel.presence.enter();
+    } else if (userDetails) {
+      if (!userDetails.age) {
+        navigate("/initialDetails");
+      } else {
+        setLiveUserCount(0);
+        setTotalAuctionParticipantsCount(0);
+        getAllDeals();
+        getMyDeals();
+        getMyOffers();
+        getLiveAuctions();
+        getMyAuctions();
+        getPieChartData();
+        getLiveData();
+        getBalance();
+        dealChannel.presence.subscribe("enter", function (member) {
+          setLiveUserCount(liveUserCount + 1);
+          console.log("Member " + member.clientId + " entered");
+        });
+
+        dealChannel.presence.subscribe("leave", function (member) {
+          setLiveUserCount(liveUserCount - 1);
+          console.log("Member " + member.clientId + " left");
+        });
+        dealChannel.presence.enter();
+      }
+    } else {
+      navigate("/authentication/sign-in");
+    }
+  }, []);
 
   const dealChannel = useChannel({ channelName: "dealChannel" }, (message) => {
     console.log(message);
@@ -148,69 +208,6 @@ const Dashboard = ({
   });
 
   useEffect(() => {
-    const user = new URLSearchParams(search).get("user");
-    if (user) {
-      const data = jwt_decode(user).userDetails;
-      console.log("data", data);
-      setUserDetails(data);
-      if (!data?.age) {
-        navigate("/initialDetails");
-      }
-      Cookies.set("clientId", data?.username);
-      initializeAblyClient(userDetails?.username);
-      setLiveUserCount(0);
-      setTotalAuctionParticipantsCount(0);
-      getAllDeals();
-      getMyDeals();
-      getMyOffers();
-      getLiveAuctions();
-      getMyAuctions();
-      getPieChartData();
-      getLiveData();
-      getBalance();
-      dealChannel.presence.subscribe("enter", function (member) {
-        setLiveUserCount(liveUserCount + 1);
-        console.log("Member " + member.clientId + " entered");
-      });
-
-      dealChannel.presence.subscribe("leave", function (member) {
-        setLiveUserCount(liveUserCount - 1);
-        console.log("Member " + member.clientId + " left");
-      });
-      dealChannel.presence.enter();
-    } else if (userDetails) {
-      if (!userDetails.age) {
-        navigate("/initialDetails");
-      } else {
-        Cookies.set("clientId", userDetails?.username);
-        initializeAblyClient(userDetails?.username);
-        setLiveUserCount(0);
-        setTotalAuctionParticipantsCount(0);
-        getAllDeals();
-        getMyDeals();
-        getMyOffers();
-        getLiveAuctions();
-        getMyAuctions();
-        getPieChartData();
-        getLiveData();
-        getBalance();
-        dealChannel.presence.subscribe("enter", function (member) {
-          setLiveUserCount(liveUserCount + 1);
-          console.log("Member " + member.clientId + " entered");
-        });
-
-        dealChannel.presence.subscribe("leave", function (member) {
-          setLiveUserCount(liveUserCount - 1);
-          console.log("Member " + member.clientId + " left");
-        });
-        dealChannel.presence.enter();
-      }
-    } else {
-      navigate("/authentication/sign-in");
-    }
-  }, []);
-
-  useEffect(() => {
     let barChartData = {
       labels: pieChartData?.map((element) => {
         let labelsList = [];
@@ -221,21 +218,18 @@ const Dashboard = ({
         {
           label: "Category Deals",
           data: pieChartData?.map((element) => {
-            let dataList = [];
-            dataList.push(element?.numberDeals);
-            return dataList;
+            return element?.numberDeals;
           }),
         },
         {
           label: "Category Valuation",
           data: pieChartData?.map((element) => {
-            let dataList = [];
-            dataList.push(element?.valuation);
-            return dataList;
+            return element?.valuation;
           }),
         },
       ],
     };
+    console.log("barChartData", barChartData);
     setFinalBarChartData(barChartData);
     let chartData = {
       labels: pieChartData?.map((element) => {
@@ -294,7 +288,6 @@ const Dashboard = ({
 
   return (
     <DashboardLayout>
-      {dealChannel.presence.enter()}
       <DashboardNavbar />
       <MDBox py={3}>
         <Grid container spacing={3}>
@@ -364,9 +357,8 @@ const Dashboard = ({
               <MDBox mb={2}>
                 <ReportsBarChart
                   color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
+                  description=""
+                  date="updated 3 mins ago"
                   chart={finalBarChartData}
                 />
               </MDBox>

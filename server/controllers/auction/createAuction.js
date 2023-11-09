@@ -1,30 +1,40 @@
 const UpcomingAuction = require("../../models/UpcomingAuction");
 const LiveAuction = require("../../models/LiveAuction");
 const ablyService = require("../../ablyService");
+const CompletedAuction = require("../../models/CompletedAuction");
 const createAuction = async (req, res) => {
   const data = req.body;
   var nowauctionId = 1;
-  await LiveAuction.findOne({})
-    .sort({ auctionId: -1 }) // Sort in descending order (latest first)
-    .then(async (latestAuction) => {
-      if (latestAuction) {
-        nowauctionId = latestAuction.auctionId + 1;
+  await CompletedAuction.findOne({})
+    .sort({ auctionId: -1 })
+    .then(async (lauction) => {
+      if (lauction) {
+        nowauctionId = lauction.auctionId + 1;
       } else {
-        await UpcomingAuction.findOne({})
-          .sort({ auctionId: -1 }) // Sort in descending order (latest first)
-          .then((latestAuction) => {
+        await LiveAuction.findOne({})
+          .sort({ auctionId: -1 })
+          .then(async (latestAuction) => {
             if (latestAuction) {
               nowauctionId = latestAuction.auctionId + 1;
             } else {
-              nowauctionId = 1;
+              await UpcomingAuction.findOne({})
+                .sort({ auctionId: -1 })
+                .then((latestAuction) => {
+                  if (latestAuction) {
+                    nowauctionId = latestAuction.auctionId + 1;
+                  } else {
+                    nowauctionId = 1;
+                  }
+                });
             }
+          })
+          .catch((err) => {
+            console.error("Error fetching latest auction:", err);
+            res.status(501).send("Internal Server Error Kindly Try again");
           });
       }
-    })
-    .catch((err) => {
-      console.error("Error fetching latest auction:", err);
-      res.status(501).send("Internal Server Error Kindly Try again");
     });
+
   const newAuction = new UpcomingAuction({
     auctionId: nowauctionId,
     auctionTitle: data.auctionTitle,

@@ -14,8 +14,9 @@ import LoginIcon from "@mui/icons-material/Login";
 import GavelIcon from "@mui/icons-material/Gavel";
 import MDButton from "components/MDButton";
 import { useChannel } from "ably/react";
+import { getActions } from "app/actions/alertActions";
 
-const AuctionDetails = ({ getAuctionDetails, startAuction }) => {
+const AuctionDetails = ({ getAuctionDetails, startAuction, openAlertMessage }) => {
   const location = useLocation();
   const [auctionDetails, setAuctionDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,13 +26,16 @@ const AuctionDetails = ({ getAuctionDetails, startAuction }) => {
 
   const handleNavigate = () => {
     navigate(`/liveAuction/${auctionDetails?.auctionId}`, {
-      state: { data: { auction: auction, sender: "all" } },
+      state: { data: { auction: auctionDetails, sender: "all" } },
     });
   };
   const { channel } = useChannel("dealChannel", (message) => {
     console.log("message", message);
     console.log("auctionDetails", auctionDetails);
     if (message.name == "AuctionStarted") {
+      openAlertMessage({
+        title: "Auction is live!",
+      });
       handleNavigate();
     }
   });
@@ -178,6 +182,7 @@ const mapStoreStateToProps = ({ auth, auction }) => {
 const mapActionsToProps = (dispatch) => {
   return {
     ...getAuctionActions(dispatch),
+    ...getActions(dispatch),
   };
 };
 export default connect(mapStoreStateToProps, mapActionsToProps)(AuctionDetails);

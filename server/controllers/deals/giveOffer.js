@@ -93,7 +93,11 @@ const giveOffer = async (req, res) => {
       var comChannel = ablyService.client.channels.get(
         "communicationChannel:" + nowDeal.seller
       );
-      comChannel.publish("NewOffer", { action: "new offer", Offer: newOffer });
+      comChannel.publish("NewOffer", {
+        action: "new offer",
+        offer: newOffer,
+        deal: nowDeal,
+      });
       console.log("New Offer published to Ably");
     })
     .catch((err) => {

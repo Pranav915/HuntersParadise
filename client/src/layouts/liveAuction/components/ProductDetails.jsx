@@ -80,20 +80,78 @@ const ProductDetails = ({ selectedProduct, isHost, startProduct, liveAuctionDeta
                   </MDTypography>
                 </Grid>
 
-                {isHost ? (
+                {isHost && selectedProduct?.status == "pending" ? (
                   <Grid item xs={12} mt={4}>
                     <MDButton
                       color="success"
                       variant="contained"
                       p={0}
                       onClick={handleStartProduct}
-                      disabled={selectedProduct?.status != "pending"}
                     >
                       <MDTypography component="h5" variant="h6" color="text" m={-1}>
                         Start Product
                       </MDTypography>
                     </MDButton>
                   </Grid>
+                ) : (
+                  <></>
+                )}
+                {selectedProduct?.status != "pending" ? (
+                  <>
+                    <Grid item xs={12} mt={3}>
+                      <MDTypography variant="h5" fontWeight="medium">
+                        {selectedProduct?.status == "sold" ? "Winner" : "Product Went Unsold!"}
+                      </MDTypography>
+                    </Grid>
+                    {selectedProduct?.status == "sold" ? (
+                      <>
+                        <Grid item xs={12} md={6}>
+                          <Grid container alignItems="center" p={1}>
+                            <Grid item>
+                              <MDAvatar
+                                src={selectedProduct?.highestbid?.highestBidder?.profilePhoto}
+                                alt="profile-image"
+                                size="sm"
+                                shadow="sm"
+                              />
+                            </Grid>
+                            <Grid item ml={2}>
+                              <MDBox height="100%" mt={0.5} lineHeight={1}>
+                                <MDTypography variant="h6" fontWeight="medium">
+                                  {selectedProduct?.highestbid?.highestBidder?.name}
+                                </MDTypography>
+                              </MDBox>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                        <Grid item xs={12} md={3}>
+                          <MDBox height="100%" mt={0.5} lineHeight={1}>
+                            <MDTypography variant="h5" fontWeight="regular" color="text">
+                              {"$" + selectedProduct?.highestbid?.bidPrice}
+                            </MDTypography>
+                          </MDBox>
+                        </Grid>
+                        <Grid item xs={12} md={3}>
+                          <Grid container alignItems="center">
+                            <Grid item>
+                              <IconButton sx={navbarIconButton} size="small" disableRipple>
+                                <Icon sx={iconsStyle}>place</Icon>
+                              </IconButton>
+                            </Grid>
+                            <Grid item>
+                              <MDBox height="100%" mt={0.5} lineHeight={1}>
+                                <MDTypography variant="h5" fontWeight="regular" color="text">
+                                  {selectedProduct?.highestbid?.highestBidder?.country}
+                                </MDTypography>
+                              </MDBox>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </>
                 ) : (
                   <></>
                 )}
